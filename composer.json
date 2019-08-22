@@ -1,0 +1,22 @@
+{
+    "name": "pizepei/basics",
+    "description": "basics:一个集成的角色、权限、账号管理包",
+    "keywords": ["basics","jurisdiction","role","account"],
+    "homepage": "https://org.heil.top/",
+    "authors": [
+        {
+            "name": "pizepei",
+            "email": "pizepei@pizepei.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "pizepei\\basics\\": "src/"
+        }
+
+    }
+
+}
