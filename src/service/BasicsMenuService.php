@@ -8,8 +8,9 @@ namespace pizepei\basics\service;
 use pizepei\basics\model\backstage\AdminMenuModel;
 use pizepei\model\db\Model;
 
-class MenuService
+class BasicsMenuService
 {
+
 
     public function getAdminMenu()
     {

@@ -5,14 +5,16 @@
  * @Created: 2019/4/23 22:33
  * @title 菜单相关控制器
  */
-namespace pizepei\bases\controller;
+namespace pizepei\basics\controller;
 
+use pizepei\basics\service\BasicsMenuService;
 use pizepei\staging\Controller;
 use pizepei\staging\Request;
 use service\basics\MenuService;
 
-class Menu extends Controller
+class BasicsMenu extends Controller
 {
+
     /**
      * @Author pizepei
      * @Created 2019/4/23 22:35
@@ -42,7 +44,7 @@ class Menu extends Controller
      */
     public function index()
     {
-        return $this->succeed((new  MenuService())->getAdminMenu());
+        return $this->succeed((new  BasicsMenuService())->getAdminMenu());
     }
 
     /**
