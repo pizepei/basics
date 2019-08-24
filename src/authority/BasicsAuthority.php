@@ -15,7 +15,7 @@ use pizepei\staging\App;
 use pizepei\staging\AuthorityInterface;
 use service\basics\account\AccountService;
 
-class BasicsAuthority implements AuthorityInterface
+class BasicsAuthority
 {
     /**
      * 状态
@@ -85,7 +85,7 @@ class BasicsAuthority implements AuthorityInterface
      * @param $parameter 方法
      * @return array
      */
-    public function init($parameter)
+    public function start($parameter)
     {
         if($parameter === 'public'){
             $this->status = true;
