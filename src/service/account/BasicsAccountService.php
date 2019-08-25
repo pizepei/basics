@@ -174,7 +174,7 @@ class BasicsAccountService
     public function logoExp($periodPattern ,$periodTime)
     {
         $exp = '';
-        $h = 60*60*60;
+        $h = 60*60;     # 小时
         switch($periodPattern)
         {
             case 1://谨慎（分钟为单位）
