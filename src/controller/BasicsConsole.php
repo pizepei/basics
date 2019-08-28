@@ -48,6 +48,11 @@ class BasicsConsole extends Controller
      * @param \pizepei\staging\Request $Request
      *      path [object]
      *          type [string] 快捷方式类型
+     *      post [object] 添加的数据
+     *          name [string] 名称
+     *          url [string] url地址
+     *          explain [string] 描述
+     *          status [int] 状态类型
      * @return array [json] 定义输出返回数据
      *      data [raw]
      * @title  添加个人快捷方式到对应类型中
@@ -58,8 +63,21 @@ class BasicsConsole extends Controller
      */
     public function addPersonShortcut(Request $Request)
     {
+        $PersonShortcutType = PersonShortcutTypeModel::table()->get($Request->path('typeId'));
+        if (empty($PersonShortcutType)){
+            return $this->error([],'分类不存在');
+        }
+        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
 
-        #/home/console/
-        return $this->succeed($data,'获取成功');
+        if (PersonShortcutModel::table()->add([
+            'Account_id'=>$accounId['id'],
+            'name'=>$Request->post('name'),
+            'type_id'=>$Request->path('typeId'),
+            'url'=>$Request->post('url'),
+            'status'=>$Request->post('status'),
+        ])){
+            return $this->succeed([],'添加成功');
+        }
+        return $this->error([],'添加错误');
     }
 }

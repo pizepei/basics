@@ -26,6 +26,9 @@ class PersonShortcutModel extends Model
         'type_id'=>[
             'TYPE'=>"uuid", 'DEFAULT'=>Model::UUID_ZERO, 'COMMENT'=>'类型变id',
         ],
+        'explain'=>[
+            'TYPE'=>'varchar(510)', 'DEFAULT'=>'', 'COMMENT'=>'描述说明',
+        ],
         'url'=>[
             'TYPE'=>"varchar(250)", 'DEFAULT'=>'oauth.heil.top', 'COMMENT'=>'地址',
         ],
@@ -42,7 +45,7 @@ class PersonShortcutModel extends Model
          * FULLTEXT 文本
          */
         'INDEX'=>[
-
+            ['TYPE'=>'UNIQUE','FIELD'=>'name,Account_id','NAME'=>'name,Account_id','USING'=>'BTREE','COMMENT'=>'一个人下是唯一的'],
         ],//索引 KEY `ip` (`ip`) COMMENT 'sss 'user_name
         'PRIMARY'=>'id',//主键
 
