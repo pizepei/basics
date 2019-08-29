@@ -33,11 +33,11 @@ class BasicsConsole extends Controller
 
         $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
 
-        $data = PersonShortcutTypeModel::table()->where(['Account_id'=>$accounId['id']])->fetchAll(['name','id']);
+        $data = PersonShortcutTypeModel::table()->where(['Account_id'=>$accounId['id']])->fetchAll(['name','id','explain']);
 
         foreach ($data as $key=>&$value)
         {
-            $value['list'] = PersonShortcutModel::table()->where(['type_id'=>$value['id']])->fetchAll(['name','id','url']);
+            $value['list'] = PersonShortcutModel::table()->where(['type_id'=>$value['id']])->fetchAll(['name','id','url','explain']);
         }
         return $this->succeed($data,'获取成功');
     }
@@ -75,6 +75,7 @@ class BasicsConsole extends Controller
             'type_id'=>$Request->path('typeId'),
             'url'=>$Request->post('url'),
             'status'=>$Request->post('status'),
+            'explain'=>$Request->post('explain'),
         ])){
             return $this->succeed([],'添加成功');
         }

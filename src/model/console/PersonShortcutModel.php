@@ -46,6 +46,7 @@ class PersonShortcutModel extends Model
          */
         'INDEX'=>[
             ['TYPE'=>'UNIQUE','FIELD'=>'name,Account_id','NAME'=>'name,Account_id','USING'=>'BTREE','COMMENT'=>'一个人下是唯一的'],
+            ['TYPE'=>'INDEX','FIELD'=>'type_id','NAME'=>'type_id','USING'=>'BTREE','COMMENT'=>'类型ID'],
         ],//索引 KEY `ip` (`ip`) COMMENT 'sss 'user_name
         'PRIMARY'=>'id',//主键
 
