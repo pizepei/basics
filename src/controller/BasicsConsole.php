@@ -23,18 +23,14 @@ class BasicsConsole extends Controller
      * @return array [json] 定义输出返回数据
      *      data [raw]
      * @title  获取个人快捷方式
-     * @explain 退出登录
      * @baseAuth UserAuth:test
      * @throws \Exception
      * @router get person/shortcut-list
      */
     public function personShortcut(Request $Request)
     {
-
-        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
-
+        $accounId = AccountModel::table()->forceIndex(['number'])->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
         $data = PersonShortcutTypeModel::table()->where(['Account_id'=>$accounId['id']])->fetchAll(['name','id','explain']);
-
         foreach ($data as $key=>&$value)
         {
             $value['list'] = PersonShortcutModel::table()->where(['type_id'=>$value['id']])->fetchAll(['name','id','url','explain']);
