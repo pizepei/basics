@@ -64,15 +64,10 @@ class BasicsConsole extends Controller
             return $this->error([],'分类不存在');
         }
         $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
-
-        if (PersonShortcutModel::table()->add([
-            'Account_id'=>$accounId['id'],
-            'name'=>$Request->post('name'),
-            'type_id'=>$Request->path('typeId'),
-            'url'=>$Request->post('url'),
-            'status'=>$Request->post('status'),
-            'explain'=>$Request->post('explain'),
-        ])){
+        $data = $Request->post();
+        $data['type_id'] = $Request->path('typeId');
+        $data['Account_id'] = $accounId['id'];
+        if (PersonShortcutModel::table()->add($data)){
             return $this->succeed([],'添加成功');
         }
         return $this->error([],'添加错误');
