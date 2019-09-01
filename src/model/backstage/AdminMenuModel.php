@@ -41,6 +41,9 @@ class AdminMenuModel extends Model
         'extend'=>[
             'TYPE'=>"json", 'DEFAULT'=>false, 'COMMENT'=>'扩展',
         ],
+        'sort'=>[
+            'TYPE'=>"int(10)", 'DEFAULT'=>'oauth.heil.top', 'COMMENT'=>'排序',
+        ],
         'status'=>[
             'TYPE'=>"ENUM('1','2','3','4','5')", 'DEFAULT'=>'1', 'COMMENT'=>'状态1等待审核、2正常3、禁用4、保留',
         ],
