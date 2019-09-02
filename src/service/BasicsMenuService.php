@@ -11,10 +11,14 @@ use pizepei\model\db\Model;
 class BasicsMenuService
 {
 
-
+    /**
+     * 获取后台菜单
+     * @return array
+     * @throws \Exception
+     */
     public function getAdminMenu()
     {
-        $AdminMenu = AdminMenuModel::table()->where(['status'=>2])->fetchAll();
+        $AdminMenu = AdminMenuModel::table()->where(['status'=>2])->order('sort','desc')->fetchAll();
         $data = [];
         /**
          * 合并
