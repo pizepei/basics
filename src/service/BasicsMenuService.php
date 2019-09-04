@@ -67,5 +67,59 @@ class BasicsMenuService
     }
 
 
+    /**
+     * 获取后台菜单
+     * @return array
+     * @throws \Exception
+     */
+    public function getTreeMenu($type='admin',$spread=true)
+    {
+        if ($type == 'admin'){
+            $menu = AdminMenuModel::table()->where(['status'=>2])->order('sort','desc')->fetchAll();
+        }
+        $data = [];
+        foreach ($menu as $key=>$value)
+        {
+            if ($value['parent_id'] == Model::UUID_ZERO){
+                $menuData = [
+                    'id'=>$value['id'],
+                    'title'=>$value['title'],
+                    'spread'=>$value['spread']==0?false:true,
+                ];
+                unset($menu[$key]);
+                $this->recursiveMenu($menu,$menuData,$value['id'],$spread);
+                $data[] = $menuData;
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * 处理子结点
+     * @param $menu
+     * @param $menuData
+     * @param $parent_id
+     */
+    public function recursiveMenu(&$menu,&$menuData,$parent_id)
+    {
+        $data = [];
+        foreach ($menu as $key=>$value)
+        {
+            if ($value['parent_id'] == $parent_id) {
+                $menuInfo = [
+                    'id'=>$value['id'],
+                    'title'=>$value['title'],
+                    'spread'=>$value['spread']==0?false:true,
+                ];
+                unset($menu[$key]);
+                $this->recursiveMenu($menu,$menuInfo,$value['id']);
+                $data[] = $menuInfo;
+            }
+        }
+        if ($data !==[]){
+            $menuData['children'] = $data;
+        }
+    }
+
 
 }

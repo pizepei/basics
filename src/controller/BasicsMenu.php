@@ -89,4 +89,21 @@ class BasicsMenu extends Controller
         return $this->succeed($data);
     }
 
+    /**
+     * @Author pizepei
+     * @Created 2019/4/23 23:02
+     * @param \pizepei\staging\Request $Request
+     * @return array [json]
+     *     data [raw]
+     * @title  用户信息
+     * @explain 简单用户信息
+     * @authTiny 微权限提供权限分配 [获取店铺所有  获取所有店铺  获取一个]
+     * @authGroup basics.index.message:控制台新信息
+     * @router get tree-menu-info
+     */
+    public function getTreeMenu()
+    {
+        return $this->succeed((new  BasicsMenuService())->getTreeMenu());
+    }
+
 }
