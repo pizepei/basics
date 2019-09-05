@@ -44,7 +44,7 @@ class BasicsMenu extends Controller
      */
     public function index()
     {
-        return $this->succeed((new  BasicsMenuService())->getAdminMenu());
+        return $this->succeed((new  BasicsMenuService())->getMenu());
     }
 
     /**
@@ -105,5 +105,51 @@ class BasicsMenu extends Controller
     {
         return $this->succeed((new  BasicsMenuService())->getTreeMenu());
     }
+
+
+    /**
+     * @Author pizepei
+     * @Created 2019/4/23 23:02
+     * @param \pizepei\staging\Request $Request
+     *      post [object] post
+     *          name [string]   菜单名称（与视图的文件夹名称和路由路径对应）
+     *          parent_id [uuid] 父id
+     *          title [string] 菜单标题
+     *          icon [string] 单图标样式
+     *          spread [string] 是否默认展子菜单
+     *          jump [string] 默认按照 name 解析。一旦设置，将优先按照 jump 设定的路由跳转
+     *          sort [string] 排序
+     *          status [int] 1 不显示  2 显示
+     * @return array [json]
+     *     data [raw]
+     * @title  添加后台菜单
+     * @explain 添加后台菜单
+     * @authGroup basics.index.message:控制台新信息
+     * @router post admin-menu
+     */
+    public function addAdminNenu(Request $Request)
+    {
+        return $this->succeed((new  BasicsMenuService())->addMenu($Request->post()),'添加成功');
+    }
+
+
+    /**
+     * @Author pizepei
+     * @Created 2019/4/23 23:02
+     * @param \pizepei\staging\Request $Request
+     *      path [object]
+     *          id [uuid] 菜单id  uuid
+     * @return array [json]
+     *     data [raw]
+     * @title  添加后台菜单
+     * @explain 添加后台菜单
+     * @authGroup basics.index.message:控制台新信息
+     * @router delete admin-menu/:id[uuid]
+     */
+    public function delAdminNenu(Request $Request)
+    {
+        return $this->succeed((new  BasicsMenuService())->delMenu($Request->path('id')),'删除成功');
+    }
+
 
 }
