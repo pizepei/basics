@@ -18,7 +18,7 @@ class BasicsMenuService
      * @return array
      * @throws \Exception
      */
-    public function getMenu(string $type='admin')
+    public function getMenuList(string $type='admin')
     {
         $menuModel = $this->initModel($type);
         $AdminMenu = $menuModel->where(['status'=>2])->order('sort','desc')->fetchAll();
@@ -160,6 +160,18 @@ class BasicsMenuService
     }
 
     /**
+     * 获取一个菜单的详情
+     * @param string $id
+     * @param string $type
+     */
+    public function getMenuInfo(string $id,string $type='admin')
+    {
+        $menuModel = $this->initModel($type);
+        return $menuModel->get($id);
+    }
+
+
+    /**
      * 添加
      * @param string $data
      * @param string $type
@@ -186,5 +198,29 @@ class BasicsMenuService
         }
         return $res;
     }
+
+    /**
+     * 添加
+     * @param string $data
+     * @param string $type
+     * @return array
+     * @throws \Exception
+     */
+    public function updateMenu(string $id,array $data,string $type='admin')
+    {
+        # 检查数据
+        if (isset($data['parent_id'])){throw new \Exception('parent_id Referred by');}
+        if (!isset($data['title'])){throw new \Exception('title must');}
+        if (!isset($data['name'])){throw new \Exception('name must');}
+        $data['spread'] = $data['spread']=='on'?1:0;
+        $menuModel = $this->initModel($type);
+        $res = $menuModel->where(['id'=>$id])->update($data);
+        if (empty($res)){
+            throw new \Exception('修改失败');
+        }
+        return $res;
+    }
+
+
 
 }

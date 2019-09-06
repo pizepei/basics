@@ -44,7 +44,7 @@ class BasicsMenu extends Controller
      */
     public function index()
     {
-        return $this->succeed((new  BasicsMenuService())->getMenu());
+        return $this->succeed((new  BasicsMenuService())->getMenuList());
     }
 
     /**
@@ -138,6 +138,31 @@ class BasicsMenu extends Controller
      * @Created 2019/4/23 23:02
      * @param \pizepei\staging\Request $Request
      *      path [object]
+     *          id [uuid] 菜单id
+     *      raw [object] post
+     *          name [string]  菜单名称（与视图的文件夹名称和路由路径对应）
+     *          title [string] 菜单标题
+     *          icon [string] 单图标样式
+     *          spread [string] 是否默认展子菜单
+     *          jump [string] 默认按照 name 解析。一旦设置，将优先按照 jump 设定的路由跳转
+     *          sort [string] 排序
+     *          status [int] 1 不显示  2 显示
+     * @return array [json]
+     *     data [raw]
+     * @title  更新后台菜单
+     * @explain 更新后台菜单
+     * @authGroup basics.index.message:控制台新信息
+     * @router put admin-menu/:id[uuid]
+     */
+    public function updateAdminNenu(Request $Request)
+    {
+        return $this->succeed((new  BasicsMenuService())->updateMenu($Request->path('id'),$Request->raw()),'更新成功');
+    }
+    /**
+     * @Author pizepei
+     * @Created 2019/4/23 23:02
+     * @param \pizepei\staging\Request $Request
+     *      path [object]
      *          id [uuid] 菜单id  uuid
      * @return array [json]
      *     data [raw]
@@ -150,6 +175,22 @@ class BasicsMenu extends Controller
     {
         return $this->succeed((new  BasicsMenuService())->delMenu($Request->path('id')),'删除成功');
     }
-
+    /**
+     * @Author pizepei
+     * @Created 2019/4/23 23:02
+     * @param \pizepei\staging\Request $Request
+     *      path [object]
+     *          id [uuid] 菜单id  uuid
+     * @return array [json]
+     *     data [raw]
+     * @title  获取菜单详情
+     * @explain 获取菜单详情
+     * @authGroup basics.index.message:控制台新信息
+     * @router get admin-menu/:id[uuid]
+     */
+    public function getAdminNenu(Request $Request)
+    {
+        return $this->succeed((new  BasicsMenuService())->getMenuInfo($Request->path('id')),'获取成功');
+    }
 
 }
