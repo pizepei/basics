@@ -30,12 +30,15 @@ class BasicsConsole extends Controller
     public function personShortcut(Request $Request)
     {
         $accounId = AccountModel::table()->forceIndex(['number'])->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
-        $data = PersonShortcutTypeModel::table()->where(['Account_id'=>$accounId['id']])->fetchAll(['name','id','explain']);
+        $data = PersonShortcutTypeModel::table()
+            ->where(['Account_id'=>$accounId['id']])
+            ->order('sort','desc')
+            ->fetchAll(['name','id','explain']);
         foreach ($data as $key=>&$value)
         {
             $value['list'] = PersonShortcutModel::table()
                 ->where(['type_id'=>$value['id'],'status'=>2])
-                ->order('sort')
+                ->order('sort','desc')
                 ->fetchAll(['name','id','url','explain','sort']);
         }
         return $this->succeed($data,'获取成功');

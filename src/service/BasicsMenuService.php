@@ -212,7 +212,8 @@ class BasicsMenuService
         if (isset($data['parent_id'])){throw new \Exception('parent_id Referred by');}
         if (!isset($data['title'])){throw new \Exception('title must');}
         if (!isset($data['name'])){throw new \Exception('name must');}
-        $data['spread'] = $data['spread']=='on'?1:0;
+        $data['spread'] = $data['spread']??0;
+        $data['spread'] = $data['spread'] === 'on'?1:0;
         $menuModel = $this->initModel($type);
         $res = $menuModel->where(['id'=>$id])->update($data);
         if (empty($res)){
