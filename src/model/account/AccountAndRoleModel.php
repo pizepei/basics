@@ -6,7 +6,8 @@
  * @title 账号与角色关系表
  */
 
-namespace model\basics\account;
+namespace pizepei\basics\model\account;
+
 
 
 use pizepei\model\db\Model;

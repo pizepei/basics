@@ -7,7 +7,7 @@
  * 平台主账号表
  */
 
-namespace model\basics\account;
+namespace pizepei\basics\model\account;
 
 
 use pizepei\model\db\Model;

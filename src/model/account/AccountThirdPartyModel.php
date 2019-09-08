@@ -6,7 +6,8 @@
  * Time: 17:29
  */
 
-namespace model\basics\account;
+namespace pizepei\basics\model\account;
+
 
 use pizepei\model\db\Model;
 

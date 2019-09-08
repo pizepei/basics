@@ -6,7 +6,8 @@
  * @title 权限操作（一个一个的权限）
  */
 
-namespace model\basics\account;
+namespace pizepei\basics\model\account;
+
 
 
 use pizepei\model\db\Model;

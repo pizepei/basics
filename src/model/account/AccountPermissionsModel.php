@@ -6,7 +6,8 @@
  * @title 权限许可（角色-与-操作的许可关系）
  */
 
-namespace model\basics\account;
+namespace pizepei\basics\model\account;
+
 
 
 use pizepei\model\db\Model;

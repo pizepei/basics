@@ -7,7 +7,8 @@
  * @title 登录在线日志
  */
 
-namespace model\basics\account;
+namespace pizepei\basics\model\account;
+
 
 
 use pizepei\model\db\Model;
