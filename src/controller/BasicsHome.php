@@ -17,7 +17,7 @@ class BasicsHome extends Controller
      */
     public function index()
     {
-        return (new BasicsLayuiAdminService())->getIndexHtml('sss');
+        return (new BasicsLayuiAdminService())->getIndexHtml($_SERVER['SERVER_NAME']);
     }
 
     /**
@@ -29,7 +29,7 @@ class BasicsHome extends Controller
      */
     public function homeConfig()
     {
-        return (new BasicsLayuiAdminService())->getConfig('sss');
+        return (new BasicsLayuiAdminService())->getConfig($_SERVER['SERVER_NAME']);
     }
     /**
      * @return array [js]
@@ -40,6 +40,6 @@ class BasicsHome extends Controller
      */
     public function homeIndex()
     {
-        return (new BasicsLayuiAdminService())->getIndexJs('sss');
+        return (new BasicsLayuiAdminService())->getIndexJs($_SERVER['SERVER_NAME']);
     }
 }
