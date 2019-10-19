@@ -103,8 +103,8 @@ class BasicsAuthority
         $AccountService = new BasicsAccountService();
         $Redis = Redis::init();
 //        var_dump($_SERVER);
-        if (!isset($_SERVER['HTTP_ACCESS_TOKEN'])){throw new \Exception('ACCESS_TOKEN非法',\ErrorOrLog::NOT_LOGGOD_IN_CODE);}
-        $this->Payload =  $AccountService->decodeLogonJwt($this->pattern,$_SERVER['HTTP_ACCESS_TOKEN']??'',$Redis);
+        if (!isset($this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]) || $this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']] ==''){throw new \Exception('非法请求[TOKEN]',\ErrorOrLog::NOT_LOGGOD_IN_CODE);}
+        $this->Payload =  $AccountService->decodeLogonJwt($this->pattern,$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]??'',$Redis);
     }
     /**
      * 权限判断(使用数据缓存或者数据库的版本)
