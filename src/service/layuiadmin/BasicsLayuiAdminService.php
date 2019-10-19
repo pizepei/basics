@@ -51,7 +51,7 @@ class BasicsLayuiAdminService
     public function getConfig(string $domain):string
     {
         $data = [
-//            'config'=>'../../normative/home/config',
+            'tokenName'=>\Config::ACCOUNT['GET_ACCESS_TOKEN_NAME'],
         ];
         $file = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'config.js');
         return $this->str_replace($file,$data);
