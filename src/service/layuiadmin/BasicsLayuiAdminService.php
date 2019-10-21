@@ -19,10 +19,10 @@ class BasicsLayuiAdminService
     {
         $data = [
             'title'=>'Lifestyle',
-            'index'=>'../../normative//home/index',
-            'base'=>'./resource/src/',
-            'css'=>'./resource/start/layui/css/layui.css',
-            'js'=>'./resource/start/layui/layui.js',
+            'index'=>'../../'.\Deploy::MODULE_PREFIX.'/home/index',
+            'base'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/src/',
+            'css'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/css/layui.css',
+            'js'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/layui.js',
         ];
         $file = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'index.html');
         return $this->str_replace($file,$data);
@@ -36,7 +36,7 @@ class BasicsLayuiAdminService
     public function getIndexJs(string $domain):string
     {
         $data = [
-            'config'=>'../../normative/home/config',
+            'config'=>'../../'.\Deploy::MODULE_PREFIX.'/home/config',
         ];
         $file = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'index.js');
         return $this->str_replace($file,$data);
