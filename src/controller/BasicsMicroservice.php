@@ -1,14 +1,25 @@
 <?php
 /**
- * 应用端微服务管理
+ * Created by PhpStorm.
+ * User: pizepei
+ * Date: 2019/10/21
+ * Time: 11:28
+ * @baseControl pizepei\basics\src\controller\BasicsMicroservice
+ * @baseAuth
+ * @title 应用端微服务管理
+ * @authGroup [user:用户相关,admin:管理员相关] 权限组列表
+ * @basePath /basics/microservice/
+ * @baseParam [$Request:pizepei\staging\Request] 注册依赖注入对象
  */
+
 
 namespace pizepei\basics\controller;
 
 
+use pizepei\staging\Controller;
 use pizepei\staging\Request;
 
-class BasicsMicroservice
+class BasicsMicroservice extends Controller
 {
 
     /**
@@ -27,12 +38,12 @@ class BasicsMicroservice
      * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
-     * @resourceType microservice
+     * @resourceType microservice1
      * @throws \Exception
      * @router get  test
      */
     public function test(Request $Request)
     {
-
+        return $Request->input();
     }
 }
