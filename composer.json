@@ -10,7 +10,9 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0"
+        "php": ">=7.0.0",
+        "pizepei/microservice-client": "dev-master",
+        "pizepei/encryption":"dev-master"
     },
     "autoload": {
         "psr-4": {
