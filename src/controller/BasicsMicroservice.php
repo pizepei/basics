@@ -38,7 +38,7 @@ class BasicsMicroservice extends Controller
      * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
-     * @resourceType microservice1
+     * @resourceType microservice
      * @throws \Exception
      * @router get  test
      */
