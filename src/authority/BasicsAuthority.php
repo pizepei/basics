@@ -15,57 +15,8 @@ use pizepei\staging\App;
 use pizepei\staging\AuthorityInterface;
 use service\basics\account\AccountService;
 
-class BasicsAuthority
+class BasicsAuthority extends \pizepei\staging\BasicsAuthority
 {
-    /**
-     * 状态
-     * @var bool
-     */
-    protected $status = false;
-    /**
-     * 状态码
-     * @var bool
-     */
-    protected $code = false;
-    /**
-     * 说明
-     * @var string
-     */
-    protected $msg = '';
-
-    /**
-     * jwt模式
-     * @var string
-     */
-    protected $pattern = '';
-
-    /**
-     * 当前权限控制信息（扩展）
-     * @var array
-     */
-    protected $authExtend=[];
-    /**
-     * 解密的jwt Payload信息
-     * @var array
-     */
-    protected $Payload = [];
-
-    protected $parameter = '';
-    /**
-     * @var App|null
-     */
-    protected $app = null;
-    /**
-     * Authority constructor.
-     * @param $pattern jwt模式
-     * @param App $app
-     */
-    public function __construct($pattern,App $app)
-    {
-        $this->app = $app;
-        # jwt模式
-        $this->pattern = $pattern;
-    }
 
     /**
      *  获取 property
@@ -79,18 +30,6 @@ class BasicsAuthority
             return $this->$propertyName;
         }
         return null;
-    }
-    /**
-     * 统一返回
-     * @param $parameter 方法
-     * @return array
-     */
-    public function start($parameter)
-    {
-        if($parameter === 'public'){
-            $this->status = true;
-        }
-        return $this->$parameter();
     }
 
     /**

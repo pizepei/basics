@@ -8,34 +8,11 @@ namespace pizepei\basics\authority;
 
 
 use pizepei\staging\App;
+use pizepei\staging\BasicsAuthority;
 
-class BasicsMicroserviceAuthority
+class BasicsMicroserviceAuthority extends BasicsAuthority
 {
     protected $authExtend=[];
-
-    /**
-     * Authority constructor.
-     * @param $pattern
-     * @param App $app
-     */
-    public function __construct($pattern,App $app)
-    {
-        $this->app = $app;
-        # jwt模式
-        $this->pattern = $pattern;
-    }
-    /**
-     * 统一返回
-     * @param $parameter 方法
-     * @return array
-     */
-    public function start($parameter)
-    {
-        if($parameter === 'public'){
-            $this->status = true;
-        }
-        return $this->$parameter();
-    }
     /**
      * @Author 皮泽培
      * @Created 2019/10/22 16:58
@@ -44,8 +21,10 @@ class BasicsMicroserviceAuthority
      * @explain 路由功能说明
      * @throws \Exception
      */
-    public function initializeData()
+    public function initializeData(...$data)
     {
+        $this->app->Request()->path('appid');
+        var_dump($this->app->Request()->path());
 //        var_dump($this->$parameter());
 
         # 获取appid  appid只支持path传递
