@@ -47,4 +47,35 @@ class BasicsMicroservice extends Controller
     {
         return $Request->input();
     }
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/10/21 14:24
+     * @param Request $Request
+     *   path [object] 路径参数
+     *   post [object] post参数
+     *      name [string] 应用名称
+     *      icon [string] 应用图标
+     *      remark [string] 应用备注
+     *      project_id [objectList] 项目标识集合
+     *      jurisdiction [objectList] 权限集合
+     *      ip_white_list [objectList] ip白名单
+     *      sort [int] 排序
+     *   rule [object] 数据流参数
+     * @return array [json] 定义输出返回数据
+     * @title  添加微服务应用
+     * @explain 微服务应用为微服务集合
+     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
+     * @authExtend MicroserviceAuth.list:拓展权限
+     * @baseAuth MicroserviceAuth:initializeData
+     * @resourceType microservice
+     * @throws \Exception
+     * @router get  test/:appid[uuid]
+     */
+    public function addApps(Request $Request)
+    {
+
+    }
+
+
 }
