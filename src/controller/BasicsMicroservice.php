@@ -70,7 +70,7 @@ class BasicsMicroservice extends Controller
      * @baseAuth MicroserviceAuth:initializeData
      * @resourceType microservice
      * @throws \Exception
-     * @router get  test/:appid[uuid]
+     * @router post  apps
      */
     public function addApps(Request $Request)
     {

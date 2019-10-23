@@ -6,6 +6,8 @@
  * Time: 9:53
  * @title 账号体系
  */
+declare(strict_types=1);
+
 namespace pizepei\basics\service\account;
 
 use model\basics\account\AccountMilestoneModel;
