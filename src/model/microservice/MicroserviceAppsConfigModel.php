@@ -24,6 +24,9 @@ class MicroserviceAppsConfigModel extends Model
         'name'=>[
             'TYPE'=>'varchar(255)', 'DEFAULT'=>'', 'COMMENT'=>'服务名称',
         ],
+        'account_id'=>[
+            'TYPE'=>"uuid", 'DEFAULT'=>Model::UUID_ZERO, 'COMMENT'=>'账号ID',
+        ],
         'appid'=>[
             'TYPE'=>"uuid", 'DEFAULT'=>Model::UUID_ZERO, 'COMMENT'=>'应用ID',
         ],
@@ -42,20 +45,32 @@ class MicroserviceAppsConfigModel extends Model
         'jurisdiction'=>[
             'TYPE'=>'json', 'DEFAULT'=>false, 'COMMENT'=>'该应用的权限集合',
         ],
-        'ip_white_list '=>[
+        'ip_white_list'=>[
             'TYPE'=>'json', 'DEFAULT'=>false, 'COMMENT'=>'ip白名单',
         ],
-
+        'qps'=>[
+            'TYPE'=>'int(10)', 'DEFAULT'=>10, 'COMMENT'=>'QPS',
+        ],
 
         'appsecret'=>[
             'TYPE'=>'varchar(32)', 'DEFAULT'=>'', 'COMMENT'=>'appsecret',
         ],
-        'EncodingAESKey'=>[
+        'encodingAesKey'=>[
             'TYPE'=>'varchar(43)', 'DEFAULT'=>'', 'COMMENT'=>'消息加密密钥由43位字符组成，可随机修改，字符范围为A-Z，a-z，0-9',
         ],
         'token'=>[
             'TYPE'=>'varchar(43)', 'DEFAULT'=>'', 'COMMENT'=>'消息校验Token',
         ],
+
+        'redirect_utl'=>[
+            'TYPE'=>'json', 'DEFAULT'=>false, 'COMMENT'=>'应用回调地址',
+        ],
+
+
+        'cache_time'=>[
+            'TYPE'=>'int(10)', 'DEFAULT'=>120, 'COMMENT'=>'缓存时间单位s',
+        ],
+
 
         'extend'=>[
             'TYPE'=>"json", 'DEFAULT'=>false, 'COMMENT'=>'扩展',
