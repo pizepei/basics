@@ -153,7 +153,7 @@ class BasicsMicroservice extends Controller
      */
     public function getMicroserviceCentreConfig(Request $Request)
     {
-        return $this->succeed(BasicsMicroserviceAppsService::getFarAppsConfig($Request->path('appid')),'c成功');
+        return $this->succeed(BasicsMicroserviceAppsService::getFarAppsConfig($Request->path('appid')),'成功');
     }
     /**
      * @Author 皮泽培
@@ -161,29 +161,29 @@ class BasicsMicroservice extends Controller
      * @param Request $Request
      *   path [object] 路径参数
      *      appid [uuid] MicroserviceCentreConfig的 appid
-     *   post [object] post参数
+     *   raw [object] post参数
      *          timestamp [int required]   时间戳
      *          nonce [int required required]   随机数
      *          encrypt_msg [string required] 加密的数据
      *          signature [string required] 签名
      *          urlencode [bool] 是否使用urlencode
      * @return array [json] 定义输出返回数据
-     * @title  添加微服务应用
-     * @explain 微服务应用为微服务集合
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
-     * @authExtend MicroserviceAuth.list:拓展权限
+     *      data  [raw] apps配置
+     *          timestamp [int required]   时间戳
+     *          nonce [int required required]   随机数
+     *          encrypt_msg [string required] 加密的数据
+     *          signature [string required] 签名
+     *          urlencode [bool] 是否使用urlencode
+     * @title  配置中心响应微服务apps配置
+     * @explain 配置中心响应微服务apps配置
      * @baseAuth MicroserviceAuth:public
-     * @resourceType microservice
      * @throws \Exception
      * @router post  apps/config/:appid[uuid]
      */
     public function getAppsConfig(Request $Request)
     {
-
-        # 有一个管理配置的中心
-        # 有一个提供服务的微服务 需要配置
-        # 有一个需要服务的项目
-        return BasicsMicroserviceAppsService::getLocalAppsConfig($Request->post(),$Request->path('appid'));
+//        return $Request->raw();
+        return $this->succeed(BasicsMicroserviceAppsService::getLocalAppsConfig($Request->raw(),$Request->path('appid')),'获取成功');
     }
 
 }

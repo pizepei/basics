@@ -13,6 +13,7 @@ use pizepei\basics\model\microservice\MicroserviceCentreConfigModel;
 use pizepei\encryption\aes\Prpcrypt;
 use pizepei\model\cache\Cache;
 use pizepei\model\db\Model;
+use pizepei\terminalInfo\TerminalInfo;
 
 class BasicsMicroserviceAppsService
 {
@@ -95,11 +96,12 @@ class BasicsMicroserviceAppsService
      * @Created 2019/10/26 17:20
      * @param string $appid  appid
      * @param bool $Cache 是否使用缓存
-     * @title  路由标题
+     * @title  配置中心配置
      * @return array
      * @throws \Exception
      */
-    public static function getMicroserviceCentreConfig(string $appid,bool $Cache=true){
+    public static function getMicroserviceCentreConfig(string $appid,bool $Cache=true):array
+    {
         # 通过appid 获取配置
         if ($Cache){
             $cacheData = Cache::get(['MicroserviceCentreConfig',$appid],'Microservice');
@@ -108,7 +110,7 @@ class BasicsMicroserviceAppsService
         }
         if (!$cacheData){
             $cacheData = MicroserviceCentreConfigModel::table()->where(['appid'=>$appid])->fetch();
-            if (!$cacheData){ throw new \Exception('Configuration does not exist');}
+            if (!$cacheData){ throw new \Exception('Configuration does not exist '.$appid);}
             # 设置缓存
             Cache::set(['MicroserviceCentreConfig',$appid],$cacheData,$cacheData['cache_time'],'Microservice');
         }
@@ -123,29 +125,91 @@ class BasicsMicroserviceAppsService
      * @return array
      * @throws \Exception
      */
-    public static function getFarAppsConfig($appid)
+    public static function getFarAppsConfig($appid,bool $Cache=true):array
     {
-        $data = [
-            'appid'=>$appid,
-            'action'=>'getFarAppsConfig',
-        ];
-        $Prpcrypt = new Prpcrypt(\Deploy::MicroService['encodingAesKey']);
-        return $Prpcrypt->yieldCiphertext(Helper()->json_encode($data),\Deploy::MicroService['appid'],\Deploy::MicroService['token'],\Deploy::MicroService['urlencode']);
+
+        # appid 是apps 的appid   通过\Deploy::MicroService配置获取对应的应用信息（请求配置中心）
+
+        # 缓存
+        if ($Cache){
+            $cacheData = Cache::get(['MicroserviceFarAppsConfig',$appid],'Microservice');
+        }else{
+            $cacheData = null;
+        }
+        if (!$cacheData){
+            $data = [
+                'appid'=>$appid,
+                'action'=>'getFarAppsConfig',
+            ];
+            $Prpcrypt = new Prpcrypt(\Deploy::MicroService['encodingAesKey']);
+            $data = $Prpcrypt->yieldCiphertext(Helper()->json_encode($data),\Deploy::MicroService['appid'],\Deploy::MicroService['token'],\Deploy::MicroService['urlencode']);
+
+            # 进行请求
+            $url = \Deploy::MicroService['url'].\Deploy::MicroService['appid'].'.json';
+            $res = Helper()->httpRequest($url,Helper()->json_encode($data));
+            if ($res['code'] !==200){throw  new \Exception('The request failed   code:'.$res['code']);}
+            $body = Helper()->json_decode($res['body']);
+            if (!isset($body['data'])){throw  new \Exception('The request failed   body empty '); }
+            # 解密
+            $cacheData = Helper()->json_decode($Prpcrypt->decodeCiphertext(\Deploy::MicroService['token'],$body['data']));
+            if (!$cacheData){ throw  new \Exception('The request failed   cacheData empty ');  }
+            # 缓存
+            Cache::set(['MicroserviceFarAppsConfig',$appid],$cacheData,$cacheData['cache_time'],'Microservice');
+        }
+        return $cacheData;
+
     }
 
-    # 获取apps配置（微服务管理中心使用）
+    /**
+     * 获取apps配置（微服务管理中心使用）
+     * @param array $data
+     * @param string $appid  发起请求的 微服务项目的\Deploy::MicroService['appid']
+     * @return array
+     * @throws \Exception
+     */
     public static function getLocalAppsConfig(array $data,string $appid)
     {
         $MicroserviceCentreConfig = static::getMicroserviceCentreConfig($appid);
+        # 验证IP
+        $data['clientInfo'] = terminalInfo::get_ip();
+        if (!in_array(terminalInfo::get_ip(),$MicroserviceCentreConfig['ip_white_list'])){ throw new \Exception('Illegal request IP  '.terminalInfo::get_ip()); }
         # 验证
         $Prpcrypt = new Prpcrypt($MicroserviceCentreConfig['encodingAesKey']);
-        $res = $Prpcrypt->decodeCiphertext($MicroserviceCentreConfig['token'],$data);
+        $res = $Prpcrypt->decodeCiphertext($MicroserviceCentreConfig['token'],$data,1200);
         $body = Helper()->json_decode($res);
         if (!$body){ throw new \Exception('CentreConfig [error body]');}
-        if (!isset($res['action'])){ throw new \Exception('CentreConfig [error body action]');}
-        if ($res['action'] =='getFarAppsConfig'){ throw new \Exception('CentreConfig [error body getFarAppsConfig]');}
+        if (!isset($body['action'])){ throw new \Exception('CentreConfig [error body action]');}
+        if ($body['action'] !=='getFarAppsConfig'){ throw new \Exception('CentreConfig [error body getFarAppsConfig]');}
+        # 验证通过 获取配置
+        $icroserviceApps = static::getMicroserviceAppsConfig($body['appid']);
+        if (empty($icroserviceApps)){throw new \Exception('icroserviceApps empty');}
+        # 加密返回
+        $resData = $Prpcrypt->yieldCiphertext(Helper()->json_encode($icroserviceApps),\Deploy::MicroService['appid'],\Deploy::MicroService['token'],\Deploy::MicroService['urlencode']);
+        return $resData;
 
-        return Helper()->json_decode($res);
-        return $Prpcrypt->decodeCiphertext($MicroserviceCentreConfig['token'],$data);
+    }
+
+    /**
+     * 获取apps 配置
+     * @param string $appid
+     * @param bool $Cache
+     * @return array
+     */
+    public static function getMicroserviceAppsConfig(string $appid,bool $Cache=true):array
+    {
+        # 通过appid 获取配置
+        if ($Cache){
+            $cacheData = Cache::get(['MicroserviceAppsConfig',$appid],'MicroserviceApps');
+        }else{
+            $cacheData = null;
+        }
+        if (!$cacheData){
+            $cacheData = MicroserviceAppsConfigModel::table()->where(['appid'=>$appid])->fetch();
+            if (!$cacheData){ throw new \Exception('MicroserviceAppsConfig does not exist '.$appid);}
+            # 设置缓存
+            Cache::set(['MicroserviceAppsConfig',$appid],$cacheData,$cacheData['cache_time'],'MicroserviceApps');
+        }
+        return $cacheData;
+
     }
 }
