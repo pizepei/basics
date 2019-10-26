@@ -11,7 +11,6 @@ use pizepei\model\db\Model;
 
 class MicroserviceCentreConfigModel extends Model
 {
-
     /**
      * 表结构
      * @var array
@@ -32,19 +31,15 @@ class MicroserviceCentreConfigModel extends Model
         'remark'=>[
             'TYPE'=>"varchar(600)", 'DEFAULT'=>'', 'COMMENT'=>'应用备注',
         ],
-        'project_id'=>[
-            'TYPE'=>'json', 'DEFAULT'=>false, 'COMMENT'=>'该应用的项目标识集合',
+        'groups'=>[
+            'TYPE'=>"uuid", 'DEFAULT'=>Model::UUID_ZERO, 'COMMENT'=>'分组',
         ],
-        'jurisdiction'=>[
-            'TYPE'=>'json', 'DEFAULT'=>false, 'COMMENT'=>'该应用的权限集合',
+        'tage'=>[
+            'TYPE'=>"varchar(600)", 'DEFAULT'=>'', 'COMMENT'=>'分组',
         ],
         'ip_white_list'=>[
             'TYPE'=>'json', 'DEFAULT'=>false, 'COMMENT'=>'ip白名单',
         ],
-        'qps'=>[
-            'TYPE'=>'int(10)', 'DEFAULT'=>10, 'COMMENT'=>'QPS',
-        ],
-
         'appsecret'=>[
             'TYPE'=>'varchar(32)', 'DEFAULT'=>'', 'COMMENT'=>'appsecret',
         ],
@@ -54,16 +49,9 @@ class MicroserviceCentreConfigModel extends Model
         'token'=>[
             'TYPE'=>'varchar(43)', 'DEFAULT'=>'', 'COMMENT'=>'消息校验Token',
         ],
-
-        'redirect_utl'=>[
-            'TYPE'=>'json', 'DEFAULT'=>false, 'COMMENT'=>'应用回调地址',
-        ],
-
-
         'cache_time'=>[
             'TYPE'=>'int(10)', 'DEFAULT'=>120, 'COMMENT'=>'缓存时间单位s',
         ],
-
 
         'extend'=>[
             'TYPE'=>"json", 'DEFAULT'=>false, 'COMMENT'=>'扩展',
@@ -82,8 +70,7 @@ class MicroserviceCentreConfigModel extends Model
          */
         'INDEX'=>[
             ['TYPE'=>'UNIQUE','FIELD'=>'appid','NAME'=>'appid','USING'=>'BTREE','COMMENT'=>'应用ID'],
-
-
+            ['TYPE'=>'UNIQUE','FIELD'=>'type,name,groups','NAME'=>'type,name,groups','USING'=>'BTREE','COMMENT'=>'类型、名称、标签分组唯一'],
         ],//索引 KEY `ip` (`ip`) COMMENT 'sss 'user_name
         'PRIMARY'=>'id',//主键
 
