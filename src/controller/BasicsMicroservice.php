@@ -31,6 +31,10 @@ class BasicsMicroservice extends Controller
      *      appid [uuid] 应用appid
      *   get [object] 路径参数
      *   post [object] post参数
+     *          configId [uuid required]  配置id
+     *          number [int required] 手机号码
+     *          TemplateParam [object]
+     *              code   [int required] 验证码
      *   rule [object] 数据流参数
      * @return array [json] 定义输出返回数据
      *      id [uuid] uuid
@@ -42,11 +46,11 @@ class BasicsMicroservice extends Controller
      * @baseAuth MicroserviceAuth:initializeData
      * @resourceType microservice
      * @throws \Exception
-     * @router get  test/:appid[uuid]
+     * @router post  test/:appid[uuid]
      */
     public function test(Request $Request)
     {
-        return $Request->input();
+        return $Request->post();
     }
 
     /**

@@ -12,6 +12,8 @@ namespace pizepei\basics\controller;
 use model\basics\account\AccountModel;
 use pizepei\basics\service\account\BasicsAccountService;
 use pizepei\helper\Helper;
+use pizepei\microserviceClient\MicroClient;
+use pizepei\model\redis\Redis;
 use pizepei\randomInformation\RandomUserInfo;
 use pizepei\service\verifyCode\GifverifyCode;
 use pizepei\staging\Controller;
@@ -179,7 +181,6 @@ class BasicsAccount extends Controller
      */
     public function smsCodeRegisterSend(Request $Request)
     {
-//        codeAppVerifyid
         $CodeApp = OpenWechatCodeAppModel::table()
             ->where(['id'=>'00663B8F-D021-373C-8330-E1DD3440FF3C'])
             ->fetch();
@@ -189,9 +190,17 @@ class BasicsAccount extends Controller
         if (!isset($res['content']) || !isset($res['type']) || $res['type'] !=='register'){
             return $this->error([],'请求错误');
         }
-        # 验证通过发送验证码
 
-        return $this->succeed($res);
+        # 验证通过发送验证码
+        $MicroClient = MicroClient::init(Redis::init(),\Config::M_SMS);
+        
+        return $this->succeed($MicroClient->send(
+            [
+                'type'=>$res['content']['param']['type'],
+                'configId'=>\Config::M_SMS['configId'],
+                'number'=>$res['content']['param']['number'],
+                'TemplateParam'=>['code'=>$res['content']['param']['code']]
+            ]));
         # 设置短信类型register
         # 查询手机是否已经注册
         # 查询上次发送验证码时间
@@ -282,7 +291,9 @@ class BasicsAccount extends Controller
         $CodeApp['appid'] = $CodeApp['id'];
         $CodeApp['url'] = 'http://oauth.heil.top/'.\Deploy::MODULE_PREFIX.'/wechat/common/code-app/qr/'.$CodeApp['id'].'.json';
         $client = new Client($CodeApp);
-        $qr= $client->getQr(Helper::str()->int_rand(6), $Request->path('type'),200,$Request->path());
+        $param = $Request->path();
+        $param['code'] = Helper::str()->int_rand(6);
+        $qr= $client->getQr(Helper::str()->int_rand(6), $Request->path('type'),200,$param);
         # 获取到二维码
         $qr['number'] = $Request->path('number');
         return $this->succeed($qr);
