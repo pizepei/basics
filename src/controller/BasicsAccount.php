@@ -145,14 +145,14 @@ class BasicsAccount extends Controller
      *          repass [string required] 确认密码
      *          code [string required] 短信验证码
      * @return array [json]
-     * @title  短信验证码结果验证
+     * @title  发送短信验证码
      * @explain 验证结果并且返回一个唯一的参数以进行后面的配置
      * @throws \Exception
      * @router post smsCodeVerification
      */
     public function smsCodeVerification(Request $Request)
     {
-        //
+        #
         return $this->succeed('','成功');
     }
     /**
@@ -161,24 +161,42 @@ class BasicsAccount extends Controller
      *
      * @param \pizepei\staging\Request $Request
      *      post [object] post
-     *          phone [int number] 手机号码
-     *          signature [string required] 签名
-     *          timestamp [int required] 时间戳
-     *          signature [string required] 签名
-     *          appid [string required] 应用appid
-     *          nonce [string required] 随机数
-     *          code [string required] 短信验证码
-     *          encrypt_msg [string required] 密文
-     *          id [uuid required] 二维码日志id
+     *          encrypted [object]
+     *              signature [string required] 签名
+     *              timestamp [int required] 时间戳
+     *              signature [string required] 签名
+     *              nonce [string required] 随机数
+     *              encrypt_msg [string required] 密文
+     *          openid [string required] openid
+     *          code [int] 验证码
+     *          id [uuid] 事件id
      * @return array [json]
-     * @title  短信验证码结果验证
-     * @explain 验证结果并且返回一个唯一的参数以进行后面的配置
+     *      data [raw]
+     * @title  发送注册验证码
+     * @explain 发送注册验证码
      * @throws \Exception
-     * @router post sms-code-send
+     * @router post sms-code-register-send
      */
-    public function smsCodeSend(Request $Request)
+    public function smsCodeRegisterSend(Request $Request)
     {
+//        codeAppVerifyid
+        $CodeApp = OpenWechatCodeAppModel::table()
+            ->where(['id'=>'00663B8F-D021-373C-8330-E1DD3440FF3C'])
+            ->fetch();
+        $Client = new Client($CodeApp);
+        $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'),$this->app->__CLIENT_IP__);
+        # 验证通过
+        if (!isset($res['content']) || !isset($res['type']) || $res['type'] !=='register'){
+            return $this->error([],'请求错误');
+        }
+        # 验证通过发送验证码
 
+        return $this->succeed($res);
+        # 设置短信类型register
+        # 查询手机是否已经注册
+        # 查询上次发送验证码时间
+        # 确定可发送
+        # 发送验证码，返回唯一验证凭证
     }
 
 
@@ -262,9 +280,9 @@ class BasicsAccount extends Controller
             ->where(['id'=>'00663B8F-D021-373C-8330-E1DD3440FF3C'])
             ->fetch();
         $CodeApp['appid'] = $CodeApp['id'];
-        $CodeApp['url'] = 'http://oauth.heil.top/wechat/common/code-app/qr/'.$CodeApp['id'];
+        $CodeApp['url'] = 'http://oauth.heil.top/'.\Deploy::MODULE_PREFIX.'/wechat/common/code-app/qr/'.$CodeApp['id'].'.json';
         $client = new Client($CodeApp);
-        $qr= $client->getQr(Helper::str()->int_rand(6), $Request->path('type'),200);
+        $qr= $client->getQr(Helper::str()->int_rand(6), $Request->path('type'),200,$Request->path());
         # 获取到二维码
         $qr['number'] = $Request->path('number');
         return $this->succeed($qr);
