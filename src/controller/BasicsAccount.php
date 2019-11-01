@@ -192,12 +192,11 @@ class BasicsAccount extends Controller
         }
 
         # 验证通过发送验证码
-        $MicroClient = MicroClient::init(Redis::init(),\Config::M_SMS);
+        $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE,'M_SMS');
         
         return $this->succeed($MicroClient->send(
             [
                 'type'=>$res['content']['param']['type'],
-                'configId'=>\Config::M_SMS['configId'],
                 'number'=>$res['content']['param']['number'],
                 'TemplateParam'=>['code'=>$res['content']['param']['code']]
             ]));
