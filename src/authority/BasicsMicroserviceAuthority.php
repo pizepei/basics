@@ -7,6 +7,7 @@
 namespace pizepei\basics\authority;
 
 
+use pizepei\basics\model\microservice\MicroserviceAppsRequestLogModel;
 use pizepei\basics\service\microservice\BasicsMicroserviceAppsService;
 use pizepei\encryption\aes\Prpcrypt;
 use pizepei\staging\App;
@@ -19,7 +20,7 @@ class BasicsMicroserviceAuthority extends BasicsAuthority
      * 资源应用appid
      * @var string
      */
-    protected $appid = '';
+    protected $appsid = '';
     /**
      * 应用配置
      * @var array
@@ -36,12 +37,12 @@ class BasicsMicroserviceAuthority extends BasicsAuthority
     public function initializeData(...$data)
     {
         # 获取appid  appid只支持path传递  （这里的appid 是apps应用的appid）
-        $this->appid = $this->app->Request()->path('appid');
-        if ($this->appid === null){
+        $this->appsid = $this->app->Request()->path('appid');
+        if ($this->appsid === null){
             throw new  \Exception('appid  necessary');
         }
         # 通过部署配置\Deploy::MicroService 从远程配置中心获取到对应的apps 配置参数（进行缓存）
-        $this->appsConfig = BasicsMicroserviceAppsService::getFarAppsConfig($this->appid);
+        $this->appsConfig = BasicsMicroserviceAppsService::getFarAppsConfig($this->appsid);
         if (empty($this->appsConfig)){
             throw new \Exception('AppsConfig not exist');
         }
@@ -65,6 +66,28 @@ class BasicsMicroserviceAuthority extends BasicsAuthority
 
     }
 
-
+    /**
+     * @Author 皮泽培
+     * @Created 2019/11/1 14:32
+     * @title  记录微服务apps请求日志
+     * @explain 此请求日志为正常请求响应日志 throw 异常日志 不记录
+     * @throws \Exception
+     */
+    public function setMsAppsResponseLog($result)
+    {
+        if (!is_array($result)){
+            $result = Helper()->json_decode($result);
+        }
+        $AppsRequestLogModel = MicroserviceAppsRequestLogModel::table($this->appsid);
+        $AppsRequestLogModel->add([
+            'appid'=>\Deploy::MicroService['appid'],        # 当前微服务的配置ID
+            'apps_config_id'=>$this->appsConfig['id'],      # apps config配置id
+            'request_id'    =>$this->app->__REQUEST_ID__,   # 请求ID
+            'request'       =>$this->app->Request()->POST,  # 解密的请求数据  psot
+            'api'           =>$this->app->Route()->atRoute, # 当前路由
+            'module_prefix' =>\Deploy::MODULE_PREFIX,       # 当前微服务的模块路径
+            'response'      =>$result,
+        ]);
+    }
 
 }
