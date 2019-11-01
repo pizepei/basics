@@ -10,6 +10,7 @@ namespace pizepei\basics\authority;
 use pizepei\basics\model\microservice\MicroserviceAppsRequestLogModel;
 use pizepei\basics\service\microservice\BasicsMicroserviceAppsService;
 use pizepei\encryption\aes\Prpcrypt;
+use pizepei\model\redis\Redis;
 use pizepei\staging\App;
 use pizepei\staging\BasicsAuthority;
 
@@ -42,7 +43,13 @@ class BasicsMicroserviceAuthority extends BasicsAuthority
             throw new  \Exception('appid  necessary');
         }
         # 通过部署配置\Deploy::MicroService 从远程配置中心获取到对应的apps 配置参数（进行缓存）
+
+        # syncLock
+        Helper()->syncLock(Redis::init(),['BasicsMicroservice','AppsService','getFarAppsConfig',$this->appsid]);
         $this->appsConfig = BasicsMicroserviceAppsService::getFarAppsConfig($this->appsid);
+        # 解除  syncLock
+        Helper()->syncLock(Redis::init(),['BasicsMicroservice','AppsService','getFarAppsConfig',$this->appsid],false);
+
         if (empty($this->appsConfig)){
             throw new \Exception('AppsConfig not exist');
         }
