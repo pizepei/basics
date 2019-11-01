@@ -13,6 +13,7 @@ use model\basics\account\AccountModel;
 use pizepei\basics\service\account\BasicsAccountService;
 use pizepei\helper\Helper;
 use pizepei\microserviceClient\MicroClient;
+use pizepei\model\cache\Cache;
 use pizepei\model\redis\Redis;
 use pizepei\randomInformation\RandomUserInfo;
 use pizepei\service\verifyCode\GifverifyCode;
@@ -190,21 +191,28 @@ class BasicsAccount extends Controller
         if (!isset($res['content']) || !isset($res['type']) || $res['type'] !=='register'){
             return $this->error([],'请求错误');
         }
+        # 本地验证
+        if (BasicsAccountService::codeSendFrequency('number',$res['content']['param']['number'])){
+            return $this->error($res['content']['param']['number'],'发送频率过高请稍后再尝试!!');
+        }
 
         # 验证通过发送验证码
         $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE,'M_SMS');
-        
-        return $this->succeed($MicroClient->send(
+        $res = $MicroClient->send(
             [
                 'type'=>$res['content']['param']['type'],
                 'number'=>$res['content']['param']['number'],
                 'TemplateParam'=>['code'=>$res['content']['param']['code']]
-            ]));
-        # 设置短信类型register
-        # 查询手机是否已经注册
-        # 查询上次发送验证码时间
-        # 确定可发送
-        # 发送验证码，返回唯一验证凭证
+            ]);
+
+        if (isset($res['data']['Code']) && $res['data']['Code']== 'OK'){
+            return $this->succeed('','发送成功');
+        }else if (isset($res['data']['Code']) && $res['data']['Code'] !== 'OK'){
+            return $this->succeed('','发送频率过高请稍后再尝试！');
+        }else{
+            return $this->succeed('','发送失败请稍后再尝试！');
+        }
+
     }
 
 

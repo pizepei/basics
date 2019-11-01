@@ -14,6 +14,7 @@ use model\basics\account\AccountMilestoneModel;
 use model\basics\account\AccountModel;
 use pizepei\encryption\google\GoogleAuthenticator;
 use pizepei\helper\Helper;
+use pizepei\model\cache\Cache;
 use pizepei\model\redis\Redis;
 use pizepei\service\encryption\PasswordHash;
 use pizepei\service\jwt\JsonWebToken;
@@ -389,4 +390,52 @@ class BasicsAccountService
 
 
     }
+
+
+    const codeSendFrequencyType = [
+        'number'    =>'smsCodeSendFrequency',
+        'mail'      =>'smsCodeMailFrequency',
+    ];
+
+    /**
+     *  通过缓存验证是否超过触发限制（在查询是否超频的同时设置记录+1）
+     * @param string $type      发送类型 number mail
+     * @param $object            发送对象
+     * @param int $Frequency    单位时间发送数量      默认 4
+     * @param int $time         单位时间  默认300s 5分钟
+     * @return bool
+     * @throws \Exception
+     */
+    public static function codeSendFrequency(string $type,$object,int $Frequency=4,int $time=300):bool
+    {
+        if (!isset(self::codeSendFrequencyType[$type])){
+            throw new \Exception('codeSendFrequencyType error');
+        }
+        # 本地验证
+        $numberCache = Cache::get([self::codeSendFrequencyType[$type],$object]);
+        if (empty($numberCache)){
+            # 设置信息
+            Cache::set([self::codeSendFrequencyType[$type],$object],['update_time'=>time(),'count'=>1]);
+            return false;
+        }
+        # 有缓存记录
+        # 一定时间内可发送的频率
+        # 判断上次发送时间
+        if ($numberCache['update_time'] > (time()-$time)){
+            # 在限制的时间内进行了信息发送  判断发送的数量是否超过限制
+            if ($numberCache['count'] >=$Frequency){
+                return true;
+            }else{
+                # 增加频率记录一次
+                Cache::set([self::codeSendFrequencyType[$type],$object],['update_time'=>time(),'count'=>$numberCache['count']+1]);
+                return false;
+            }
+        }else{
+            # 在限制的时间内没有进行信息发送  重置 记录为一次
+            Cache::set([self::codeSendFrequencyType[$type],$object],['update_time'=>time(),'count'=>1]);
+            return false;
+        }
+
+    }
+
 }
