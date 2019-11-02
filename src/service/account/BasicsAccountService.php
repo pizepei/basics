@@ -395,11 +395,12 @@ class BasicsAccountService
     const codeSendFrequencyType = [
         'number'    =>'smsCodeSendFrequency',
         'mail'      =>'smsCodeMailFrequency',
+        'universal'      =>'universalFrequency',
     ];
 
     /**
      *  通过缓存验证是否超过触发限制（在查询是否超频的同时设置记录+1）
-     * @param string $type      发送类型 number mail
+     * @param string $type      发送类型 number mail  universal
      * @param $object            发送对象
      * @param int $Frequency    单位时间发送数量      默认 4
      * @param int $time         单位时间  默认300s 5分钟
@@ -435,6 +436,13 @@ class BasicsAccountService
             Cache::set([self::codeSendFrequencyType[$type],$object],['update_time'=>time(),'count'=>1]);
             return false;
         }
+
+    }
+
+    public static function smsCodeRegisterSend($CodeApp)
+    {
+
+
 
     }
 

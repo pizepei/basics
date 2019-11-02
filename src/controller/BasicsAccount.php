@@ -41,12 +41,22 @@ class BasicsAccount extends Controller
      * @param \pizepei\staging\Request $Request
      *      post [object]
      *          phone [string number] 手机号码
-     *          code [string required] 手机验证码
+     *          phone_code [int required] 手机验证码
      *          email [string email] 邮箱
+     *          email_code [int required] 邮箱验证码
      *          password [string required] 密码
      *          repass [string required] 确认密码
      *          nickname [string required] 昵称
      *          agreement [string required] 是否同意协议
+     *          encrypted [object]
+     *              signature [string required] 签名
+     *              timestamp [int required] 时间戳
+     *              signature [string required] 签名
+     *              nonce [string required] 随机数
+     *              encrypt_msg [string required] 密文
+     *          openid [string required] openid
+     *          code [int] 验证码
+     *          id [uuid] 事件id
      * @title  注册接口
      * @explain 获注册接口
      * @throws \Exception
@@ -56,6 +66,27 @@ class BasicsAccount extends Controller
      */
     public function registerAccount(Request $Request)
     {
+        # 本地验证
+        if (BasicsAccountService::codeSendFrequency('universal','register'.$Request->post('phone').$Request->path('email'),6)){
+            return $this->error([],'操作频繁请稍后再试!!');
+        }
+        # 验证验证码
+        $CodeApp = \Config::WEC_CHAT_CODE;
+        $Client = new Client($CodeApp);
+        $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'),$this->app->__CLIENT_IP__);
+        # 验证通过
+        if (!isset($res['content']) || !isset($res['type']) || $res['type'] !=='register'){
+            return $this->error([],'请求错误');
+        }
+        # 判断手机验证码
+        if ($res['content']['param']['number'] !== $Request->post('phone')  || $res['content']['param']['numberCode'] !== (int)$Request->post('phone_code')){
+            return $this->error([],'手机验证码错误！');
+        }
+        # 判断邮箱验证码
+        if ($res['content']['param']['email'] !==$Request->post('email')  || $res['content']['param']['emailCode'] !== (int)$Request->post('email_code')){
+            return $this->error([],'邮箱验证码错误！');
+        }
+        # 注册账号
         $Service = new BasicsAccountService();
         $res = $Service->register(\Config::ACCOUNT,$Request->post());
         if($res['result'])
@@ -175,16 +206,14 @@ class BasicsAccount extends Controller
      *          id [uuid] 事件id
      * @return array [json]
      *      data [raw]
-     * @title  发送注册验证码
+     * @title  发送注册验证码(邮箱和手机)
      * @explain 发送注册验证码
      * @throws \Exception
      * @router post sms-code-register-send
      */
     public function smsCodeRegisterSend(Request $Request)
     {
-        $CodeApp = OpenWechatCodeAppModel::table()
-            ->where(['id'=>'00663B8F-D021-373C-8330-E1DD3440FF3C'])
-            ->fetch();
+        $CodeApp = \Config::WEC_CHAT_CODE;
         $Client = new Client($CodeApp);
         $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'),$this->app->__CLIENT_IP__);
         # 验证通过
@@ -193,18 +222,39 @@ class BasicsAccount extends Controller
         }
         # 本地验证
         if (BasicsAccountService::codeSendFrequency('number',$res['content']['param']['number'])){
-            return $this->error($res['content']['param']['number'],'发送频率过高请稍后再尝试!!');
+            return $this->error($res['content']['param']['number'],'短信发送频率过高请稍后再尝试!!');
         }
-
+        # 本地验证
+        if (BasicsAccountService::codeSendFrequency('mail',$res['content']['param']['email'])){
+            return $this->error($res['content']['param']['email'],'邮件发送频率过高请稍后再尝试!!');
+        }
+        # 查询是否已经存在邮箱或者手机号码
+        if (AccountModel::table()->where(['email'=>$res['content']['param']['email']])->fetch('id')){return $this->error($res['content']['param']['email'],'邮件已注册!');}
+        if (AccountModel::table()->where(['phone'=>$res['content']['param']['number']])->fetch('id')){return $this->error($res['content']['param']['number'],'手机号码已注册!');}
+        # 准备微服务客户端
+        $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE);
         # 验证通过发送验证码
-        $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE,'M_SMS');
+        $param['numberCode'] = Helper::str()->int_rand(4);
+        $emailRes = $MicroClient->send(
+            [
+                'type'=>$res['content']['param']['type'],
+                'mail'=>$res['content']['param']['email'],
+                'bodyType'=>'TextBody',
+                'body'=>'您好'.PHP_EOL.'您的验证码为：'.$res['content']['param']['emailCode'].PHP_EOL.'请妥善保管您的验证码不要告诉他人，前不要回复本邮件！',
+                'Subject'=>'Lifetyle大嘴云邮箱验证',
+            ],'E_MAIL'
+        );
+        if (isset($emailRes['data']['code']) || isset($emailRes['data']['Message'])){
+            return $this->succeed('','邮件验证码发送失败请稍后再尝试！');
+        }
+        # 验证通过发送验证码
         $res = $MicroClient->send(
             [
                 'type'=>$res['content']['param']['type'],
                 'number'=>$res['content']['param']['number'],
-                'TemplateParam'=>['code'=>$res['content']['param']['code']]
-            ]);
-
+                'TemplateParam'=>['code'=>$res['content']['param']['numberCode']]
+            ],'M_SMS'
+        );
         if (isset($res['data']['Code']) && $res['data']['Code']== 'OK'){
             return $this->succeed('','发送成功');
         }else if (isset($res['data']['Code']) && $res['data']['Code'] !== 'OK'){
@@ -212,10 +262,7 @@ class BasicsAccount extends Controller
         }else{
             return $this->succeed('','发送失败请稍后再尝试！');
         }
-
     }
-
-
 
     /**
      * @Author pizepei
@@ -272,37 +319,39 @@ class BasicsAccount extends Controller
      *   path [object] 路径参数
      *      number [int number] 手机号码
      *      type [string required] 验证类型
+     *      email [email required] 验证类型
      * @return array [json] 定义输出返回数据
      *      data [raw]
      *          src [string] 显示二维码
-     *          scene_id [uuid] 唯一标识
+     *          id [uuid] 唯一标识
      *          url [string] 二维码内容
      *          type [string] 类型
      *          number [int number] 手机号码
+     *          email [email] 邮箱
      *          expire_seconds [int] 二维码有效期
+     *          jwt_url [string] webscoke
      * @title  获取微信二维码验证码
      * @explain 获取微信二维码验证码
      * @throws \Exception
-     * @router get wecht-qr-code/:type[string]/:number[number]
+     * @router get wecht-qr-code/:type[string]/:number[number]/:email[email]
      */
     public function getWechtQr(Request $Request)
     {
-        # 查询上次获取的验证码时间判断是否重复获取
-        # 获取uuid
-        # 使用uuid获取微信二维码
-        # 写入记录
-        # 返回二维码和手机信息
-        $CodeApp = OpenWechatCodeAppModel::table()
-            ->where(['id'=>'00663B8F-D021-373C-8330-E1DD3440FF3C'])
-            ->fetch();
-        $CodeApp['appid'] = $CodeApp['id'];
-        $CodeApp['url'] = 'http://oauth.heil.top/'.\Deploy::MODULE_PREFIX.'/wechat/common/code-app/qr/'.$CodeApp['id'].'.json';
+        $CodeApp = \Config::WEC_CHAT_CODE;
+        # 本地验证
+        if (BasicsAccountService::codeSendFrequency('universal',$Request->path('number').$Request->path('email'),5)){
+            return $this->error([],'获取二维码频率过高!!');
+        }
+        $CodeApp['url'] = 'http://oauth.heil.top/'.\Deploy::MODULE_PREFIX.'/wechat/common/code-app/qr/'.$CodeApp['appid'].'.json';
         $client = new Client($CodeApp);
         $param = $Request->path();
-        $param['code'] = Helper::str()->int_rand(6);
+        $param['emailCode'] = Helper::str()->int_rand(4);
+        $param['numberCode'] = Helper::str()->int_rand(4);
         $qr= $client->getQr(Helper::str()->int_rand(6), $Request->path('type'),200,$param);
         # 获取到二维码
         $qr['number'] = $Request->path('number');
+        $qr['email'] = $Request->path('email');
+
         return $this->succeed($qr);
     }
 
