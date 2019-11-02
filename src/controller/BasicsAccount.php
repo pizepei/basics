@@ -19,11 +19,13 @@ use pizepei\randomInformation\RandomUserInfo;
 use pizepei\service\verifyCode\GifverifyCode;
 use pizepei\staging\Controller;
 use pizepei\staging\Request;
+use pizepei\staging\Response;
 use pizepei\wechat\model\OpenWechatCodeAppModel;
 use pizepei\wechatClient\Client;
 
 class BasicsAccount extends Controller
 {
+    private static $__FILE__ = __FILE__;
     /**
      * @return array [object]
      * @title  账号获取列表
@@ -66,6 +68,7 @@ class BasicsAccount extends Controller
      */
     public function registerAccount(Request $Request)
     {
+//        (new Response($this->app))->record();
         # 本地验证
         if (BasicsAccountService::codeSendFrequency('universal','register'.$Request->post('phone').$Request->path('email'),6)){
             return $this->error([],'操作频繁请稍后再试!!');
@@ -80,7 +83,7 @@ class BasicsAccount extends Controller
         }
         # 判断手机验证码
         if ($res['content']['param']['number'] !== $Request->post('phone')  || $res['content']['param']['numberCode'] !== (int)$Request->post('phone_code')){
-            return $this->error([],'手机验证码错误！');
+            return $this->error([$res['content'],$Request->post()],'手机验证码错误！');
         }
         # 判断邮箱验证码
         if ($res['content']['param']['email'] !==$Request->post('email')  || $res['content']['param']['emailCode'] !== (int)$Request->post('email_code')){
@@ -229,8 +232,8 @@ class BasicsAccount extends Controller
             return $this->error($res['content']['param']['email'],'邮件发送频率过高请稍后再尝试!!');
         }
         # 查询是否已经存在邮箱或者手机号码
-        if (AccountModel::table()->where(['email'=>$res['content']['param']['email']])->fetch('id')){return $this->error($res['content']['param']['email'],'邮件已注册!');}
-        if (AccountModel::table()->where(['phone'=>$res['content']['param']['number']])->fetch('id')){return $this->error($res['content']['param']['number'],'手机号码已注册!');}
+        if (AccountModel::table()->where(['email'=>$res['content']['param']['email']])->fetch(['id'])){return $this->error($res['content']['param']['email'],'邮件已注册!');}
+        if (AccountModel::table()->where(['phone'=>$res['content']['param']['number']])->fetch(['id'])){return $this->error($res['content']['param']['number'],'手机号码已注册!');}
         # 准备微服务客户端
         $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE);
         # 验证通过发送验证码
@@ -256,7 +259,7 @@ class BasicsAccount extends Controller
             ],'M_SMS'
         );
         if (isset($res['data']['Code']) && $res['data']['Code']== 'OK'){
-            return $this->succeed('','发送成功');
+            return $this->succeed('','短信与邮件发送成功！'.PHP_EOL.'如没有收到请查看是否在被定义为垃圾邮件');
         }else if (isset($res['data']['Code']) && $res['data']['Code'] !== 'OK'){
             return $this->succeed('','发送频率过高请稍后再尝试！');
         }else{
