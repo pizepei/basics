@@ -68,10 +68,9 @@ class BasicsAccount extends Controller
      */
     public function registerAccount(Request $Request)
     {
-//        (new Response($this->app))->record();
         # 本地验证
         if (BasicsAccountService::codeSendFrequency('universal','register'.$Request->post('phone').$Request->path('email'),6)){
-            return $this->error([],'操作频繁请稍后再试!!');
+            return $this->error('操作频繁请稍后再试!!');
         }
         # 验证验证码
         $CodeApp = \Config::WEC_CHAT_CODE;
@@ -79,24 +78,24 @@ class BasicsAccount extends Controller
         $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'),$this->app->__CLIENT_IP__);
         # 验证通过
         if (!isset($res['content']) || !isset($res['type']) || $res['type'] !=='register'){
-            return $this->error([],'请求错误');
+            return $this->error('请求错误');
         }
         # 判断手机验证码
         if ($res['content']['param']['number'] !== $Request->post('phone')  || $res['content']['param']['numberCode'] !== (int)$Request->post('phone_code')){
-            return $this->error([$res['content'],$Request->post()],'手机验证码错误！');
+            return $this->error('手机验证码错误！');
         }
         # 判断邮箱验证码
         if ($res['content']['param']['email'] !==$Request->post('email')  || $res['content']['param']['emailCode'] !== (int)$Request->post('email_code')){
-            return $this->error([],'邮箱验证码错误！');
+            return $this->error('邮箱验证码错误！');
         }
         # 注册账号
         $Service = new BasicsAccountService();
         $res = $Service->register(\Config::ACCOUNT,$Request->post());
         if($res['result'])
         {
-            return $this->succeed('',$res['msg']);
+            return $this->succeed($res['msg']);
         }else{
-            return $this->error('',$res['msg']);
+            return $this->error($res['msg']);
         }
     }
     /**
@@ -129,7 +128,7 @@ class BasicsAccount extends Controller
             ->where(['phone'=>$Request->post('phone')])
             ->fetch();
         if(empty($Account)){
-            return $this->error($Request->post('phone'),'用户名或密码错误');
+            return $this->error('用户名或密码错误');
         }
         $AccountService = new BasicsAccountService();
 
@@ -140,7 +139,7 @@ class BasicsAccount extends Controller
                 'access_token'=>$result['jwtArray']['str']
             ],'登录成功');
         }
-        return $this->error($result,$result['msg']);
+        return $this->error($result['msg']);
     }
     /**
      * @Author pizepei
@@ -166,7 +165,7 @@ class BasicsAccount extends Controller
             ->where(['phone'=>$Request->post('phone')])
             ->replaceField('fetch',['type','status']);
         if(empty($Account)){
-            $this->error($Request->post(),'用户不存在');
+            $this->error('用户不存在');
         }
         $AccountService = new BasicsAccountService();
         return $AccountService->changePassword(\Config::ACCOUNT,$Request->post(),$Account,$this);
@@ -192,6 +191,7 @@ class BasicsAccount extends Controller
         #
         return $this->succeed('','成功');
     }
+
     /**
      * @Author pizepei
      * @Created 2019/3/30 21:33
@@ -208,7 +208,8 @@ class BasicsAccount extends Controller
      *          code [int] 验证码
      *          id [uuid] 事件id
      * @return array [json]
-     *      data [raw]
+     *      data [object]
+     *          openid [string]
      * @title  发送注册验证码(邮箱和手机)
      * @explain 发送注册验证码
      * @throws \Exception
@@ -220,20 +221,24 @@ class BasicsAccount extends Controller
         $Client = new Client($CodeApp);
         $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'),$this->app->__CLIENT_IP__);
         # 验证通过
+
         if (!isset($res['content']) || !isset($res['type']) || $res['type'] !=='register'){
-            return $this->error([],'请求错误');
+
+            return $this->error('请求错误');
         }
+
         # 本地验证
         if (BasicsAccountService::codeSendFrequency('number',$res['content']['param']['number'])){
-            return $this->error($res['content']['param']['number'],'短信发送频率过高请稍后再尝试!!');
+            return $this->error('短信发送频率过高请稍后再尝试!!');
         }
         # 本地验证
         if (BasicsAccountService::codeSendFrequency('mail',$res['content']['param']['email'])){
-            return $this->error($res['content']['param']['email'],'邮件发送频率过高请稍后再尝试!!');
+            return $this->error('邮件发送频率过高请稍后再尝试!!');
         }
+
         # 查询是否已经存在邮箱或者手机号码
-        if (AccountModel::table()->where(['email'=>$res['content']['param']['email']])->fetch(['id'])){return $this->error($res['content']['param']['email'],'邮件已注册!');}
-        if (AccountModel::table()->where(['phone'=>$res['content']['param']['number']])->fetch(['id'])){return $this->error($res['content']['param']['number'],'手机号码已注册!');}
+        if (AccountModel::table()->where(['email'=>$res['content']['param']['email']])->fetch(['id'])){return $this->error('邮件已注册!');}
+        if (AccountModel::table()->where(['phone'=>$res['content']['param']['number']])->fetch(['id'])){return $this->error('手机号码已注册!');}
         # 准备微服务客户端
         $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE);
         # 验证通过发送验证码
@@ -265,6 +270,7 @@ class BasicsAccount extends Controller
         }else{
             return $this->succeed('','发送失败请稍后再尝试！');
         }
+
     }
 
     /**
@@ -343,7 +349,7 @@ class BasicsAccount extends Controller
         $CodeApp = \Config::WEC_CHAT_CODE;
         # 本地验证
         if (BasicsAccountService::codeSendFrequency('universal',$Request->path('number').$Request->path('email'),5)){
-            return $this->error([],'获取二维码频率过高!!');
+            return $this->error('获取二维码频率过高!!');
         }
         $CodeApp['url'] = 'http://oauth.heil.top/'.\Deploy::MODULE_PREFIX.'/wechat/common/code-app/qr/'.$CodeApp['appid'].'.json';
         $client = new Client($CodeApp);

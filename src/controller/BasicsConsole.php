@@ -68,7 +68,7 @@ class BasicsConsole extends Controller
         $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
         $PersonShortcutType = PersonShortcutTypeModel::table()->where(['id'=>$Request->path('typeId'),'Account_id'=>$accounId['id']])->fetch();
         if (empty($PersonShortcutType)){
-            return $this->error([],'分类不存在');
+            return $this->error('分类不存在');
         }
 
         $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
@@ -78,7 +78,7 @@ class BasicsConsole extends Controller
         if (PersonShortcutModel::table()->add($data)){
             return $this->succeed([],'添加成功');
         }
-        return $this->error([],'添加错误');
+        return $this->error('添加错误');
     }
 
 
@@ -108,7 +108,7 @@ class BasicsConsole extends Controller
         $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
         $PersonShortcutType = PersonShortcutTypeModel::table()->where(['id'=>$Request->path('typeId'),'Account_id'=>$accounId['id']])->fetch();
 
-        if (empty($PersonShortcutType)){return $this->error([],'分类不存在');}
+        if (empty($PersonShortcutType)){return $this->error('分类不存在');}
 
         $Shortcut = PersonShortcutModel::table()->where([
             'type_id'=>$Request->path('typeId'),
@@ -148,7 +148,7 @@ class BasicsConsole extends Controller
             'id'=>$Request->path('id')
         ])->update($data);
         if (empty($Shortcut)){
-            return $this->error([],'修改失败');
+            return $this->error('修改失败');
         }
         return $this->succeed($Shortcut,'更新成功');
 
@@ -181,7 +181,7 @@ class BasicsConsole extends Controller
             ->where(['Account_id'=>$accounId['id']])
             ->del(['id'=>$Request->path('id')]);
         if (empty($Shortcut)){
-            return $this->error([],'删除失败');
+            return $this->error('删除失败');
         }
         return $this->succeed($Shortcut,'删除成功');
 

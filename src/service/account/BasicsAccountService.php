@@ -149,7 +149,7 @@ class BasicsAccountService
             }
         }
         # 判断登录数量限制
-        if($this->logonCount($userData['id']) > $userData['logon_online_count']){ return $Controller->error([],'在线设备数量：当前在线'.$userData['logon_online_count']); }
+        if($this->logonCount($userData['id']) > $userData['logon_online_count']){ return $Controller->error('在线设备数量：当前在线'.$userData['logon_online_count']); }
 
         $Payload= [
             'nickname'=>$userData['nickname'],
@@ -227,7 +227,7 @@ class BasicsAccountService
         $PasswordHash = new PasswordHash();
         # 判断密码格式
         if(empty($PasswordHash->password_match($config['password_regular'][0],$Request['password']))){
-            return $Controller->error($Request['password'],$config['password_regular'][1]);
+            return $Controller->error($config['password_regular'][1]);
         }
         /**
          * 判断密码要求
