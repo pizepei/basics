@@ -87,7 +87,7 @@ class BasicsMicroserviceAuthority extends BasicsAuthority
         }
         $AppsRequestLogModel = MicroserviceAppsRequestLogModel::table($this->appsid);
         $AppsRequestLogModel->add([
-            'appid'=>\Deploy::MicroService['appid'],        # 当前微服务的配置ID
+            'appid'         =>\Deploy::MicroService['appid'],        # 当前微服务的配置ID
             'apps_config_id'=>$this->appsConfig['id'],      # apps config配置id
             'request_id'    =>$this->app->__REQUEST_ID__,   # 请求ID
             'request'       =>$this->app->Request()->POST,  # 解密的请求数据  psot

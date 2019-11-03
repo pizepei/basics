@@ -26,16 +26,6 @@ use pizepei\wechatClient\Client;
 class BasicsAccount extends Controller
 {
     private static $__FILE__ = __FILE__;
-    /**
-     * @return array [object]
-     * @title  账号获取列表
-     * @explain 注意所有 path 路由都使用 正则表达式为唯一凭证 所以 / 路由只能有一个
-     * @router get index
-     */
-    public function index()
-    {
-
-    }
 
     /**
      * @Author pizepei
@@ -202,14 +192,15 @@ class BasicsAccount extends Controller
      *              signature [string required] 签名
      *              timestamp [int required] 时间戳
      *              signature [string required] 签名
-     *              nonce [string required] 随机数
+     *              nonce [int required] 随机数
      *              encrypt_msg [string required] 密文
      *          openid [string required] openid
      *          code [int] 验证码
      *          id [uuid] 事件id
      * @return array [json]
-     *      data [object]
+     *      data [raw]
      *          openid [string]
+     *          code [int] 验证码
      * @title  发送注册验证码(邮箱和手机)
      * @explain 发送注册验证码
      * @throws \Exception
@@ -217,6 +208,8 @@ class BasicsAccount extends Controller
      */
     public function smsCodeRegisterSend(Request $Request)
     {
+        succeed($Request->post());
+
         $CodeApp = \Config::WEC_CHAT_CODE;
         $Client = new Client($CodeApp);
         $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'),$this->app->__CLIENT_IP__);

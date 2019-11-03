@@ -206,7 +206,6 @@ class BasicsAccountService
     /**
      * @Author pizepei
      * @Created 2019/3/30 21:35
-     *
      * @param array                       $config 配置
      * @param array                       $Request 请求数据
      * @param array                       $userData 用户数据
@@ -233,22 +232,17 @@ class BasicsAccountService
          * 判断密码要求
          *      如：上次修改  是否是原密码
          */
-
         # 生成新密码 获取密码hash
         $password_hash = $PasswordHash->password_hash($Request['password'],$config['algo'],$config['options']);
         if(empty($password_hash)){
             return $Controller->error('系统错误','系统错误','L003');
         }
-        /**
-         * 修改并且写入里程碑事件update
-         */
+        # 修改并且写入里程碑事件update
         $updateData = ['password_hash'=>$password_hash,'version'=>$userData['version']+1];
         $AccountModel = AccountModel::table()->where(['version'=>$userData['version']])->update($updateData);
         //$AccountModel = AccountModel::table()->where(['version'=>$userData['version']])->insert([ 'id'=>$userData['id'],'password_hash'=>$password_hash,'version'=>$userData['version']+1]);
         if($AccountModel == 1){
-            /**
-             * 写入里程碑事件
-             */
+            # 写入里程碑事件
             if(empty(AccountMilestoneModel::table()->add(['account_id'=>$userData['id'],'message'=> ['registerData'=>[ 'id'=>$userData['id'],'password_hash'=>$password_hash,'version'=>$userData['version']+1],'requestId'=>__REQUEST_ID__], 'type'=>7,]))){
                 return $Controller->error('系统错误','系统错误','L002');
             }
@@ -256,8 +250,6 @@ class BasicsAccountService
             return $Controller->succeed($AccountModel,'修改错误');
         }
         return $Controller->succeed($AccountModel,'修改成功');
-
-
     }
 
     /**
@@ -334,9 +326,7 @@ class BasicsAccountService
      */
     public function decodeLogonJwt($secret,$jwtStr,$Redis)
     {
-        /**
-         * 获取缓存
-         */
+        # 获取缓存
         $JsonWebToken = new JsonWebToken();
 
         $decodeJWT = $JsonWebToken->decodeJWT($jwtStr,\Config::JSON_WEB_TOKEN_SECRET[$secret],$Redis);
