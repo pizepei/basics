@@ -66,6 +66,10 @@ class BasicsAccount extends Controller
         $CodeApp = \Config::WEC_CHAT_CODE;
         $Client = new Client($CodeApp);
         $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'),$this->app->__CLIENT_IP__);
+        if ($res['statusCode'] ==100){
+            $this->error($res['msg']);
+        }
+        $res = $res['data'];
         # 验证通过
         if (!isset($res['content']) || !isset($res['type']) || $res['type'] !=='register'){
             return $this->error('请求错误');
@@ -80,13 +84,7 @@ class BasicsAccount extends Controller
         }
         # 注册账号
         $Service = new BasicsAccountService();
-        $res = $Service->register(\Config::ACCOUNT,$Request->post());
-        if($res['result'])
-        {
-            return $this->succeed($res['msg']);
-        }else{
-            return $this->error($res['msg']);
-        }
+        $Service->register(\Config::ACCOUNT,$Request->post());
     }
     /**
      * @Author pizepei
@@ -94,7 +92,7 @@ class BasicsAccount extends Controller
      *
      * @param \pizepei\staging\Request $Request
      *      post [object] post
-     *          phone [int number] 手机号码
+     *          phone [number] 手机号码
      *          password [string required] 密码
      *          code [string required] 验证码
      *          codeFA [string] 2FA双因子认证code
@@ -213,13 +211,14 @@ class BasicsAccount extends Controller
         $CodeApp = \Config::WEC_CHAT_CODE;
         $Client = new Client($CodeApp);
         $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'),$this->app->__CLIENT_IP__);
+        if ($res['statusCode'] ==100){
+            $this->error($res['msg']);
+        }
+        $res = $res['data'];
         # 验证通过
-
         if (!isset($res['content']) || !isset($res['type']) || $res['type'] !=='register'){
-
             return $this->error('请求错误');
         }
-
         # 本地验证
         if (BasicsAccountService::codeSendFrequency('number',$res['content']['param']['number'])){
             return $this->error('短信发送频率过高请稍后再尝试!!');
@@ -263,7 +262,6 @@ class BasicsAccount extends Controller
         }else{
             return $this->succeed('','发送失败请稍后再尝试！');
         }
-
     }
 
     /**
@@ -291,7 +289,7 @@ class BasicsAccount extends Controller
         @$noisyCnt 澡点数
         @$sessionName 验证码Session名称
          */
-        echo GifverifyCode::Draw(4, 2, 100, 31, 4, 1, 70, "secode");
+        return GifverifyCode::Draw(4, 2, 100, 31, 4, 1, 70, "secode");
     }
     /**
      * @Author pizepei
@@ -391,5 +389,28 @@ class BasicsAccount extends Controller
         return $this->succeed(['cs'],'退出成功');
     }
 
-    
+    /**
+     * @Author 皮泽培
+     * @Created 2019/10/30 14:43
+     * @param Request $Request
+     *      path [object]
+     *          appid [uuid required] apps应用appid
+     *      post [object] 数据
+     *          configId [uuid required]  配置id
+     *          JWT [string required] jwt str数据
+     * @return array [json] 定义输出返回数据
+     *      data [raw]
+     * @title  发送邮件
+     * @explain 路由功能说明
+     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
+     * @authExtend UserExtend.list:拓展权限
+     * @baseAuth MicroserviceAuth:initializeData
+     * @resourceType microservice
+     * @throws \Exception
+     * @router post auth-jwt-service/:appid[uuid]
+     */
+    public function getAuthJwt(Request $Request)
+    {
+        succeed([self::$__FILE__],'ssss');
+    }
 }

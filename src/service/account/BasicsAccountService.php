@@ -36,14 +36,14 @@ class BasicsAccountService
          */
         if($Request['password'] !== $Request['repass'])
         {
-            return ['result'=>false,'msg'=>'两次密码不一致'];
+            error('两次密码不一致');
         }
         /**
          * 可以选择保存当前用户协议版本
          */
         if($Request['agreement'] !== 'on')
         {
-            return ['result'=>false,'msg'=>'阅读并同意用户协议才能成为我们的一员'];
+            error('阅读并同意用户协议才能成为我们的一员');
         }
         /**
          * 实例化密码类
@@ -53,7 +53,7 @@ class BasicsAccountService
          * 判断密码格式
          */
         if(empty($PasswordHash->password_match($config['password_regular'][0],$Request['password']))){
-            return ['result'=>false,'msg'=>$config['password_regular'][1]];
+            error($config['password_regular'][1]);
         }
         /**
          * 查询是否有对应的账号存在
@@ -63,8 +63,8 @@ class BasicsAccountService
         /**
          * 验证验证码
          */
-        if($AccountModel->where(['phone'=>$Request['phone']])->fetch(['id'])){ return ['result'=>false,'msg'=>'手机号码已经注册']; }
-        if($AccountModel->where(['email'=>$Request['email']])->fetch(['id'])){ return ['result'=>false,'msg'=>'email已经注册']; }
+        if($AccountModel->where(['phone'=>$Request['phone']])->fetch(['id'])){ error('手机号码已经注册'); }
+        if($AccountModel->where(['email'=>$Request['email']])->fetch(['id'])){ error('email已经注册'); }
 
 
         //获取密码hash
@@ -80,16 +80,12 @@ class BasicsAccountService
         $AccountData = AccountModel::table()->add($Data);
         if (empty($AccountData))
         {
-            return ['result'=>false,'msg'=>'注册失败'];
+            error('注册失败');
         }
         if(is_array($AccountData)){
             $id = array_keys($AccountData)[0]??null;
         }
-        /**
-         * 注册账号
-         */
-        return ['result'=>true,'msg'=>'注册成功','data'=>$AccountData];
-
+        succeed($AccountData,'注册成功');
     }
 
     /**

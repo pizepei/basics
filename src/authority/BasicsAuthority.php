@@ -10,7 +10,10 @@ declare(strict_types=1);
 namespace pizepei\basics\authority;
 
 use pizepei\basics\service\account\BasicsAccountService;
+use pizepei\helper\Helper;
+use pizepei\microserviceClient\MicroClient;
 use pizepei\model\redis\Redis;
+use pizepei\service\jwt\JsonWebToken;
 use pizepei\staging\App;
 use pizepei\staging\AuthorityInterface;
 use service\basics\account\AccountService;
@@ -45,10 +48,9 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
     {
         // *方法路由：注册到不同操作权限资源里面用authGroup【admin.bbx:user.bbx】中文名字、注册扩展扩展authExtend  控制器：方法（方法里面有返回数据、）
         $AccountService = new BasicsAccountService();
+        # 获取JWT  Payload 数据（初步验证是否登录)
+        $this->getPayload($AccountService);
 
-        if (!isset($this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]) || $this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']] ==''){
-            error('非法请求[TOKEN]',\ErrorOrLog::NOT_LOGGOD_IN_CODE);
-        }
         # 是否要设置Payload缓存
         # 每次请求都进行解密操作是否对性能消耗严重？
         #  规则：设置频率 5分钟内超过 60次请求（300s 超过平均5s内点击请求一次） 就重新进行解密没有超过60次到5分钟依然进行重新解密进行缓存
@@ -63,11 +65,66 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
     }
 
     /**
+     * @Author 皮泽培
+     * @Created 2019/11/4 15:24
+     * @param $jwtString
+     * @title  从缓存获取getPayload
+     * @explain 本地使用
+     * @throws \Exception
+     */
+    public function getPayload( BasicsAccountService $AccountService)
+    {
+        if (!isset($this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]) || $this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']] ==''){
+            error('非法请求[TOKEN]',\ErrorOrLog::NOT_LOGGOD_IN_CODE);
+        }
+        $explode = explode('.',$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]);
+        if(count($explode)  !== 3){throw new \Exception('Payload加密错误',\ErrorOrLog::NOT_LOGGOD_IN_CODE);}
+        # 读取缓存
+        $payload = Redis::init()->get('account:jwt:payload:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2]);
+        if (!empty($payload)){
+            $this->Payload = Helper()->json_decode($payload);
+            JsonWebToken::is_time($this->Payload);# 验证有效期
+        }else{
+            # 请求服务中心（服务中心本身的api资源类型路由一样通过请求账号资源中心获取信息（其实是自己），因为如果直接读取本地就也是有资源消耗的）
+
+
+
+            $this->Payload =  $AccountService->decodeLogonJwt($this->pattern,$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]??'',Redis::init());
+            # 设置缓存
+            $payload = Redis::init()->setex('account:jwt:payload:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*5,Helper()->json_encode($this->Payload));
+        }
+        # 每个请求缓存5分钟  过期后就重新解密JWT 再缓存
+        # 规则：设置频率 5分钟内超过 60次请求（300s 超过平均5s内点击请求一次） 就重新进行解密没有超过60次到5分钟依然进行重新解密进行缓存
+    }
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/11/4 15:24
+     * @param $jwtString
+     * @title  从远程账号配置中心获取getPayload
+     * @explain 服务本地使用请求远程
+     * @throws \Exception
+     */
+    public function getRemotePayload()
+    {
+        # 准备微服务客户端
+        $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE);
+        $res = $MicroClient->send(
+            [
+                'JWT'=>$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']],
+            ],'ACCOUNT'
+        );
+        var_dump($res);
+    }
+
+
+    /**
      * 判断是否登录
      * @throws \Exception
      */
     public function WhetherTheLogin()
     {
+        $this->getRemotePayload();
         // *方法路由：注册到不同操作权限资源里面用authGroup【admin.bbx:user.bbx】中文名字、注册扩展扩展authExtend  控制器：方法（方法里面有返回数据、）
         $AccountService = new BasicsAccountService();
         $Redis = Redis::init();
