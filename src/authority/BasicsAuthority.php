@@ -114,7 +114,6 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
                 'JWT'=>$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']],
             ],'ACCOUNT'
         );
-        var_dump($res);
     }
 
 

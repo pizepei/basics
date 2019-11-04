@@ -411,6 +411,7 @@ class BasicsAccount extends Controller
      */
     public function getAuthJwt(Request $Request)
     {
-        succeed([self::$__FILE__],'ssss');
+        # [self::__FILE__]
+        $this->succeed($Request->post(),'ssss');
     }
 }
