@@ -411,7 +411,8 @@ class BasicsAccount extends Controller
      */
     public function getAuthJwt(Request $Request)
     {
-        # [self::__FILE__]
-        $this->succeed($Request->post(),'ssss');
+        $AccountService = new BasicsAccountService();
+        $Redis = Redis::init();
+        $this->succeed($AccountService->decodeLogonJwt($this->app->Authority->pattern,$Request->post('JWT'),$Redis),'获取成功');
     }
 }

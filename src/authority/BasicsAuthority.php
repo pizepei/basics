@@ -50,7 +50,7 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
         $AccountService = new BasicsAccountService();
         # 获取JWT  Payload 数据（初步验证是否登录)
         $this->getPayload($AccountService);
-
+        return true;
         # 是否要设置Payload缓存
         # 每次请求都进行解密操作是否对性能消耗严重？
         #  规则：设置频率 5分钟内超过 60次请求（300s 超过平均5s内点击请求一次） 就重新进行解密没有超过60次到5分钟依然进行重新解密进行缓存
@@ -60,7 +60,7 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
         # 大流量打并发时按照客户端IP 分发到最近机房 一个机房内部使用同一的redis存储会话。如果IP出现地区性变化强制下线重新登录（其实是请求到了其他地区的机房redis中没有信息）
             # 那么怎么做IP地址地区的分发呢？
             #无论如何 依然需要一个机制处理信息同步和会话安全问题。
-        $this->Payload =  $AccountService->decodeLogonJwt($this->pattern,$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]??'',Redis::init());
+//        $this->Payload =  $AccountService->decodeLogonJwt($this->pattern,$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]??'',Redis::init());
 
     }
 
@@ -79,22 +79,44 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
         }
         $explode = explode('.',$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]);
         if(count($explode)  !== 3){throw new \Exception('Payload加密错误',\ErrorOrLog::NOT_LOGGOD_IN_CODE);}
-        # 读取缓存
-        $payload = Redis::init()->get('account:jwt:payload:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2]);
-        if (!empty($payload)){
-            $this->Payload = Helper()->json_decode($payload);
-            JsonWebToken::is_time($this->Payload);# 验证有效期
-        }else{
-            # 请求服务中心（服务中心本身的api资源类型路由一样通过请求账号资源中心获取信息（其实是自己），因为如果直接读取本地就也是有资源消耗的）
 
 
 
-            $this->Payload =  $AccountService->decodeLogonJwt($this->pattern,$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]??'',Redis::init());
-            # 设置缓存
-            $payload = Redis::init()->setex('account:jwt:payload:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*5,Helper()->json_encode($this->Payload));
-        }
         # 每个请求缓存5分钟  过期后就重新解密JWT 再缓存
         # 规则：设置频率 5分钟内超过 60次请求（300s 超过平均5s内点击请求一次） 就重新进行解密没有超过60次到5分钟依然进行重新解密进行缓存
+
+        #读取是否有Lock
+        $Lock = Redis::init()->get('account:jwt:payload:Lock'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2]);
+        if (!empty($Lock)){
+            # 如果此jwt之前已经验证并且是异常的
+            $Lock = Helper()->json_decode($Lock);
+            error($Lock[ $this->app->__INIT__['ErrorReturnJsonMsg']['name']], $Lock[$this->app->__INIT__['ErrorReturnJsonCode']['name']],'ssss');
+        }
+
+        # 读取jwt缓存
+        $payload = Redis::init()->get('account:jwt:payload:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2]);
+        if (!empty($payload)){
+            # 有缓存
+            $this->Payload = Helper()->json_decode($payload);
+        }else{
+            # 请求服务中心（服务中心本身的api资源类型路由一样通过请求账号资源中心获取信息（其实是自己），因为如果直接读取本地就也是有资源消耗的）
+            $res =  $this->getRemotePayload();
+            # 设置缓存
+            if ($res['statusCode'] !== 200){
+                # 异常数据
+                Redis::init()->setex('account:jwt:payload:Lock'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*10,Helper()->json_encode($res));
+                error($res[ $this->app->__INIT__['ErrorReturnJsonMsg']['name']], $res[$this->app->__INIT__['ErrorReturnJsonCode']['name']],$res);
+            }
+            if (empty($res[$this->app->__INIT__['ReturnJsonData']])){
+                Redis::init()->setex('account:jwt:payload:Lock'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*10,Helper()->json_encode($res));
+                error('登陆信息为空');
+            }
+            $this->Payload = $res[$this->app->__INIT__['ReturnJsonData']];
+            $payload = Redis::init()->setex('account:jwt:payload:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*5,Helper()->json_encode($this->Payload));
+        }
+        # 进行统一验证
+        JsonWebToken::is_time($this->Payload);# 验证有效期
+
     }
 
     /**
@@ -114,6 +136,7 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
                 'JWT'=>$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']],
             ],'ACCOUNT'
         );
+        return $res;
     }
 
 
@@ -127,7 +150,6 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
         // *方法路由：注册到不同操作权限资源里面用authGroup【admin.bbx:user.bbx】中文名字、注册扩展扩展authExtend  控制器：方法（方法里面有返回数据、）
         $AccountService = new BasicsAccountService();
         $Redis = Redis::init();
-//        var_dump($_SERVER);
         if (!isset($this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]) || $this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']] ==''){throw new \Exception('非法请求[TOKEN]',\ErrorOrLog::NOT_LOGGOD_IN_CODE);}
         $this->Payload =  $AccountService->decodeLogonJwt($this->pattern,$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']]??'',$Redis);
     }
