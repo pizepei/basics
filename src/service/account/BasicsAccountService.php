@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace pizepei\basics\service\account;
 
-use model\basics\account\AccountMilestoneModel;
-use model\basics\account\AccountModel;
+use pizepei\basics\model\account\AccountMilestoneModel;
+use pizepei\basics\model\account\AccountModel;
 use pizepei\encryption\google\GoogleAuthenticator;
 use pizepei\helper\Helper;
 use pizepei\model\cache\Cache;
@@ -423,6 +423,30 @@ class BasicsAccountService
             return false;
         }
 
+    }
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/11/6 17:15
+     * @title  路由标题
+     * @explain 路由功能说明
+     * @throws \Exception
+     */
+    public static function getUserInfo(string $accountId='',string $number)
+    {
+        if ($accountId !==''){
+            $where['id'] = $accountId;
+        }
+        if ($number !==''){
+            $where['number'] = $number;
+        }
+        return AccountModel::table()
+            ->where($where)
+            ->replaceField('fetch',['type','status'],[
+                'id','number','surname','name',
+                'nickname','user_name','email',
+                'phone','parent_id','logon_online_count', 'type','status',
+            ]);
     }
 
     public static function smsCodeRegisterSend($CodeApp)

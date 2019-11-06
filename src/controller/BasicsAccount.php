@@ -399,7 +399,21 @@ class BasicsAccount extends Controller
      *          configId [uuid required]  配置id
      *          JWT [string required] jwt str数据
      * @return array [json] 定义输出返回数据
-     *      data [raw]
+     *      data [object]
+     *          Payload [object] Payload解密数据
+     *              iss [string required]
+     *              exp [int required]
+     *              sub [string required]
+     *              aud [string required]
+     *              nbf [int required]
+     *              iat [int required]
+     *              jti [int required]
+     *              nickname [string required]
+     *              type [int required]
+     *              number [string required]
+     *              period_pattern  [string required]
+     *              period_time  [int required]
+     *          UserInfo [raw] 最新的用户数据
      * @title  发送邮件
      * @explain 路由功能说明
      * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
@@ -411,8 +425,10 @@ class BasicsAccount extends Controller
      */
     public function getAuthJwt(Request $Request)
     {
-        $AccountService = new BasicsAccountService();
         $Redis = Redis::init();
-        $this->succeed($AccountService->decodeLogonJwt($this->app->Authority->pattern,$Request->post('JWT'),$Redis),'获取成功');
+        $AccountService = new BasicsAccountService();
+        $Payload = $AccountService->decodeLogonJwt($this->app->Authority->pattern,$Request->post('JWT'),$Redis);
+        $userInfo = BasicsAccountService::getUserInfo('',$Payload['number']);
+        $this->succeed(['Payload'=>$Payload,'UserInfo'=>$userInfo],'获取成功');
     }
 }
