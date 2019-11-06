@@ -23,7 +23,7 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
     /**
      * 用户信息缓存有效期单位分钟
      */
-    const userPeriod = 1;
+    const userPeriod = 5;
     /**
      *  获取 property
      *
@@ -87,27 +87,28 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
             # 有缓存
             $this->Payload = Helper()->json_decode($payload);
             $this->UserInfo = Helper()->json_decode($UserInfo);
-        }else{
-            # 请求服务中心（服务中心本身的api资源类型路由一样通过请求账号资源中心获取信息（其实是自己），因为如果直接读取本地就也是有资源消耗的）
-            $res =  $this->getRemotePayload();
-
-            # 设置缓存
-            if ($res['statusCode'] !== 200){
-                # 异常数据
-                Redis::init()->setex('account:jwt:payload:Lock'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($res));
-                error($res[ $this->app->__INIT__['ErrorReturnJsonMsg']['name']], $res[$this->app->__INIT__['ErrorReturnJsonCode']['name']],$res);
-            }
-            if (empty($res[$this->app->__INIT__['ReturnJsonData']])){
-                Redis::init()->setex('account:jwt:payload:Lock'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($res));
-                error('登陆信息为空');
-            }
-
-            $this->Payload = $res[$this->app->__INIT__['ReturnJsonData']]['Payload'];
-            $this->UserInfo = $res[$this->app->__INIT__['ReturnJsonData']]['UserInfo'];
-
-            $payload = Redis::init()->setex('account:jwt:userInfo:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($this->UserInfo));
-            $payload = Redis::init()->setex('account:jwt:payload:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($this->Payload));
+            JsonWebToken::is_time($this->Payload);# 验证有效期
+            return true;
         }
+
+        # 请求服务中心（服务中心本身的api资源类型路由一样通过请求账号资源中心获取信息（其实是自己），因为如果直接读取本地就也是有资源消耗的）
+        $res =  $this->getRemotePayload();
+        # 设置缓存
+        if ($res['statusCode'] !== 200){
+            # 异常数据
+            Redis::init()->setex('account:jwt:payload:Lock'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($res));
+            error($res[ $this->app->__INIT__['ErrorReturnJsonMsg']['name']], $res[$this->app->__INIT__['ErrorReturnJsonCode']['name']],$res);
+        }
+        if (empty($res[$this->app->__INIT__['ReturnJsonData']])){
+            Redis::init()->setex('account:jwt:payload:Lock'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($res));
+            error('登陆信息为空');
+        }
+
+        $this->Payload = $res[$this->app->__INIT__['ReturnJsonData']]['Payload'];
+        $this->UserInfo = $res[$this->app->__INIT__['ReturnJsonData']]['UserInfo'];
+
+        $payload = Redis::init()->setex('account:jwt:userInfo:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($this->UserInfo));
+        $payload = Redis::init()->setex('account:jwt:payload:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($this->Payload));
         # 进行统一验证
         JsonWebToken::is_time($this->Payload);# 验证有效期
 
