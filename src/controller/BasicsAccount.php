@@ -408,12 +408,24 @@ class BasicsAccount extends Controller
      *              nbf [int required]
      *              iat [int required]
      *              jti [int required]
-     *              nickname [string required]
+     *              nickname [string]
      *              type [int required]
      *              number [string required]
      *              period_pattern  [string required]
      *              period_time  [int required]
-     *          UserInfo [raw] 最新的用户数据
+     *          UserInfo [object] 最新的用户数据
+     *              id [uuid] 账号id
+     *              number [string required] 编号固定开头的账号编码
+     *              surname [string] 真实姓氏
+     *              name [string] 真实名
+     *              nickname [string] 昵称
+     *              user_name [string] 姓名
+     *              email [string required] 邮箱
+     *              phone [string required] 手机号码
+     *              parent_id [string required] 父级组织id（uuid）
+     *              logon_online_count [int required] 同时在线数
+     *              type [string required] 账号类型1普通子账号common、2游客tourist、3应用账号app、4应用管理员appAdmin、5应用超级管理员appSuperAdmin、6超级管理员Administrators
+     *              status [string required] 状态1等待审核
      * @title  发送邮件
      * @explain 路由功能说明
      * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
@@ -425,6 +437,7 @@ class BasicsAccount extends Controller
      */
     public function getAuthJwt(Request $Request)
     {
+
         $Redis = Redis::init();
         $AccountService = new BasicsAccountService();
         $Payload = $AccountService->decodeLogonJwt($this->app->Authority->pattern,$Request->post('JWT'),$Redis);

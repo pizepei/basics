@@ -23,7 +23,7 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
     /**
      * 用户信息缓存有效期单位分钟
      */
-    const userPeriod = 10;
+    const userPeriod = 1;
     /**
      *  获取 property
      *
@@ -77,7 +77,7 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
         if (!empty($Lock)){
             # 如果此jwt之前已经验证并且是异常的
             $Lock = Helper()->json_decode($Lock);
-//            error($Lock[ $this->app->__INIT__['ErrorReturnJsonMsg']['name']], $Lock[$this->app->__INIT__['ErrorReturnJsonCode']['name']],'异常请求');
+            error($Lock[ $this->app->__INIT__['ErrorReturnJsonMsg']['name']], $Lock[$this->app->__INIT__['ErrorReturnJsonCode']['name']],'异常请求');
         }
         # 读取jwt缓存
         $payload = Redis::init()->get('account:jwt:payload:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2]);
@@ -87,10 +87,10 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
             # 有缓存
             $this->Payload = Helper()->json_decode($payload);
             $this->UserInfo = Helper()->json_decode($UserInfo);
-            var_dump($this->Payload,$this->UserInfo);
         }else{
             # 请求服务中心（服务中心本身的api资源类型路由一样通过请求账号资源中心获取信息（其实是自己），因为如果直接读取本地就也是有资源消耗的）
             $res =  $this->getRemotePayload();
+
             # 设置缓存
             if ($res['statusCode'] !== 200){
                 # 异常数据
