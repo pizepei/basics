@@ -65,7 +65,7 @@ class BasicsAccount extends Controller
         # 验证验证码
         $CodeApp = \Config::WEC_CHAT_CODE;
         $Client = new Client($CodeApp);
-        $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'),$this->app->__CLIENT_IP__);
+        $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'));
         if ($res['statusCode'] ==100){
             $this->error($res['msg']);
         }
@@ -188,7 +188,7 @@ class BasicsAccount extends Controller
 
         $CodeApp = \Config::WEC_CHAT_CODE;
         $Client = new Client($CodeApp);
-        $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'),$this->app->__CLIENT_IP__);
+        $res = $Client->codeAppVerify($Request->post('encrypted'),$Request->post('id'),$Request->post('code'),$Request->post('openid'));
         if ($res['statusCode'] ==100){
             $this->error($res['msg']);
         }
