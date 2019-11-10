@@ -15,13 +15,14 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
     ,engine: '.html' //视图文件后缀名
     ,pageTabs: true //是否开启页面选项卡功能。单页版不推荐开启
     ,sideFlexible:null//自定义的是否菜单栏控制侧边伸缩  null 缩   spread   展开
-    ,name: '皮皮虾控制台'
+    ,name: "{{console}}"
     ,tableName: 'layuiAdmin' //本地存储表名
     ,MOD_NAME: 'admin' //模块事件名
 
     ,productInfo:{
         name:"{{productInfo.name}}",
         describe:"{{productInfo.describe}}",
+        extend:'{{productInfo.extend}}'
     }
 
     ,debug: true //是否开启调试模式。如开启，接口异常时会抛出异常 URL 等信息

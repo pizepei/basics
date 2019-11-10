@@ -51,9 +51,11 @@ class BasicsLayuiAdminService
     public function getConfig(string $domain):string
     {
         $data = [
+            'console'=>\Config::PRODUCT_INFO['name'].'控制台',
             'tokenName'=>\Config::ACCOUNT['GET_ACCESS_TOKEN_NAME'],
             'productInfo.name'=>\Config::PRODUCT_INFO['name'],
             'productInfo.describe'=>\Config::PRODUCT_INFO['describe'],
+            'productInfo.extend'=>Helper()->json_encode(\Config::PRODUCT_INFO['extend']),
         ];
         $file = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'config.js');
         return $this->str_replace($file,$data);

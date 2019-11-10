@@ -81,6 +81,7 @@ class AdminMenuModel extends Model
     protected $initData = [
             ['id'=>'0ECD12A2-8824-9843-E8C9-C33E40F360D1','name'=>'admin','parent_id'=>Model::UUID_ZERO,'title'=>'系统管理','icon'=>'layui-icon-home','spread'=>0,'jump'=>'','status'=>'2'],
                 ['id'=>'0ECD12A2-8824-9843-E8C9-C33E40F360D2','name'=>'admin','parent_id'=>'0ECD12A2-8824-9843-E8C9-C33E40F360D1','title'=>'导航菜单管理','icon'=>'layui-icon-home','spread'=>0,'jump'=>'','status'=>'2']
+            ,['id'=>'0ECD12A2-8824-9843-E8C9-C33E40F36E10','name'=>'admin','parent_id'=>Model::UUID_ZERO,'title'=>'控制台','icon'=>'layui-icon-home','spread'=>0,'jump'=>'','status'=>'2','sort'=>100]
 
             ,['id'=>'0ECD12A2-8824-9843-E8C9-C33E40F360D5','name'=>'wechat','parent_id'=>Model::UUID_ZERO,'title'=>'微信应用','icon'=>'layui-icon-home','spread'=>0,'jump'=>'','status'=>'2']
                 ,['id'=>'0ECD12A2-8824-9843-E8C9-C33E40F360D6','name'=>'tencent','parent_id'=>'0ECD12A2-8824-9843-E8C9-C33E40F360D5','title'=>'微信公众号','icon'=>'layui-icon-home','spread'=>1,'jump'=>'','status'=>'2']
