@@ -158,27 +158,6 @@ class BasicsAccount extends Controller
         $AccountService = new BasicsAccountService();
         return $AccountService->changePassword(\Config::ACCOUNT,$Request->post(),$Account,$this);
     }
-    /**
-     * @Author pizepei
-     * @Created 2019/3/30 21:33
-     *
-     * @param \pizepei\staging\Request $Request
-     *      post [object] post
-     *          phone [int number] 手机号码
-     *          password [string required] 密码
-     *          repass [string required] 确认密码
-     *          code [string required] 短信验证码
-     * @return array [json]
-     * @title  发送短信验证码
-     * @explain 验证结果并且返回一个唯一的参数以进行后面的配置
-     * @throws \Exception
-     * @router post smsCodeVerification
-     */
-    public function smsCodeVerification(Request $Request)
-    {
-        #
-        return $this->succeed('','成功');
-    }
 
     /**
      * @Author pizepei
@@ -206,7 +185,6 @@ class BasicsAccount extends Controller
      */
     public function smsCodeRegisterSend(Request $Request)
     {
-        succeed($Request->post());
 
         $CodeApp = \Config::WEC_CHAT_CODE;
         $Client = new Client($CodeApp);
@@ -245,8 +223,9 @@ class BasicsAccount extends Controller
             ],'E_MAIL'
         );
         if (isset($emailRes['data']['code']) || isset($emailRes['data']['Message'])){
-            return $this->succeed('','邮件验证码发送失败请稍后再尝试！');
+            $this->error('邮件验证码发送失败请稍后再尝试！',0,$emailRes);
         }
+
         # 验证通过发送验证码
         $res = $MicroClient->send(
             [
@@ -256,11 +235,11 @@ class BasicsAccount extends Controller
             ],'M_SMS'
         );
         if (isset($res['data']['Code']) && $res['data']['Code']== 'OK'){
-            return $this->succeed('','短信与邮件发送成功！'.PHP_EOL.'如没有收到请查看是否在被定义为垃圾邮件');
+            $this->succeed('','短信与邮件发送成功！'.PHP_EOL.'如没有收到请查看是否在被定义为垃圾邮件');
         }else if (isset($res['data']['Code']) && $res['data']['Code'] !== 'OK'){
-            return $this->succeed('','发送频率过高请稍后再尝试！');
+            $this->error('','发送频率过高请稍后再尝试！');
         }else{
-            return $this->succeed('','发送失败请稍后再尝试！');
+            $this->error('','发送失败请稍后再尝试！');
         }
     }
 
@@ -339,7 +318,7 @@ class BasicsAccount extends Controller
     {
         $CodeApp = \Config::WEC_CHAT_CODE;
         # 本地验证
-        if (BasicsAccountService::codeSendFrequency('universal',$Request->path('number').$Request->path('email'),5)){
+        if (BasicsAccountService::codeSendFrequency('universal',$Request->path('number').$Request->path('email'),50)){
             return $this->error('获取二维码频率过高!!');
         }
         $CodeApp['url'] = 'http://oauth.heil.top/'.\Deploy::MODULE_PREFIX.'/wechat/common/code-app/qr/'.$CodeApp['appid'].'.json';

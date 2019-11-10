@@ -390,14 +390,36 @@ class BasicsAccountService
      * @param $object            发送对象
      * @param int $Frequency    单位时间发送数量      默认 4
      * @param int $time         单位时间  默认300s 5分钟
+     * @param string $ip        当前IP
+     * @param int $IpFrequency    单位时间发送数量      默认 20
      * @return bool
      * @throws \Exception
      */
-    public static function codeSendFrequency(string $type,$object,int $Frequency=4,int $time=300):bool
+    public static function codeSendFrequency(string $type,$object,int $Frequency=4,int $time=300,string $ip='',int $IpFrequency=20):bool
     {
         if (!isset(self::codeSendFrequencyType[$type])){
             throw new \Exception('codeSendFrequencyType error');
         }
+
+        # 验证IP频率（）
+        if ($ip !== ''){
+            $ipNumberCache = Cache::get([self::codeSendFrequencyType[$type],$ip]);
+            if (empty($ipNumberCache)){
+                Cache::set([self::codeSendFrequencyType[$type],$ip],['update_time'=>time(),'count'=>1]);
+            }else{
+                # 增加频率记录一次
+                Cache::set([self::codeSendFrequencyType[$type],$ip],['update_time'=>time(),'count'=>$ipNumberCache['count']+1]);
+                # 判断是否超过限制
+                if ($ipNumberCache['update_time'] > (time()-$time)){
+                    # 在限制的时间内进行了信息发送  判断发送的数量是否超过限制
+                    if ($ipNumberCache['count'] >=$IpFrequency){
+                        return true;
+                    }
+                }
+            }
+        }
+
+
         # 本地验证
         $numberCache = Cache::get([self::codeSendFrequencyType[$type],$object]);
         if (empty($numberCache)){
