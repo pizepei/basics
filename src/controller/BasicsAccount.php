@@ -75,7 +75,7 @@ class BasicsAccount extends Controller
             return $this->error('请求错误');
         }
         # 判断手机验证码
-        if ($res['content']['param']['number'] !== $Request->post('phone')  || $res['content']['param']['numberCode'] !== (int)$Request->post('phone_code')){
+        if ((int)$res['content']['param']['number'] !== (int)$Request->post('phone')  || (int)$res['content']['param']['numberCode'] !== (int)$Request->post('phone_code')){
             return $this->error('手机验证码错误！');
         }
         # 判断邮箱验证码
