@@ -18,7 +18,7 @@ class BasicsLayuiAdminService
     public function getIndexHtml(string $domain):string
     {
         $data = [
-            'title'=>'Lifestyle',
+            'title'=>\Config::PRODUCT_INFO['title'],
             'index'=>'../../'.\Deploy::MODULE_PREFIX.'/home/index',
             'base'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/src/',
             'css'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/css/layui.css',
@@ -52,6 +52,8 @@ class BasicsLayuiAdminService
     {
         $data = [
             'tokenName'=>\Config::ACCOUNT['GET_ACCESS_TOKEN_NAME'],
+            'productInfo.name'=>\Config::PRODUCT_INFO['name'],
+            'productInfo.describe'=>\Config::PRODUCT_INFO['describe'],
         ];
         $file = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'config.js');
         return $this->str_replace($file,$data);
