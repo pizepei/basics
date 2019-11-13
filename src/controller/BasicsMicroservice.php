@@ -22,6 +22,7 @@ use pizepei\staging\Request;
 
 class BasicsMicroservice extends Controller
 {
+    protected static $__FILE__ = __FILE__;
 
     /**
      * @Author 皮泽培

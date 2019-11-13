@@ -25,7 +25,20 @@ use pizepei\wechatClient\Client;
 
 class BasicsAccount extends Controller
 {
-    private static $__FILE__ = __FILE__;
+    protected static $__FILE__ = __FILE__;
+    /**
+     * 基础控制器信息
+     */
+    const CONTROLLER_INFO = [
+        'User'=>'pizepei',
+        'title'=>'账号表',//控制器标题
+        'className'=>'Account',//门面控制器名称
+        'namespace'=>'app\bases',//门面控制器命名空间
+        'baseAuth'=>'基础权限继承（加命名空间的类名称）',//基础权限继承（加命名空间的类名称）
+        'authGroup'=>'[user:用户相关,admin:管理员相关]',//[user:用户相关,admin:管理员相关] 权限组列表
+        'basePath'=>'/account/',//基础路由
+        'baseParam'=>'[$Request:pizepei\staging\Request]',//依赖注入对象
+    ];
 
     /**
      * @Author pizepei

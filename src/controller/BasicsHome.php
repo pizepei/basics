@@ -8,6 +8,8 @@ use pizepei\staging\Controller;
 
 class BasicsHome extends Controller
 {
+    protected static $__FILE__ = __FILE__;
+
     /**
      * @return array [html]
      * @title  / 默认首页

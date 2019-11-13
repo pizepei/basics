@@ -14,6 +14,8 @@ use pizepei\staging\Request;
 
 class BasicsConsole extends Controller
 {
+    protected static $__FILE__ = __FILE__;
+
     /**
      * @Author 皮泽培
      * @Created 2019/8/26 14:20

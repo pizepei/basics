@@ -14,6 +14,7 @@ use service\basics\MenuService;
 
 class BasicsMenu extends Controller
 {
+    protected static $__FILE__ = __FILE__;
 
     /**
      * @Author pizepei
