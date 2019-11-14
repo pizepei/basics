@@ -7,6 +7,7 @@
  */
 namespace pizepei\basics\controller;
 
+use pizepei\basics\service\account\BasicsAccountService;
 use pizepei\basics\service\BasicsMenuService;
 use pizepei\staging\Controller;
 use pizepei\staging\Request;
@@ -56,6 +57,8 @@ class BasicsMenu extends Controller
      */
     public function index()
     {
+        succeed(BasicsAccountService::registerEvent($data=[]));
+
         return $this->succeed((new  BasicsMenuService())->getMenuList());
     }
 

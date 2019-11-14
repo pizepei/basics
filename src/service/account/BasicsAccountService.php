@@ -12,9 +12,11 @@ namespace pizepei\basics\service\account;
 
 use pizepei\basics\model\account\AccountMilestoneModel;
 use pizepei\basics\model\account\AccountModel;
+use pizepei\basics\model\console\PersonShortcutTypeModel;
 use pizepei\encryption\google\GoogleAuthenticator;
 use pizepei\helper\Helper;
 use pizepei\model\cache\Cache;
+use pizepei\model\db\Model;
 use pizepei\model\redis\Redis;
 use pizepei\service\encryption\PasswordHash;
 use pizepei\service\jwt\JsonWebToken;
@@ -82,12 +84,32 @@ class BasicsAccountService
         {
             error('注册失败');
         }
+
         if(is_array($AccountData)){
             $id = array_keys($AccountData)[0]??null;
         }
         succeed($AccountData,'注册成功');
     }
 
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/11/14 17:49
+     * @param $AccountData
+     * @title  账号初始化
+     * @explain 账号创建成功后的一些初始化操作
+     * @throws \Exception
+     * @throws \Exception
+     */
+    public static  function registerEvent($AccountData)
+    {
+        # 写入控制台默认信息
+        PersonShortcutTypeModel::table()->add([
+            'name'=>'收藏夹',
+            'Account_id'=>key($AccountData),
+            'status'=>2,
+        ]);
+    }
     /**
      * @Author pizepei
      * @Created 2019/3/30 21:28
