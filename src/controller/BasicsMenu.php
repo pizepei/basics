@@ -57,8 +57,6 @@ class BasicsMenu extends Controller
      */
     public function index()
     {
-        succeed(BasicsAccountService::registerEvent($data=[]));
-
         return $this->succeed((new  BasicsMenuService())->getMenuList());
     }
 
