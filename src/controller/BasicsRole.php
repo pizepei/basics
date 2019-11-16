@@ -6,7 +6,11 @@
 namespace pizepei\basics\controller;
 
 
+use authority\app\Resource;
+use pizepei\basics\model\account\AccountRoleMenuModel;
 use pizepei\basics\model\account\AccountRoleModel;
+use pizepei\basics\service\BasicsMenuService;
+use pizepei\model\db\Model;
 use pizepei\staging\Controller;
 use pizepei\staging\Request;
 
@@ -20,7 +24,7 @@ class BasicsRole extends Controller
         'title'=>'角色相关控制器',//控制器标题
         'namespace'=>'bases',//门面控制器命名空间
         'baseAuth'=>'基础权限继承（加命名空间的类名称）',//基础权限继承（加命名空间的类名称）
-        'authGroup'=>'[user:用户相关,admin:管理员相关]',//[user:用户相关,admin:管理员相关] 权限组列表
+        'authGroup'=>'[system:role:用户角色管理]',//在系统权限分类下注册一个user 用户角色管理分组
         'basePath'=>'/basics/role/',//基础路由
     ];
 
@@ -117,4 +121,89 @@ class BasicsRole extends Controller
     {
         $this->succeed(AccountRoleModel::table()->where(['id'=>$Request->path('id')])->update($Request->raw()));
     }
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/11/16 9:16
+     * @param Request $Request
+     *   path [object] 路径参数
+     *      roleId [uuid] 角色id
+     * @return array [json] 定义输出返回数据
+     * @title  通过角色id获取对应的角色菜单信息
+     * @explain 通过角色id获取对应的角色菜单信息
+     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
+     * @authExtend UserExtend.list:拓展权限
+     * @baseAuth Resource:public
+     * @throws \Exception
+     * @router get  role-menu/:roleId[uuid]
+     */
+    public function getRoleMenu(Request $Request)
+    {
+        if ($Request->path('roleId') ===Model::UUID_ZERO){
+            $this->error('请选择角色');
+        }
+        # 通过角色id获取对应的角色菜单信息 从数据库获取当前角色可看的菜单id
+        $rolemMenuIdData = AccountRoleMenuModel::table()->where(['role_id'=>$Request->path('roleId')])->fetch(['gather']);
+        $MenuData = (new  BasicsMenuService())->getTreeMenu('admin',true,$Request->path('roleId'),$rolemMenuIdData['gather'],'showChecked');
+        # 获取当前项目的所有菜单
+        return $this->succeed($MenuData);
+    }
+    /**
+     * @Author 皮泽培
+     * @Created 2019/11/16 9:16
+     * @param Request $Request
+     *   path [object] 路径参数
+     *      roleId [uuid] 角色id
+     *   raw [object]
+     *      data [raw]
+     * @return array [json] 定义输出返回数据
+     * @title 更新角色的菜单权限
+     * @explain 更新角色的菜单权限
+     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
+     * @authExtend UserExtend.list:拓展权限
+     * @baseAuth Resource:public
+     * @throws \Exception
+     * @router put  role-menu/:roleId[uuid]
+     */
+    public function updateRoleMenu(Request $Request)
+    {
+        $BasicsMenuService = new  BasicsMenuService();
+        $MenuId = $BasicsMenuService->updateRoleMenuId($Request->raw('data'));
+        # 通过角色id获取对应的角色菜单信息 从数据库获取当前角色可看的菜单id
+        $rolemMenuData = AccountRoleMenuModel::table()->where(['role_id'=>$Request->path('roleId')])->fetch();
+        if (empty($rolemMenuData)){
+            succeed(AccountRoleMenuModel::table()->add(['role_id'=>$Request->path('roleId'),'gather'=>$MenuId]),'保存成功');
+        }else{
+            succeed(AccountRoleMenuModel::table()->where(['role_id'=>$Request->path('roleId')])->update(['gather'=>$MenuId]),'更新成功');
+        }
+    }
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/11/16 9:16
+     * @param Request $Request
+     *   path [object] 路径参数
+     *      roleId [uuid] 角色id
+     *   raw [object]
+     *      data [raw]
+     * @return array [json] 定义输出返回数据
+     * @title 更新角色的菜单权限
+     * @explain 更新角色的菜单权限
+     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
+     * @authExtend UserExtend.list:拓展权限
+     * @baseAuth Resource:public
+     * @throws \Exception
+     * @router get  role-authority/:roleId[uuid]
+     */
+    public function getRoleAuthority()
+    {
+        var_dump($this->app->Route()->Permissions);
+
+//        # 获取当前角色的api权限详情
+        return $this->succeed([
+            'list'=>Resource::initJurisdictionList($this->app->Route()->Permissions,$this->app),
+            'checkedId'=>['getMenu','409bfd433e7dd7af7d7530ad5fb7bc46'],
+        ]);
+    }
+
 }

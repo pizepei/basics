@@ -82,36 +82,31 @@ class BasicsMenuService
     }
 
     /**
-     * 获取后台菜单
+     * @Author 皮泽培
+     * @Created 2019/11/16 10:44
+     * @param string $type 菜单类型
+     * @param bool $spread  是否展开
+     * @param string $roleId 角色id
+     * @param array $gather  当前角色选中的菜单id集合
+     * @param string $resultType  filtration 过滤没有权限的菜单 showChecked 根据$gather设置checked  default不处理
+     * @title  获取后台菜单
+     * @explain 路由功能说明
      * @return array
      * @throws \Exception
      */
-    public function getTreeMenu($type='admin',$spread=true)
+    public function getTreeMenu($type='admin',$spread=true,$roleId=Model::UUID_ZERO,$gather=[],$resultType='default')
     {
         $menuModel = $this->initModel($type);
         $menu = $menuModel->where(['status'=>2])->order('sort','desc')->fetchAll();
 
         $menuData= [
-            'id'=>Model::UUID_ZERO,
+            'id'=>$roleId,
             'title'=>'后台菜单',
             'spread'=>true,
+            'disabled'=>true,
         ];
-        $this->recursiveMenu($menu,$menuData,Model::UUID_ZERO,$spread);
+        $this->recursiveMenu($menu,$menuData,Model::UUID_ZERO,$spread,$gather,$resultType);
         $data[] = $menuData;
-//
-//        foreach ($menu as $key=>$value)
-//        {
-//            if ($value['parent_id'] == Model::UUID_ZERO){
-//                $menuData = [
-//                    'id'=>$value['id'],
-//                    'title'=>$value['title'].'  --  ['.$value['name'].']',
-//                    'spread'=>$value['spread']==0?false:true,
-//                ];
-//                unset($menu[$key]);
-//                $this->recursiveMenu($menu,$menuData,$value['id'],$spread);
-//                $data[] = $menuData;
-//            }
-//        }
         return $data;
     }
 
@@ -121,20 +116,24 @@ class BasicsMenuService
      * @param $menuData
      * @param $parent_id
      */
-    public function recursiveMenu(&$menu,&$menuData,$parent_id)
+    public function recursiveMenu(&$menu,&$menuData,$parent_id,$spread,$gather,$resultType)
     {
         $data = [];
         foreach ($menu as $key=>$value)
         {
-            if ($value['parent_id'] == $parent_id) {
-                $menuInfo = [
-                    'id'=>$value['id'],
-                    'title'=>$value['title'].'  --  ['.$value['name'].']',
-                    'spread'=>$value['spread']==0?false:true,
-                ];
-                unset($menu[$key]);
-                $this->recursiveMenu($menu,$menuInfo,$value['id']);
-                $data[] = $menuInfo;
+            if ($gather ==[] || in_array($value['id'],$gather)|| in_array($resultType,['default','showChecked'])){
+                if ($value['parent_id'] == $parent_id) {
+                    $menuInfo = [
+                        'id'=>$value['id'],
+                        'title'=>$value['title'].'  --  ['.$value['name'].']',
+                        'spread'=>$value['spread']==0?false:true,
+                        # 如果$resultType ==  showChecked 并且菜单id在$gather中就 true
+                        'checked'=>in_array($value['id'],$gather)?true:false,
+                    ];
+                    unset($menu[$key]);
+                    $this->recursiveMenu($menu,$menuInfo,$value['id'],$spread,$gather,$resultType);
+                    $data[] = $menuInfo;
+                }
             }
         }
         if ($data !==[]){
@@ -222,6 +221,44 @@ class BasicsMenuService
         return $res;
     }
 
+    /**
+     * @Author 皮泽培
+     * @Created 2019/11/16 10:27
+     * @param $data
+     * @title  获取menuid
+     * @return array
+     * @throws \Exception
+     */
+    public function updateRoleMenuId($data)
+    {
+        foreach ($data as $value){
+            if (isset($value['id'])){
+                $menuId[] = $value['id'];
+                if (isset($value['children']) && !empty($value['children']) && is_array($value['children'])){
+                        $this->recursiveUpdateRoleMenuId($menuId,$value['children']);
+                }
+            }
+        }
+        return $menuId;
+    }
 
-
+    /**
+     * @Author 皮泽培
+     * @Created 2019/11/16 10:27
+     * @param $menuId
+     * @param $children
+     * @title  递归函数获取menuid
+     * @throws \Exception
+     */
+    public function recursiveUpdateRoleMenuId(&$menuId,$children)
+    {
+        foreach ($children as $value){
+            if (isset($value['id'])){
+                $menuId[] = $value['id'];
+                if (isset($value['children']) && !empty($value['children']) && is_array($value['children'])){
+                    $this->recursiveUpdateRoleMenuId($menuId,$value['children']);
+                }
+            }
+        }
+    }
 }

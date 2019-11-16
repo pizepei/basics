@@ -1,0 +1,7 @@
+{
+  "name":"基础依赖包",
+  "author": "pizepei",
+  "permissions": {
+    "systemBasics": "系统管理"
+  }
+}
