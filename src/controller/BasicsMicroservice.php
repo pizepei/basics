@@ -29,8 +29,7 @@ class BasicsMicroservice extends Controller
         'User'=>'pizepei',
         'title'=>'应用端微服务管理',//控制器标题
         'namespace'=>'bases',//门面控制器命名空间
-        'baseAuth'=>'基础权限继承（加命名空间的类名称）',//基础权限继承（加命名空间的类名称）
-        'authGroup'=>'[user:用户相关,admin:管理员相关]',//[user:用户相关,admin:管理员相关] 权限组列表
+        'baseAuth'=>'MicroserviceAuth:initializeData',//基础权限继承（加命名空间的类名称）
         'basePath'=>'/basics/microservice/',//基础路由
         'baseParam'=>'[$Request:pizepei\staging\Request]',//依赖注入对象
     ];
@@ -53,7 +52,6 @@ class BasicsMicroservice extends Controller
      *      name [object] 同学名字
      * @title  路由标题
      * @explain 路由功能说明
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend MicroserviceAuth.list:拓展权限
      * @baseAuth MicroserviceAuth:initializeData
      * @resourceType microservice
@@ -82,7 +80,6 @@ class BasicsMicroservice extends Controller
      * @return array [json] 定义输出返回数据
      * @title  添加微服务应用
      * @explain 微服务应用为微服务集合
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend MicroserviceAuth.list:拓展权限
      * @baseAuth MicroserviceAuth:public
      * @resourceType microservice
@@ -108,7 +105,6 @@ class BasicsMicroservice extends Controller
      * @return array [json] 定义输出返回数据
      * @title  添加微服务应用
      * @explain 微服务应用为微服务集合
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend MicroserviceAuth.list:拓展权限
      * @baseAuth MicroserviceAuth:public
      * @resourceType microservice
@@ -133,7 +129,6 @@ class BasicsMicroservice extends Controller
      * @return array [json] 定义输出返回数据
      * @title  路由标题
      * @explain 路由功能说明
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
      * @return array

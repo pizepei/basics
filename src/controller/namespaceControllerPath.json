@@ -1,7 +1,26 @@
 {
   "name":"基础依赖包",
   "author": "pizepei",
-  "permissions": {
-    "systemBasics": "系统管理"
+  "baseAuthGroup": {
+    "systemBasics": {
+      "name":"系统管理",
+      "explain": "基础的系统管理",
+      "list": {
+          "adminMenu": {
+              "explain": "",
+              "name":"系统用户"
+          }
+      }
+    },
+    "systemUser": {
+      "name":"系统用户",
+      "explain": "",
+      "list": {
+        "console": {
+            "name": "个人控制台",
+            "explain": ""
+        }
+      }
+    }
   }
 }

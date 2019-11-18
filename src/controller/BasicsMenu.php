@@ -22,8 +22,7 @@ class BasicsMenu extends Controller
         'User'=>'pizepei',
         'title'=>'菜单相关控制器',//控制器标题
         'namespace'=>'bases',//门面控制器命名空间
-        'baseAuth'=>'基础权限继承（加命名空间的类名称）',//基础权限继承（加命名空间的类名称）
-        'authGroup'=>'[user:用户相关,admin:管理员相关]',//[user:用户相关,admin:管理员相关] 权限组列表
+        'baseAuth'=>'UserAuth:test',//基础权限继承（加命名空间的类名称）
         'basePath'=>'/admin/menu/',//基础路由
         'baseParam'=>'[$Request:pizepei\staging\Request]',//依赖注入对象
     ];
@@ -49,8 +48,8 @@ class BasicsMenu extends Controller
      * @title  获取菜单列表
      * @explain 获取菜单列表（权限不同内容不同）
      * @authTiny 微权限提供权限分配 [获取店铺所有  获取所有店铺  获取一个]
-     * @authGroup basics.menu.getMenu:获取后台菜单1,basics.index.menu:获取首页导航2,system.admin.getAdmin:获取首页导航3,system.admin.getAdmin:获取首页导航4
      * @authExtend UserExtend.list:删除账号操作
+     * @authGroup systemBasics.menu
      * @baseAuth UserAuth:test
      * @router get menu-list
      * @throws \Exception
@@ -71,7 +70,6 @@ class BasicsMenu extends Controller
      *          role [int]
      * @title  用户信息
      * @explain 简单用户信息
-     * @authGroup basics.index.user:获取后台菜单
      * @router get session
      */
     public function session(Request $Request)
@@ -91,7 +89,6 @@ class BasicsMenu extends Controller
      * @title  用户信息
      * @explain 简单用户信息
      * @authTiny 微权限提供权限分配 [获取店铺所有  获取所有店铺  获取一个]
-     * @authGroup basics.index.message:控制台新信息
      * @router get message/new
      */
     public function messageNew(Request $Request)
@@ -111,7 +108,6 @@ class BasicsMenu extends Controller
      * @title  用户信息
      * @explain 简单用户信息
      * @authTiny 微权限提供权限分配 [获取店铺所有  获取所有店铺  获取一个]
-     * @authGroup basics.index.message:控制台新信息
      * @router get tree-menu-info
      */
     public function getTreeMenu()
@@ -137,7 +133,6 @@ class BasicsMenu extends Controller
      *     data [raw]
      * @title  添加后台菜单
      * @explain 添加后台菜单
-     * @authGroup basics.index.message:控制台新信息
      * @router post admin-menu
      */
     public function addAdminNenu(Request $Request)
@@ -164,7 +159,6 @@ class BasicsMenu extends Controller
      *     data [raw]
      * @title  更新后台菜单
      * @explain 更新后台菜单
-     * @authGroup basics.index.message:控制台新信息
      * @router put admin-menu/:id[uuid]
      */
     public function updateAdminNenu(Request $Request)
@@ -181,7 +175,6 @@ class BasicsMenu extends Controller
      *     data [raw]
      * @title  添加后台菜单
      * @explain 添加后台菜单
-     * @authGroup basics.index.message:控制台新信息
      * @router delete admin-menu/:id[uuid]
      */
     public function delAdminNenu(Request $Request)
@@ -198,7 +191,6 @@ class BasicsMenu extends Controller
      *     data [raw]
      * @title  获取菜单详情
      * @explain 获取菜单详情
-     * @authGroup basics.index.message:控制台新信息
      * @router get admin-menu/:id[uuid]
      */
     public function getAdminNenu(Request $Request)

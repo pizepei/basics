@@ -21,8 +21,7 @@ class BasicsConsole extends Controller
         'User'=>'pizepei',
         'title'=>'后台首页控制台',//控制器标题
         'namespace'=>'bases',//门面控制器命名空间
-        'baseAuth'=>'基础权限继承（加命名空间的类名称）',//基础权限继承（加命名空间的类名称）
-        'authGroup'=>'[user:用户相关,admin:管理员相关]',//[user:用户相关,admin:管理员相关] 权限组列表
+        'baseAuth'=>'UserAuth:test',//基础权限继承（加命名空间的类名称）
         'basePath'=>'/home/console/',//基础路由
         'baseParam'=>'[$Request:pizepei\staging\Request]',//依赖注入对象
     ];
@@ -37,6 +36,7 @@ class BasicsConsole extends Controller
      *      data [raw]
      * @title  获取个人快捷方式
      * @baseAuth UserAuth:test
+     * @authGroup systemUser.console
      * @throws \Exception
      * @router get person/shortcut-list
      */
@@ -73,6 +73,7 @@ class BasicsConsole extends Controller
      * @title  添加个人快捷方式到对应类型中
      * @explain 退出登录
      * @baseAuth UserAuth:test
+     * @authGroup systemUser.console
      * @throws \Exception
      * @router post person/shortcut/:typeId[uuid]
      */
@@ -113,6 +114,7 @@ class BasicsConsole extends Controller
      * @title  获取分类下的列表
      * @explain 获取列表
      * @baseAuth UserAuth:test
+     * @authGroup systemUser.console
      * @throws \Exception
      * @router get person/shortcut/:typeId[uuid]
      */
@@ -149,6 +151,7 @@ class BasicsConsole extends Controller
      * @title  更新快捷导航
      * @explain 编辑更新快捷导航
      * @baseAuth UserAuth:test
+     * @authGroup systemUser.console
      * @throws \Exception
      * @router put person/shortcut/:id[uuid]
      */
@@ -184,6 +187,7 @@ class BasicsConsole extends Controller
      * @title  获取分类下的列表
      * @explain 获取列表
      * @baseAuth UserAuth:test
+     * @authGroup systemUser.console
      * @throws \Exception
      * @router delete person/shortcut/:id[uuid]
      */

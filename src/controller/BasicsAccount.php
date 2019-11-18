@@ -32,8 +32,7 @@ class BasicsAccount extends Controller
         'User'=>'pizepei',
         'title'=>'账号控制器',//控制器标题
         'namespace'=>'bases',//门面控制器命名空间
-        'baseAuth'=>'基础权限继承（加命名空间的类名称）',//基础权限继承（加命名空间的类名称）
-        'authGroup'=>'[user:用户相关,admin:管理员相关]',//[user:用户相关,admin:管理员相关] 权限组列表
+        'baseAuth'=>'',//基础权限继承（加命名空间的类名称）
         'basePath'=>'/account/',//基础路由
         'baseParam'=>'[$Request:pizepei\staging\Request]',//依赖注入对象
     ];
@@ -418,7 +417,6 @@ class BasicsAccount extends Controller
      *              status [string required] 状态1等待审核
      * @title  发送邮件
      * @explain 路由功能说明
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth MicroserviceAuth:initializeData
      * @resourceType microservice

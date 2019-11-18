@@ -23,8 +23,7 @@ class BasicsRole extends Controller
         'User'=>'pizepei',
         'title'=>'角色相关控制器',//控制器标题
         'namespace'=>'bases',//门面控制器命名空间
-        'baseAuth'=>'基础权限继承（加命名空间的类名称）',//基础权限继承（加命名空间的类名称）
-        'authGroup'=>'[system:role:用户角色管理]',//在系统权限分类下注册一个user 用户角色管理分组
+        'baseAuth'=>'UserAuth:test',//基础权限继承（加命名空间的类名称）
         'basePath'=>'/basics/role/',//基础路由
     ];
 
@@ -41,7 +40,6 @@ class BasicsRole extends Controller
      *      data [raw]
      * @title  添加角色
      * @explain 添加角色
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
      * @throws \Exception
@@ -67,8 +65,6 @@ class BasicsRole extends Controller
      *              update_time [string] 更新时间
      *              creation_time [string] 创建时间
      * @title  获取角色列表
-     * @explain 角色列表
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
      * @throws \Exception
@@ -86,7 +82,6 @@ class BasicsRole extends Controller
      * @return array [json] 定义输出返回数据
      * @title  删除角色
      * @explain 如果角色上有账号不允许删除
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
      * @throws \Exception
@@ -111,7 +106,6 @@ class BasicsRole extends Controller
      * @return array [json] 定义输出返回数据
      * @title  更新角色
      * @explain 更新角色
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
      * @throws \Exception
@@ -131,7 +125,6 @@ class BasicsRole extends Controller
      * @return array [json] 定义输出返回数据
      * @title  通过角色id获取对应的角色菜单信息
      * @explain 通过角色id获取对应的角色菜单信息
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
      * @throws \Exception
@@ -159,7 +152,6 @@ class BasicsRole extends Controller
      * @return array [json] 定义输出返回数据
      * @title 更新角色的菜单权限
      * @explain 更新角色的菜单权限
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
      * @throws \Exception
@@ -189,7 +181,6 @@ class BasicsRole extends Controller
      * @return array [json] 定义输出返回数据
      * @title 更新角色的菜单权限
      * @explain 更新角色的菜单权限
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
      * @throws \Exception

@@ -17,9 +17,7 @@ class BasicsAccountManage extends Controller
         'User'=>'pizepei',
         'title'=>'账号管理控制器',//控制器标题
         'namespace'=>'bases',//门面控制器命名空间
-        'baseAuth'=>'基础权限继承（加命名空间的类名称）',//基础权限继承（加命名空间的类名称）
-        'basePermissions'=>'[user:用户相关,admin:管理员相关]',//[user:用户相关,admin:管理员相关] 权限组列表
-        'authGroup'=>'[user:用户相关,admin:管理员相关]',//[user:用户相关,admin:管理员相关] 权限组列表
+        'baseAuth'=>'UserAuth:test',//基础权限继承（加命名空间的类名称）
         'basePath'=>'/account/manage/',//基础路由
         'baseParam'=>'[$Request:pizepei\staging\Request]',//依赖注入对象
     ];
@@ -32,8 +30,6 @@ class BasicsAccountManage extends Controller
      *          lsit [objectList]
      * @title  路由标题
      * @explain 路由功能说明
-     * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
-     * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
      * @throws \Exception
      * @router get
