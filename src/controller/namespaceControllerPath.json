@@ -1,26 +1,15 @@
 {
-  "name":"基础依赖包",
+  "name":"系统功能",
   "author": "pizepei",
+  "explain": "",
   "baseAuthGroup": {
     "systemBasics": {
       "name":"系统管理",
-      "explain": "基础的系统管理",
-      "list": {
-          "adminMenu": {
-              "explain": "",
-              "name":"系统用户"
-          }
-      }
+      "explain": "基础的系统管理如角色、权限、菜单等"
     },
     "systemUser": {
       "name":"系统用户",
-      "explain": "",
-      "list": {
-        "console": {
-            "name": "个人控制台",
-            "explain": ""
-        }
-      }
+      "explain": "普通用户权限登录、注册等"
     }
   }
 }

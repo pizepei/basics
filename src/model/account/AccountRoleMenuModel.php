@@ -44,6 +44,9 @@ class AccountRoleMenuModel extends Model
      * @var array 表结构变更日志 版本号=>['表结构修改内容sql','表结构修改内容sql']
      */
     protected $table_structure_log = [
-    ];
 
+    ];
+    protected $initData = [
+        ['role_id'=>'0EQD12A2-8824-9943-E8C9-C83E40F360D1','gather'=>["0ECD12A2-8824-9843-E8C9-C33E40F36E10"]],# 角色id系统默认角色id  gather 内容我首页控制台
+    ];
 }

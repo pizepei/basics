@@ -23,7 +23,7 @@ class AccountModel extends Model
             'TYPE'=>'uuid','COMMENT'=>'主键uuid','DEFAULT'=>false,
         ],
         'number'=>[
-            'TYPE'=>'varchar(32)', 'DEFAULT'=>'', 'COMMENT'=>'编号固定开头的账号编码(common,tourist,app,appAdmin,appSuperAdmin,Administrators)',
+            'TYPE'=>'varchar(45)', 'DEFAULT'=>'', 'COMMENT'=>'编号固定开头的账号编码(common,tourist,app,appAdmin,appSuperAdmin,SuperAdmin)',
         ],
         'surname'=>[
             'TYPE'=>'varchar(150)', 'DEFAULT'=>'', 'COMMENT'=>'真实姓氏',
@@ -125,7 +125,7 @@ class AccountModel extends Model
     ];
     /**
      * 账号类型
-     * 账号类型1普通子账号common、2游客tourist、3应用账号app、4应用管理员appAdmin、5应用超级管理员appSuperAdmin、6超级管理员Administrators
+     * 账号类型1普通子账号common、2游客tourist、3应用账号app、4应用管理员appAdmin、5应用超级管理员appSuperAdmin、6超级管理员SuperAdmin
      * @var array
      */
     protected $replace_type =[
@@ -134,7 +134,7 @@ class AccountModel extends Model
         3=>'应用账号app',
         4=>'应用管理员appAdmin',
         5=>'应用超级管理员appSuperAdmin',
-        6=>'超级管理员Administrators',
+        6=>'超级管理员SuperAdmin',
         7=>'其他',
     ];
 }

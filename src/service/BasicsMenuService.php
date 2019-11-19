@@ -18,7 +18,7 @@ class BasicsMenuService
      * @return array
      * @throws \Exception
      */
-    public function getMenuList(string $type='admin')
+    public function getMenuList(string $type='admin',$menuId)
     {
         $menuModel = $this->initModel($type);
         $AdminMenu = $menuModel->where(['status'=>2])->order('sort','desc')->fetchAll();
@@ -29,7 +29,14 @@ class BasicsMenuService
         foreach ($AdminMenu as $key=>$value)
         {
             if ($value['parent_id'] == Model::UUID_ZERO){
-                $data[] = $value;
+                if ($menuId !== 'SuperAdmin' ) {
+                    if (in_array($value['id'],$menuId)){
+                        $data[] = $value;
+                    }
+                }else{
+                    $data[] = $value;
+                }
+
                 unset($AdminMenu[$key]);
             }
         }
@@ -43,7 +50,14 @@ class BasicsMenuService
             foreach ($AdminMenu as $k=>$v)
             {
                 if ($value['id'] == $v['parent_id']){
-                    $value['list'][] = $v;
+                    if ($menuId !== 'SuperAdmin' ){
+                        if (in_array($v['id'],$menuId)){
+                            $value['list'][] = $v;
+                        }
+                    }else{
+                        $value['list'][] = $v;
+                    }
+
                     unset($AdminMenu[$k]);
                 }
             }
@@ -56,8 +70,16 @@ class BasicsMenuService
                 {
                     foreach ($AdminMenu as $ks=>$vs)
                     {
-                        if ($v['id'] == $vs['parent_id']){
-                            $v['list'][] = $vs;
+                        if ($v['id'] === $vs['parent_id']){
+                            if ($menuId !== 'SuperAdmin' ) {
+                                if (in_array($v['id'],$menuId)){
+                                    $v['list'][] = $vs;
+                                }else{
+
+                                }
+                            }else{
+                                $v['list'][] = $vs;
+                            }
                             unset($AdminMenu[$ks]);
                         }
                     }
@@ -123,6 +145,7 @@ class BasicsMenuService
         {
             if ($gather ==[] || in_array($value['id'],$gather)|| in_array($resultType,['default','showChecked'])){
                 if ($value['parent_id'] == $parent_id) {
+                    if ($gather ===null){ $gather = [];}
                     $menuInfo = [
                         'id'=>$value['id'],
                         'title'=>$value['title'].'  --  ['.$value['name'].']',

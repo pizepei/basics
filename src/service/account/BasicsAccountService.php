@@ -10,8 +10,11 @@ declare(strict_types=1);
 
 namespace pizepei\basics\service\account;
 
+use pizepei\basics\model\account\AccountAndRoleModel;
 use pizepei\basics\model\account\AccountMilestoneModel;
 use pizepei\basics\model\account\AccountModel;
+use pizepei\basics\model\account\AccountRoleMenuModel;
+use pizepei\basics\model\account\AccountRoleModel;
 use pizepei\basics\model\console\PersonShortcutTypeModel;
 use pizepei\encryption\google\GoogleAuthenticator;
 use pizepei\helper\Helper;
@@ -78,13 +81,19 @@ class BasicsAccountService
         $Data['number'] = 'common_'.Helper::str()->int_rand($config['number_count']);//编号固定开头的账号编码(common,tourist,app,appAdmin,appSuperAdmin,Administrators)
         $Data['phone'] = $Request['phone'];
         $Data['email'] = $Request['email'];
+        $Data['type'] = 1;
+
         $Data['logon_token_salt'] = Helper::str()->str_rand($config['user_logon_token_salt_count']);//建议user_logon_token_salt
         $AccountData = AccountModel::table()->add($Data);
         if (empty($AccountData))
         {
             error('注册失败');
         }
-
+        # 写入权限
+        AccountRoleModel::table()->add([
+            'role_id'=>'0EQD12A2-8824-9943-E8C9-C83E40F360D1',# 默认角色id
+            'account_id'=>key($AccountData),
+        ]);
         if(is_array($AccountData)){
             $id = array_keys($AccountData)[0]??null;
         }
@@ -472,7 +481,7 @@ class BasicsAccountService
     /**
      * @Author 皮泽培
      * @Created 2019/11/6 17:15
-     * @title  路由标题
+     * @title  获取登录用户的信息
      * @explain 路由功能说明
      * @throws \Exception
      */
@@ -484,13 +493,36 @@ class BasicsAccountService
         if ($number !==''){
             $where['number'] = $number;
         }
-        return AccountModel::table()
+        $data = AccountModel::table()
             ->where($where)
             ->replaceField('fetch',['type','status'],[
                 'id','number','surname','name',
                 'nickname','user_name','email',
                 'phone','parent_id','logon_online_count', 'type','status',
             ]);
+        if (!$data){return [];}
+        $data['typeInt'] = $data['type'] === '超级管理员SuperAdmin'?88:66;
+        # 查询相关权限  角色信息、菜单权限、功能接口权限
+        $AndRole = AccountAndRoleModel::table()->where([
+            'account_id'=>$data['id']
+        ])->fetch();
+        if (!$AndRole){
+            error('账号没有角色');
+        }
+
+        $Role = AccountRoleModel::table()->where([
+            'id'=>$AndRole['role_id'],
+            'status'=>2,
+        ])->fetch(['id','name','type','status','apps_id']);
+        if (!$Role){            error('角色状态异常');}
+        #查询菜单权限
+        $gather = AccountRoleMenuModel::table()->where(['role_id'=>$AndRole['role_id']])->fetch(['gather']);
+        $data['role'] =[
+            'role'=>$Role,
+            'api'=>[],
+            'menu'=>$gather['gather'],
+        ];
+        return $data;
     }
 
     public static function smsCodeRegisterSend($CodeApp)

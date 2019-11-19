@@ -41,6 +41,7 @@ class BasicsRole extends Controller
      * @title  添加角色
      * @explain 添加角色
      * @authExtend UserExtend.list:拓展权限
+     * @authGroup systemBasics
      * @baseAuth Resource:public
      * @throws \Exception
      * @router post role-info
@@ -67,6 +68,7 @@ class BasicsRole extends Controller
      * @title  获取角色列表
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
+     * @authGroup systemBasics
      * @throws \Exception
      * @router get list
      */
@@ -84,6 +86,7 @@ class BasicsRole extends Controller
      * @explain 如果角色上有账号不允许删除
      * @authExtend UserExtend.list:拓展权限
      * @baseAuth Resource:public
+     * @authGroup systemBasics
      * @throws \Exception
      * @router delete role-info/:id[uuid]
      */
@@ -107,6 +110,7 @@ class BasicsRole extends Controller
      * @title  更新角色
      * @explain 更新角色
      * @authExtend UserExtend.list:拓展权限
+     * @authGroup systemBasics
      * @baseAuth Resource:public
      * @throws \Exception
      * @router put role-info/:id[uuid]
@@ -126,6 +130,7 @@ class BasicsRole extends Controller
      * @title  通过角色id获取对应的角色菜单信息
      * @explain 通过角色id获取对应的角色菜单信息
      * @authExtend UserExtend.list:拓展权限
+     * @authGroup systemBasics
      * @baseAuth Resource:public
      * @throws \Exception
      * @router get  role-menu/:roleId[uuid]
@@ -153,6 +158,7 @@ class BasicsRole extends Controller
      * @title 更新角色的菜单权限
      * @explain 更新角色的菜单权限
      * @authExtend UserExtend.list:拓展权限
+     * @authGroup systemBasics
      * @baseAuth Resource:public
      * @throws \Exception
      * @router put  role-menu/:roleId[uuid]

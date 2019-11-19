@@ -62,9 +62,7 @@ class AccountRoleModel extends Model
      * @var array 表结构变更日志 版本号=>['表结构修改内容sql','表结构修改内容sql']
      */
     protected $table_structure_log = [
-        1=>[
-            //['uuid','ADD',"uuid char(36)  DEFAULT NULL COMMENT 'uuid'",'uuid','pizepei'],
-        ]
+
     ];
     /**
      * 类型模板
@@ -91,5 +89,13 @@ class AccountRoleModel extends Model
         5=>'应用超级管理员appSuperAdmin',
         6=>'超级管理员Administrators',
         7=>'其他',
+    ];
+    /**
+     * 初始化数据：表不存在时自动创建表然后自动插入$initData数据
+     *      支持多条
+     * @var array
+     */
+    protected $initData = [
+        ['id'=>'0EQD12A2-8824-9943-E8C9-C83E40F360D1','name'=>'默认用户权限','apps_id'=>Model::UUID_ZERO,'remark'=>'系统初始化时设置的默认角色','status'=>'2'],
     ];
 }

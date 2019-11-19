@@ -20,7 +20,7 @@ class BasicsMenu extends Controller
      */
     const CONTROLLER_INFO = [
         'User'=>'pizepei',
-        'title'=>'菜单相关控制器',//控制器标题
+        'title'=>'菜单相关',//控制器标题
         'namespace'=>'bases',//门面控制器命名空间
         'baseAuth'=>'UserAuth:test',//基础权限继承（加命名空间的类名称）
         'basePath'=>'/admin/menu/',//基础路由
@@ -47,18 +47,21 @@ class BasicsMenu extends Controller
      *                  icon [string] 三级菜单图标样式
      * @title  获取菜单列表
      * @explain 获取菜单列表（权限不同内容不同）
-     * @authTiny 微权限提供权限分配 [获取店铺所有  获取所有店铺  获取一个]
      * @authExtend UserExtend.list:删除账号操作
-     * @authGroup systemBasics.menu
+     * @authGroup systemBasics
      * @baseAuth UserAuth:test
      * @router get menu-list
      * @throws \Exception
      */
     public function index()
     {
-        return $this->succeed((new  BasicsMenuService())->getMenuList());
+        if (!isset($this->app->Authority->getUserInfo()['role'])) $this->error('没权限');
+        if ($this->app->Authority->isSuperAdmin()){
+            return $this->succeed((new  BasicsMenuService())->getMenuList('admin','SuperAdmin'));
+        }
+        $menuId = $this->app->Authority->getUserInfo()['role']['menu']??[];
+        return $this->succeed((new  BasicsMenuService())->getMenuList('admin',$menuId));
     }
-
     /**
      * @Author pizepei
      * @Created 2019/4/23 23:02
@@ -133,6 +136,7 @@ class BasicsMenu extends Controller
      *     data [raw]
      * @title  添加后台菜单
      * @explain 添加后台菜单
+     * @authGroup systemBasics
      * @router post admin-menu
      */
     public function addAdminNenu(Request $Request)
@@ -157,8 +161,9 @@ class BasicsMenu extends Controller
      *          status [int] 1 不显示  2 显示
      * @return array [json]
      *     data [raw]
-     * @title  更新后台菜单
-     * @explain 更新后台菜单
+     * @title  修改后台菜单
+     * @explain 修改后台菜单
+     * @authGroup systemBasics
      * @router put admin-menu/:id[uuid]
      */
     public function updateAdminNenu(Request $Request)
@@ -173,8 +178,9 @@ class BasicsMenu extends Controller
      *          id [uuid] 菜单id  uuid
      * @return array [json]
      *     data [raw]
-     * @title  添加后台菜单
-     * @explain 添加后台菜单
+     * @title  删除后台菜单
+     * @explain 删除后台菜单
+     * @authGroup systemBasics
      * @router delete admin-menu/:id[uuid]
      */
     public function delAdminNenu(Request $Request)
@@ -191,6 +197,7 @@ class BasicsMenu extends Controller
      *     data [raw]
      * @title  获取菜单详情
      * @explain 获取菜单详情
+     * @authGroup systemBasics,systemUser
      * @router get admin-menu/:id[uuid]
      */
     public function getAdminNenu(Request $Request)

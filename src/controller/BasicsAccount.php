@@ -9,7 +9,7 @@
 
 namespace pizepei\basics\controller;
 
-use model\basics\account\AccountModel;
+use pizepei\basics\model\account\AccountModel;
 use pizepei\basics\service\account\BasicsAccountService;
 use pizepei\helper\Helper;
 use pizepei\microserviceClient\MicroClient;
@@ -415,6 +415,16 @@ class BasicsAccount extends Controller
      *              logon_online_count [int required] 同时在线数
      *              type [string required] 账号类型1普通子账号common、2游客tourist、3应用账号app、4应用管理员appAdmin、5应用超级管理员appSuperAdmin、6超级管理员Administrators
      *              status [string required] 状态1等待审核
+     *              typeInt [int] 标记是状态 88 超级管理员 66 非创建管理员
+     *              role [object] 对应的角色信息
+     *                  role [object] 当前角色
+     *                      name [string] 角色
+     *                      id [uuid] 角色id
+     *                      apps_id [uuid] 应用id
+     *                      status [int] 状态 状态1等待审核、2审核通过3、禁止使用4、保留
+     *                      type [int] 账号类型1普通子账号common、2游客tourist、3应用账号app、4应用管理员appAdmin、5应用超级管理员appSuperAdmin、6超级管理员Administrators
+     *                  api [raw] api权限信息
+     *                  menu [raw] 菜单权限信息
      * @title  发送邮件
      * @explain 路由功能说明
      * @authExtend UserExtend.list:拓展权限

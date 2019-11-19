@@ -23,7 +23,7 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
     /**
      * 用户信息缓存有效期单位分钟
      */
-    const userPeriod = 5;
+    const userPeriod = 1;
     /**
      *  获取 property
      *
@@ -187,5 +187,21 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
         /**
          * 当前账号的权限
          */
+    }
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/11/19 16:34
+     * @title  判断是否是超级管理员
+     * @explain 非必要情况下不建议使用
+     * @return bool
+     * @throws \Exception
+     */
+    public function isSuperAdmin()
+    {
+        if($this->app->Authority->UserInfo['typeInt'] !==88)return false;
+        if($this->app->Authority->UserInfo['role']['role']['type'] !== 6)return false;
+        if (!in_array('SuperAdmin',explode('_',$this->app->Authority->UserInfo['number'])))return false;
+        return true;
     }
 }

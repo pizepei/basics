@@ -6,7 +6,7 @@
 namespace pizepei\basics\controller;
 
 
-use model\basics\account\AccountModel;
+use pizepei\basics\model\account\AccountModel;
 use pizepei\basics\model\console\PersonShortcutModel;
 use pizepei\basics\model\console\PersonShortcutTypeModel;
 use pizepei\staging\Controller;
@@ -34,9 +34,9 @@ class BasicsConsole extends Controller
      *          type [string] 快捷方式类型
      * @return array [json] 定义输出返回数据
      *      data [raw]
-     * @title  获取个人快捷方式
+     * @title  获取快捷导航
      * @baseAuth UserAuth:test
-     * @authGroup systemUser.console
+     * @authGroup systemUser
      * @throws \Exception
      * @router get person/shortcut-list
      */
@@ -70,10 +70,14 @@ class BasicsConsole extends Controller
      *          status [int] 状态类型
      * @return array [json] 定义输出返回数据
      *      data [raw]
-     * @title  添加个人快捷方式到对应类型中
-     * @explain 退出登录
+     *          name [string] 名称
+     *          url [string] url地址
+     *          explain [string] 描述
+     *          status [int] 状态类型
+     * @title  添加导航到分类
+     * @explain 添加个人导航到分类中
      * @baseAuth UserAuth:test
-     * @authGroup systemUser.console
+     * @authGroup systemUser
      * @throws \Exception
      * @router post person/shortcut/:typeId[uuid]
      */
@@ -95,9 +99,6 @@ class BasicsConsole extends Controller
         return $this->error('添加错误');
     }
 
-
-
-
     /**
      * @Author 皮泽培
      * @Created 2019/8/26 14:20
@@ -111,10 +112,10 @@ class BasicsConsole extends Controller
      *          status [int] 状态类型
      * @return array [json] 定义输出返回数据
      *      data [raw]
-     * @title  获取分类下的列表
-     * @explain 获取列表
+     * @title  获取分类下导航
+     * @explain 获取分类下的导航列表
      * @baseAuth UserAuth:test
-     * @authGroup systemUser.console
+     * @authGroup systemUser
      * @throws \Exception
      * @router get person/shortcut/:typeId[uuid]
      */
@@ -148,10 +149,10 @@ class BasicsConsole extends Controller
      *          sort [int] 排序
      * @return array [json] 定义输出返回数据
      *      data [raw]
-     * @title  更新快捷导航
+     * @title  编辑快捷导航
      * @explain 编辑更新快捷导航
      * @baseAuth UserAuth:test
-     * @authGroup systemUser.console
+     * @authGroup systemUser
      * @throws \Exception
      * @router put person/shortcut/:id[uuid]
      */
@@ -184,10 +185,10 @@ class BasicsConsole extends Controller
      *          status [int] 状态类型
      * @return array [json] 定义输出返回数据
      *      data [raw]
-     * @title  获取分类下的列表
-     * @explain 获取列表
+     * @title  删除导航
+     * @explain 删除导航
      * @baseAuth UserAuth:test
-     * @authGroup systemUser.console
+     * @authGroup systemUser
      * @throws \Exception
      * @router delete person/shortcut/:id[uuid]
      */
