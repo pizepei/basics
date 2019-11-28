@@ -16,9 +16,7 @@ class BasicsHome extends Controller
         'title'=>'后台首页控制台',//控制器标题
         'className'=>'Home',//门面控制器名称
         'namespace'=>'bases',//门面控制器命名空间
-        'baseAuth'=>'基础权限继承（加命名空间的类名称）',//基础权限继承（加命名空间的类名称）
         'basePath'=>'/home/',//基础路由
-        'baseParam'=>'[$Request:pizepei\staging\Request]',//依赖注入对象
     ];
     /**
      * @return array [html]
