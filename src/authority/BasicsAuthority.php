@@ -23,7 +23,7 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
     /**
      * 用户信息缓存有效期单位分钟
      */
-    const userPeriod = 10;
+    const userPeriod = 1;
     /**
      *  获取 property
      *
