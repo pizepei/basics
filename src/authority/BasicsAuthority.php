@@ -87,6 +87,7 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
             # 有缓存
             $this->Payload = Helper()->json_decode($payload);
             $this->UserInfo = Helper()->json_decode($UserInfo);
+            $this->ACCESS_TOKEN = $this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']];
             JsonWebToken::is_time($this->Payload);# 验证有效期
             return true;
         }
@@ -103,15 +104,13 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
             Redis::init()->setex('account:jwt:payload:Lock'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($res));
             error('登陆信息为空');
         }
-
         $this->Payload = $res[$this->app->__INIT__['ReturnJsonData']]['Payload'];
         $this->UserInfo = $res[$this->app->__INIT__['ReturnJsonData']]['UserInfo'];
-
+        $this->ACCESS_TOKEN = $this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']];
         $payload = Redis::init()->setex('account:jwt:userInfo:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($this->UserInfo));
         $payload = Redis::init()->setex('account:jwt:payload:'.\Config::MICROSERVICE['ACCOUNT']['configId'].':'.$explode[2],60*self::userPeriod,Helper()->json_encode($this->Payload));
         # 进行统一验证
         JsonWebToken::is_time($this->Payload);# 验证有效期
-
     }
 
     /**
