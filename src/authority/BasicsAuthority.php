@@ -118,20 +118,33 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
      * @Author 皮泽培
      * @Created 2019/11/4 15:24
      * @param $jwtString
-     * @title  从远程账号配置中心获取getPayload
+     * @title  从远程账号配置中心获取getPayload(如果配置不存在从本地获取)
      * @explain 服务本地使用请求远程
      * @throws \Exception
      */
     public function getRemotePayload()
     {
-        # 准备微服务客户端
-        $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE);
-        $res = $MicroClient->send(
-            [
-                'JWT'=>$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']],
-            ],'ACCOUNT'
-        );
-        return $res;
+        # 如果有远程配置中心就从远程配置中心获取
+        if (isset( \Config::MICROSERVICE['ACCOUNT']) && !empty(\Config::MICROSERVICE['ACCOUNT']) && isset(\Config::MICROSERVICE['ACCOUNT']['configId']) && !empty(\Config::MICROSERVICE['ACCOUNT']['configId']))
+        {
+            # 准备微服务客户端
+            $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE);
+            $res = $MicroClient->send(
+                [
+                    'JWT'=>$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']],
+                ],'ACCOUNT'
+            );
+            return $res;
+        }else{
+            $Redis = Redis::init();
+            $AccountService = new BasicsAccountService();
+            $Payload = $AccountService->decodeLogonJwt($this->app->Authority->pattern,$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']],$Redis);
+            $userInfo = BasicsAccountService::getUserInfo('',$Payload['number']);
+            return [
+                'statusCode'=>200,
+                $this->app->__INIT__['ReturnJsonData']=>['Payload'=>$Payload,'UserInfo'=>$userInfo],
+            ];
+        }
     }
 
 
