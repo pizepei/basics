@@ -125,7 +125,7 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
     public function getRemotePayload()
     {
         # 如果有远程配置中心就从远程配置中心获取
-        if (isset( \Config::MICROSERVICE['ACCOUNT']) && !empty(\Config::MICROSERVICE['ACCOUNT']) && isset(\Config::MICROSERVICE['ACCOUNT']['configId']) && !empty(\Config::MICROSERVICE['ACCOUNT']['configId']))
+        if (   \Deploy::CENTRE_ID !== \Deploy::PROJECT_ID || (isset( \Config::MICROSERVICE['ACCOUNT']) && !empty(\Config::MICROSERVICE['ACCOUNT']) && isset(\Config::MICROSERVICE['ACCOUNT']['configId']) && !empty(\Config::MICROSERVICE['ACCOUNT']['configId']))  )
         {
             # 准备微服务客户端
             $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE);
