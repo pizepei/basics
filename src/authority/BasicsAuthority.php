@@ -124,18 +124,8 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
      */
     public function getRemotePayload()
     {
-        # 如果有远程配置中心就从远程配置中心获取
-        if (   \Deploy::CENTRE_ID !== \Deploy::PROJECT_ID || (isset( \Config::MICROSERVICE['ACCOUNT']) && !empty(\Config::MICROSERVICE['ACCOUNT']) && isset(\Config::MICROSERVICE['ACCOUNT']['configId']) && !empty(\Config::MICROSERVICE['ACCOUNT']['configId']))  )
-        {
-            # 准备微服务客户端
-            $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE);
-            $res = $MicroClient->send(
-                [
-                    'JWT'=>$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']],
-                ],'ACCOUNT'
-            );
-            return $res;
-        }else{
+        # 如果是主项目就直接使用本地
+        if (\Deploy::CENTRE_ID === \Deploy::PROJECT_ID ){
             $Redis = Redis::init();
             $AccountService = new BasicsAccountService();
             $Payload = $AccountService->decodeLogonJwt($this->app->Authority->pattern,$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']],$Redis);
@@ -145,6 +135,20 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
                 $this->app->__INIT__['ReturnJsonData']=>['Payload'=>$Payload,'UserInfo'=>$userInfo],
             ];
         }
+        # 不是 主项目 如果有远程配置中心就从远程配置中心获取
+        if ( isset( \Config::MICROSERVICE['ACCOUNT']) && !empty(\Config::MICROSERVICE['ACCOUNT']) && isset(\Config::MICROSERVICE['ACCOUNT']['configId']) && !empty(\Config::MICROSERVICE['ACCOUNT']['configId']) )
+        {
+            # 准备微服务客户端
+            $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE);
+            $res = $MicroClient->send(
+                [
+                    'JWT'=>$this->app->Request()->SERVER[\Config::ACCOUNT['HEADERS_ACCESS_TOKEN_NAME']],
+                ],'ACCOUNT'
+            );
+            return $res;
+        }
+        # 没有 就提示错误
+        error('非主项目，请配置JWT接口');
     }
 
 
@@ -212,8 +216,8 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
      */
     public function isSuperAdmin()
     {
-        if($this->app->Authority->UserInfo['typeInt'] !==88)return false;
-        if($this->app->Authority->UserInfo['role']['role']['type'] !== 6)return false;
+        if((int)$this->app->Authority->UserInfo['typeInt'] !==88)return false;
+        if((int)$this->app->Authority->UserInfo['role']['role']['type'] !== 6) return false;
         if (!in_array('SuperAdmin',explode('_',$this->app->Authority->UserInfo['number'])))return false;
         return true;
     }
