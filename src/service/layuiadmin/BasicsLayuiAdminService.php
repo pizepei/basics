@@ -19,8 +19,8 @@ class BasicsLayuiAdminService
     {
         $data = [
             'title'=>\Config::PRODUCT_INFO['title'],
-            'index'=>'../../'.\Deploy::MODULE_PREFIX.'/home/index',
-            'base'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/src/',
+            'index'=>'../../'.\Deploy::MODULE_PREFIX.'/home/index',//index
+            'base'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.(app()->__EXPLOIT__?'/src/':'dist'),
             'css'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/css/layui.css',
             'js'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/layui.js',
         ];

@@ -193,7 +193,6 @@ class BasicsMicroservice extends Controller
      */
     public function getAppsConfig(Request $Request)
     {
-//        return $Request->raw();
         return $this->succeed(BasicsMicroserviceAppsService::getLocalAppsConfig($Request->raw(),$Request->path('appid')),'获取成功');
     }
 
