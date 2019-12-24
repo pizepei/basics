@@ -30,6 +30,9 @@ class PersonShortcutTypeModel extends Model
         'explain'=>[
             'TYPE'=>"varchar(500)", 'DEFAULT'=>5, 'COMMENT'=>'备注说明',
         ],
+        'sort'=>[
+            'TYPE'=>"int", 'DEFAULT'=>50, 'COMMENT'=>'排序',
+        ],
         'extend'=>[
             'TYPE'=>"json", 'DEFAULT'=>false, 'COMMENT'=>'扩展',
         ],
@@ -43,6 +46,7 @@ class PersonShortcutTypeModel extends Model
          * FULLTEXT 文本
          */
         'INDEX'=>[
+            ['TYPE'=>'INDEX','FIELD'=>'sort','NAME'=>'sort','USING'=>'BTREE','COMMENT'=>'排序'],
             ['TYPE'=>'UNIQUE','FIELD'=>'name,Account_id','NAME'=>'name,Account_id','USING'=>'BTREE','COMMENT'=>'一个人下的类型是唯一的'],
         ],//索引 KEY `ip` (`ip`) COMMENT 'sss 'user_name
         'PRIMARY'=>'id',//主键
