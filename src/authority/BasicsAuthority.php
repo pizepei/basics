@@ -214,11 +214,17 @@ class BasicsAuthority extends \pizepei\staging\BasicsAuthority
      * @return bool
      * @throws \Exception
      */
-    public function isSuperAdmin()
+    public function isSuperAdmin($UserInfo=[])
     {
-        if((int)$this->app->Authority->UserInfo['typeInt'] !==88)return false;
-        if((int)$this->app->Authority->UserInfo['role']['role']['type'] !== 6) return false;
-        if (!in_array('SuperAdmin',explode('_',$this->app->Authority->UserInfo['number'])))return false;
+        if ($UserInfo ===[]){
+            if((int)$this->app->Authority->UserInfo['typeInt'] !==88)return false;
+            if((int)$this->app->Authority->UserInfo['role']['role']['type'] !== 6) return false;
+            if (!in_array('SuperAdmin',explode('_',$this->app->Authority->UserInfo['number'])))return false;
+        }else{
+            if((int)$UserInfo['typeInt'] !==88)return false;
+            if((int)$UserInfo['role']['role']['type'] !== 6) return false;
+            if (!in_array('SuperAdmin',explode('_',$UserInfo['number'])))return false;
+        }
         return true;
     }
 }
