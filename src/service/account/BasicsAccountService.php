@@ -89,8 +89,8 @@ class BasicsAccountService
         {
             error('注册失败');
         }
-        # 写入权限
-        AccountRoleModel::table()->add([
+        # 写入账号与角色的关系
+        AccountAndRoleModel::table()->add([
             'role_id'=>'0EQD12A2-8824-9943-E8C9-C83E40F360D1',# 默认角色id
             'account_id'=>key($AccountData),
         ]);
