@@ -16,6 +16,7 @@ use pizepei\basics\model\account\AccountModel;
 use pizepei\basics\model\account\AccountRoleMenuModel;
 use pizepei\basics\model\account\AccountRoleModel;
 use pizepei\basics\model\console\PersonShortcutTypeModel;
+use pizepei\basics\service\BasicsMenuService;
 use pizepei\encryption\google\GoogleAuthenticator;
 use pizepei\helper\Helper;
 use pizepei\model\cache\Cache;
@@ -23,6 +24,7 @@ use pizepei\model\db\Model;
 use pizepei\model\redis\Redis;
 use pizepei\service\encryption\PasswordHash;
 use pizepei\service\jwt\JsonWebToken;
+use pizepei\staging\App;
 use pizepei\staging\Controller;
 
 class BasicsAccountService
@@ -195,6 +197,24 @@ class BasicsAccountService
         return $result;
 
     }
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/12/24 16:25
+     * @title  获取当前用户的菜单权限
+     * @explain 路由功能说明
+     * @throws \Exception
+     */
+    public static function getMenu(App $app ,$UserInfo)
+    {
+        if (!isset($UserInfo['role'])) error('没权限');
+        if ($app->Authority->isSuperAdmin($UserInfo)){
+            return (new  BasicsMenuService())->getMenuList('admin','SuperAdmin');
+        }
+        $menuId = $UserInfo['role']['menu']??[];
+        return (new  BasicsMenuService())->getMenuList('admin',$menuId);
+    }
+
 
     /**
      * 获取登录有效期
@@ -486,7 +506,7 @@ class BasicsAccountService
      * @explain 路由功能说明
      * @throws \Exception
      */
-    public static function getUserInfo(string $accountId='',string $number)
+    public static function getUserInfo(string $accountId='',string $number='')
     {
         if ($accountId !==''){
             $where['id'] = $accountId;

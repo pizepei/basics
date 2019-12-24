@@ -132,12 +132,59 @@ class BasicsAccount extends Controller
         $result =  $AccountService->logon(\Config::ACCOUNT,$Request->post(),$Account,$this);
         if(isset($result['jwtArray']['str']) && $result['jwtArray']){
             return $this->succeed([
-                'result'=>$result,
-                'access_token'=>$result['jwtArray']['str']
+                'result'        =>$result,
+                'access_token'  =>$result['jwtArray']['str'],
             ],'登录成功');
         }
         return $this->error($result['msg']);
     }
+    /**
+     * @Author pizepei
+     * @Created 2019/4/23 23:02
+     * @param \pizepei\staging\Request $Request
+     * @return array [json]
+     *      data [object]
+     *          username [object]
+     *              number [string] 标识
+     *              nickname [string] 昵称
+     *              user_name [string] 姓名
+     *              email [string] 邮箱
+     *              phone [int] 手机号码
+     *              role [raw] 角色信息
+     *          sex [string]
+     *          role [int]
+     *          menuData [objectList] 菜单数据
+     *              name [string] 一级菜单名称（与视图的文件夹名称和路由路径对应）
+     *              title [string] 一级菜单标题
+     *              icon [string] 一级菜单图标样式
+     *              spread [bool] 是否默认展子菜单
+     *              list [objectList] 二级
+     *                  name [string] 二级菜单名称（与视图的文件夹名称和路由路径对应）
+     *                  title [string] 二级菜单标题
+     *                  icon [string] 二级菜单图标样式
+     *                  spread [bool] 是否默认展子菜单
+     *                  list [objectList] 三级
+     *                      name [string] 三级菜单名称
+     *                      title [string] 三级菜单标题
+     *                      icon [string] 三级菜单图标样式
+     * @title  用户信息
+     * @explain 简单用户信息一次性缓存在浏览器本地减少api请求数开发者可以随时追加数据
+     * @baseAuth UserAuth:test
+     * @router get session
+     */
+    public function session(Request $Request)
+    {
+        # 菜单信息
+        $menuData = BasicsAccountService::getMenu($this->app,$this->UserInfo);
+        # 用户基础信息
+        $username = $this->UserInfo;
+        $data = [
+            'menuData'      =>      $menuData,
+            "username"      =>      $username
+        ];
+        return $this->succeed($data);
+    }
+
     /**
      * @Author pizepei
      * @Created 2019/3/30 21:33
@@ -277,7 +324,7 @@ class BasicsAccount extends Controller
         @$noisyCnt 澡点数
         @$sessionName 验证码Session名称
          */
-        return GifverifyCode::Draw(4, 2, 100, 31, 4, 1, 70, "secode");
+        return GifverifyCode::Draw(4, 4, 100, 31, 4, 1, 70, "secode");
     }
     /**
      * @Author pizepei
