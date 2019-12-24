@@ -324,7 +324,7 @@ class BasicsAccount extends Controller
         @$noisyCnt 澡点数
         @$sessionName 验证码Session名称
          */
-        return GifverifyCode::Draw(4, 4, 100, 31, 4, 1, 70, "secode");
+        return GifverifyCode::Draw(4, 1, 99, 31, 1, 5, 15, "secode");
     }
     /**
      * @Author pizepei
