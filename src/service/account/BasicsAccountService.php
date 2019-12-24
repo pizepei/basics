@@ -82,6 +82,7 @@ class BasicsAccountService
         $Data['phone'] = $Request['phone'];
         $Data['email'] = $Request['email'];
         $Data['type'] = 1;
+        $Data['nickname'] = $Request['nickname']??'';
 
         $Data['logon_token_salt'] = Helper::str()->str_rand($config['user_logon_token_salt_count']);//建议user_logon_token_salt
         $AccountData = AccountModel::table()->add($Data);
