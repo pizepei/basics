@@ -96,6 +96,6 @@ class AccountRoleModel extends Model
      * @var array
      */
     protected $initData = [
-        ['id'=>'0EQD12A2-8824-9943-E8C9-C83E40F360D1','name'=>'默认用户权限','apps_id'=>Model::UUID_ZERO,'remark'=>'系统初始化时设置的默认角色','status'=>'2'],
+        ['id'=>'0EQD12A2-8824-9943-E8C9-C83E40F360D1','name'=>'默认用户角色','apps_id'=>Model::UUID_ZERO,'remark'=>'系统初始化时设置的默认角色','status'=>'2'],
     ];
 }
