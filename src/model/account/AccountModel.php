@@ -72,7 +72,7 @@ class AccountModel extends Model
             'TYPE'=>"int(10)", 'DEFAULT'=>10, 'COMMENT'=>'登录token有效期',
         ],
         'type'=>[
-            'TYPE'=>"ENUM('1','2','3','4','5','6','7','8')", 'DEFAULT'=>'1', 'COMMENT'=>'账号类型1普通子账号common、2游客tourist、3应用账号app、4应用管理员appAdmin、5应用超级管理员appSuperAdmin、6超级管理员Administrators',
+            'TYPE'=>"ENUM('1','2','3','4','5','6','7','8')", 'DEFAULT'=>'1', 'COMMENT'=>'账号类型1普通子账号common、2游客tourist、3应用账号app、4应用管理员appAdmin、5应用超级管理员appSuperAdmin、6超级管理员SuperAdmin',
         ],
         'status'=>[
             'TYPE'=>"ENUM('1','2','3','4','5')", 'DEFAULT'=>'1', 'COMMENT'=>'状态1等待审核、2审核通过3、禁止使用4、保留',
