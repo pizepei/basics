@@ -33,7 +33,7 @@ class PersonShortcutModel extends Model
             'TYPE'=>"varchar(250)", 'DEFAULT'=>'oauth.heil.top', 'COMMENT'=>'地址',
         ],
         'sort'=>[
-            'TYPE'=>"int", 'DEFAULT'=>'oauth.heil.top', 'COMMENT'=>'地址',
+            'TYPE'=>"int", 'DEFAULT'=>50, 'COMMENT'=>'排序',
         ],
         'extend'=>[
             'TYPE'=>"json", 'DEFAULT'=>false, 'COMMENT'=>'扩展',
