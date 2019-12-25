@@ -28,7 +28,7 @@ class BasicsLayuiAdminService
         ];
         if (\Deploy::CDN_URL !==''){
                 $data['index']  =   '../../'.\Deploy::MODULE_PREFIX.'/home/index';//index
-                $data['base']   =  'http://cdn.heil.top/resource/dist/';
+                $data['base']   =   \Deploy::CDN_URL.'/'.\Deploy::VIEW_RESOURCE_PREFIX.((!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'/dist/':'/src/');
         }else{
             $data['index']  =   '../../'.\Deploy::MODULE_PREFIX.'/home/index';//index
             $data['base']   =  './'.\Deploy::VIEW_RESOURCE_PREFIX.((!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'/dist/':'/src/');
