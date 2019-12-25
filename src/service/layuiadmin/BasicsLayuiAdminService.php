@@ -17,13 +17,31 @@ class BasicsLayuiAdminService
      */
     public function getIndexHtml(string $domain):string
     {
-        $data = [
-            'title'=>\Config::PRODUCT_INFO['title'],
-            'index'=>'../../'.\Deploy::MODULE_PREFIX.'/home/index',//index
-            'base'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.((!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'/dist/':'/src/'),
-            'css'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/css/layui.css',
-            'js'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/layui.js',
-        ];
+        if (\Deploy::CDN_URL ===''){
+            $data = [
+                'version'=>(!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'1.0.1':date('YmdHis'),
+                'title'=>\Config::PRODUCT_INFO['title'],
+                'index'=>'../../'.\Deploy::MODULE_PREFIX.'/home/index',//index
+                'base'=>'http://cdn.heil.top/resource/dist/',
+                'views'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.((!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'/dist/':'/src/'),
+                'css'=>'https://www.layuicdn.com/layui-v2.5.5/css/layui.css',
+                'js'=>'https://www.layuicdn.com/layui-v2.5.5/layui.js',
+//                'css'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/css/layui.css',
+//                'js'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/layui.js',
+            ];
+        }else{
+            $data = [
+                'version'=>(!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'1.0.1':date('YmdHis'),
+                'title'=>\Config::PRODUCT_INFO['title'],
+                'index'=>'../../'.\Deploy::MODULE_PREFIX.'/home/index',//index
+                'base'=>'http://cdn.heil.top/resource/dist/',
+                'css'=>'https://www.layuicdn.com/layui-v2.5.5/css/layui.css',
+                'js'=>'https://www.layuicdn.com/layui-v2.5.5/layui.js',
+            ];
+        }
+
+
+
         $file = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'index.html');
         return $this->str_replace($file,$data);
     }
