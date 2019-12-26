@@ -284,4 +284,59 @@ class BasicsMenuService
             }
         }
     }
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/12/26 15:58
+     * @param array|string $menuId 如果是SuperAdmin 就显示超级管理员权限 array 就屏蔽超级管理员菜单 再使用菜单id判断
+     * @param string $type  菜单类型 目前只有admin
+     * @title  获取用户可看的菜单
+     */
+    public function getUserMenuList($menuId,string $type='admin'):array
+    {
+        $data = \BaseMenu::DATA;
+        if ($menuId !=='SuperAdmin' && !is_array($menuId)){
+            error('错误的menuId');
+        }else if ($menuId ==='SuperAdmin') {
+            # 超级管理员直接返回
+            return $data;
+        }else if ($menuId ===[]){
+            return [];
+        }
+        #  获取基础菜单数据 菜单有多少层级运行多少次
+        $this->isUserMenuList($data,$menuId);
+        $this->isUserMenuList($data,$menuId);
+        $this->isUserMenuList($data,$menuId);
+        return $data;
+    }
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/12/26 16:12
+     * @param $data
+     * @title  判断过滤用户菜单权限
+     * @throws \Exception
+     */
+    public function isUserMenuList(&$data,$menuId)
+    {
+        foreach ($data as $key =>&$value)
+        {
+            if (isset($value['SuperAdmin']) && $menuId !=='SuperAdmin' && $value['SuperAdmin'] ===true){
+                # 如果菜单是必须超级管理员可看 当前用户不是超级管理员 就直接删除当前菜单
+                unset($data[$key]);
+            }else{
+                # 正常菜单  判断当前菜单id是否在$menuId中 是否有下一级
+                if (!in_array($value['id'],$menuId) && (!isset($value['children']) || !is_array($value['children']) ||  $value['children'] === [])){
+                    # 不在其中  直接删除  没有下一级
+                    unset($data[$key]);
+                }else{
+                    if (isset($value['children']) && is_array($value['children']) && $value['children'] !==[])
+                    {
+                        $this->isUserMenuList($value['children'],$menuId);
+                    }
+                }
+            }
+        }
+    }
+
 }
