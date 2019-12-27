@@ -17,7 +17,7 @@
     "SuperAdmin":true,
     "jump": "",
     "extend": {},
-    "sort": 99,
+    "sort": 10,
     "children": [
       {
         "title": "权限管理"
