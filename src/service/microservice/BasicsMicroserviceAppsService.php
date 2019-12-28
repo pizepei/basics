@@ -146,7 +146,7 @@ class BasicsMicroserviceAppsService
 
             # 进行请求
             $url = \Deploy::MicroService['url'].\Deploy::MicroService['appid'].'.json';
-            $res = Helper()->httpRequest($url,Helper()->json_encode($data));
+            $res = Helper()->httpRequest($url,Helper()->json_encode($data),empty(\Deploy::MicroService['hostDomain'])?[]:['header'=>['Host:'.\Deploy::MicroService['hostDomain']]]);
             if ($res['code'] !==200){throw  new \Exception('The request failed   code:'.$res['code']);}
             $body = Helper()->json_decode($res['body']);
             if (!isset($body['data'])){throw  new \Exception('The request failed   body empty '); }
