@@ -3,12 +3,12 @@
     "title": "控制台",
     "name":"",
     "icon": "layui-icon-template-1",
-    "spread": 0,
+    "spread": false,
     "jump": "",
     "extend": {},
     "sort": 100,
-    "children": []
-  }
+    "list": []
+    }
   ,{
     "title": "系统配置",
     "name":"admin",
@@ -18,7 +18,7 @@
     "jump": "",
     "extend": {},
     "sort": 10,
-    "children": [
+    "list": [
       {
         "title": "权限管理"
         ,"name":"authority"
@@ -26,7 +26,7 @@
         ,"spread": 0
         ,"extend": {}
         ,"sort": 99
-        ,"children": [
+        ,"list": [
           {
             "title": "角色管理"
             ,"name":"role"
@@ -52,7 +52,7 @@
         ,"extend": {}
         ,"SuperAdmin":true
         ,"sort": 98
-        ,"children": [
+        ,"list": [
         {
           "title": "后台导航信息"
           ,"name":"admin-nav"
