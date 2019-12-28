@@ -150,6 +150,9 @@ class BasicsMicroserviceAppsService
             if ($res['code'] !==200){throw  new \Exception('The request failed   code:'.$res['code']);}
             $body = Helper()->json_decode($res['body']);
             if (!isset($body['data'])){throw  new \Exception('The request failed   body empty '); }
+            if ($body['data']['code'] !==200){
+                throw  new \Exception($body['data']['msg']);
+            }
             # 解密
             $cacheData = Helper()->json_decode($Prpcrypt->decodeCiphertext(\Deploy::MicroService['token'],$body['data']));
             if (!$cacheData){ throw  new \Exception('The request failed   cacheData empty ');  }
