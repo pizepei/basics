@@ -8,7 +8,7 @@ namespace pizepei\basics\model\microservice;
 
 use pizepei\model\db\Model;
 
-class MicroserviceAppsRequestLogModel extends Model
+class MicroserviceAppsReqLogModel extends Model
 {
     /**
      * 表结构

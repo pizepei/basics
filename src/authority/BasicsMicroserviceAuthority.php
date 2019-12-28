@@ -7,7 +7,7 @@
 namespace pizepei\basics\authority;
 
 
-use pizepei\basics\model\microservice\MicroserviceAppsRequestLogModel;
+use pizepei\basics\model\microservice\MicroserviceAppsReqLogModel;
 use pizepei\basics\service\microservice\BasicsMicroserviceAppsService;
 use pizepei\encryption\aes\Prpcrypt;
 use pizepei\model\redis\Redis;
@@ -85,7 +85,7 @@ class BasicsMicroserviceAuthority extends BasicsAuthority
         if (!is_array($result)){
             $result = Helper()->json_decode($result);
         }
-        $AppsRequestLogModel = MicroserviceAppsRequestLogModel::table($this->appsid);
+        $AppsRequestLogModel = MicroserviceAppsReqLogModel::table($this->appsid);
         $AppsRequestLogModel->add([
             'appid'         =>\Deploy::MicroService['appid'],        # 当前微服务的配置ID
             'apps_config_id'=>$this->appsConfig['id'],      # apps config配置id
