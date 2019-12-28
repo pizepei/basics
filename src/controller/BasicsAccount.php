@@ -11,6 +11,7 @@ namespace pizepei\basics\controller;
 
 use pizepei\basics\model\account\AccountModel;
 use pizepei\basics\service\account\BasicsAccountService;
+use pizepei\basics\service\BasicsMenuService;
 use pizepei\helper\Helper;
 use pizepei\microserviceClient\MicroClient;
 use pizepei\model\cache\Cache;
@@ -175,7 +176,7 @@ class BasicsAccount extends Controller
     public function session(Request $Request)
     {
         # 菜单信息
-        $menuData = BasicsAccountService::getMenu($this->app,$this->UserInfo);
+        $menuData = (new BasicsMenuService())->getUserMenuList($this->app->Authority->isSuperAdmin()?'SuperAdmin':($this->UserInfo['role']['menu']??[]));
         # 用户基础信息
         $username = $this->UserInfo;
         $data = [
