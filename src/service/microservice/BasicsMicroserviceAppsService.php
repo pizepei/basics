@@ -129,7 +129,6 @@ class BasicsMicroserviceAppsService
     {
 
         # appid 是apps 的appid   通过\Deploy::MicroService配置获取对应的应用信息（请求配置中心）
-
         # 缓存
         if ($Cache){
             $cacheData = Cache::get(['MicroserviceFarAppsConfig',$appid],'Microservice');
