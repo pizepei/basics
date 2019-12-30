@@ -4,6 +4,7 @@
     "name":"",
     "icon": "layui-icon-template-1",
     "spread": false,
+    "SuperAdmin":false,
     "jump": "",
     "extend": {},
     "sort": 100,

@@ -339,4 +339,25 @@ class BasicsMenuService
         }
     }
 
+
+    /**
+     * 获树菜单导航
+     */
+    public function getUserMenuListTree(array &$data,array $menuId)
+    {
+        if (!$data) error('数据为空');
+
+        foreach ($data as $key=>&$value)
+        {
+
+            $value['field'] = $value['id'];                                             # 节点字段名	String	一般对应表字段名
+            $value['checked'] = in_array($value['id'],$menuId)?true:false;              # 节点是否初始为选中状态（如果开启复选框的话），默认 false	Boolean	true
+            $value['disabled'] = ($value['SuperAdmin']??false)?true:false;              # 节点是否为禁用状态。默认 false	Boolean	false
+            if (isset($value['list']) && is_array($value['list']) && !empty($value['list']))  {
+                $value['children'] = $value['list'];
+                $this->getUserMenuListTree($value['children'],$menuId);
+            }
+        }
+    }
+
 }

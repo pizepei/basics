@@ -142,9 +142,12 @@ class BasicsRole extends Controller
         }
         # 通过角色id获取对应的角色菜单信息 从数据库获取当前角色可看的菜单id
         $rolemMenuIdData = AccountRoleMenuModel::table()->where(['role_id'=>$Request->path('roleId')])->fetch(['gather']);
-        $MenuData = (new  BasicsMenuService())->getTreeMenu('admin',true,$Request->path('roleId'),$rolemMenuIdData['gather'],'showChecked');
+//        $MenuData = (new  BasicsMenuService())->getTreeMenu('admin',true,$Request->path('roleId'),$rolemMenuIdData['gather'],'showChecked');
+        $BasicsMenuService = new BasicsMenuService();
+        $data =  $BasicsMenuService->getUserMenuList('SuperAdmin');
+        $BasicsMenuService->getUserMenuListTree($data,$rolemMenuIdData['gather']);
         # 获取当前项目的所有菜单
-        return $this->succeed($MenuData);
+        $this->succeed($data);
     }
     /**
      * @Author 皮泽培
