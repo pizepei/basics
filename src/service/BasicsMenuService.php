@@ -335,15 +335,16 @@ class BasicsMenuService
                     # 不在其中  直接删除  没有下一级
                     unset($data[$key]);
                 }else{
-
                     if ( isset($value['list']) && is_array($value['list']) && $value['list'] !==[] )
                     {
-
                         $this->isUserMenuList($value['list'],$menuId);
                     }
                 }
             }
         }
+
+        # 特别有意思 在使用 unset($data[$key]); 索引数组时 原来的索引会变成字符串类型，同时array 会变成对象（前端json） 使用array_values函数进行重建
+        $data = array_values($data);
 
     }
 
