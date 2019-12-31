@@ -325,11 +325,9 @@ class BasicsMenuService
             $value['SuperAdmin'] = $value['SuperAdmin']??false;
 
             if ($menuId !=='SuperAdmin' && $value['SuperAdmin'] ===true){
-                // var_dump($value['title']);
                 # 如果菜单是必须超级管理员可看 当前用户不是超级管理员 就直接删除当前菜单
                 unset($data[$key]);
             }else{
-
                 # 正常菜单  判断当前菜单id是否在$menuId中 是否有下一级
                 if (!in_array($value['id'],$menuId)){
                     # 不在其中  直接删除  没有下一级
@@ -342,7 +340,6 @@ class BasicsMenuService
                 }
             }
         }
-
         # 特别有意思 在使用 unset($data[$key]); 索引数组时 原来的索引会变成字符串类型，同时array 会变成对象（前端json） 使用array_values函数进行重建
         $data = array_values($data);
 
