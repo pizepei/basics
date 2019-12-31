@@ -326,7 +326,7 @@ class BasicsMenuService
                 unset($data[$key]);
             }else{
                 # 正常菜单  判断当前菜单id是否在$menuId中 是否有下一级
-                if (!in_array($value['id'],$menuId) && (!isset($value['children']) || !is_array($value['children']) ||  $value['children'] === [])){
+                if (!in_array($value['id'],$menuId)){
                     # 不在其中  直接删除  没有下一级
                     unset($data[$key]);
                 }else{
