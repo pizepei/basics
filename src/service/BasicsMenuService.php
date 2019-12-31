@@ -258,7 +258,7 @@ class BasicsMenuService
             if (isset($value['id'])){
                 $menuId[] = $value['id'];
                 if (isset($value['children']) && !empty($value['children']) && is_array($value['children'])){
-                        $this->recursiveUpdateRoleMenuId($menuId,$value['children']);
+                    $this->recursiveUpdateRoleMenuId($menuId,$value['children']);
                 }
             }
         }
@@ -305,8 +305,9 @@ class BasicsMenuService
         }
         #  获取基础菜单数据 菜单有多少层级运行多少次
         $this->isUserMenuList($data,$menuId);
-        $this->isUserMenuList($data,$menuId);
-        $this->isUserMenuList($data,$menuId);
+
+        #$this->isUserMenuList($data,$menuId);
+        #$this->isUserMenuList($data,$menuId);
         return $data;
     }
 
@@ -321,22 +322,29 @@ class BasicsMenuService
     {
         foreach ($data as $key =>&$value)
         {
-            if (isset($value['SuperAdmin']) && $menuId !=='SuperAdmin' && $value['SuperAdmin'] ===true){
+            $value['SuperAdmin'] = $value['SuperAdmin']??false;
+
+            if ($menuId !=='SuperAdmin' && $value['SuperAdmin'] ===true){
+                // var_dump($value['title']);
                 # 如果菜单是必须超级管理员可看 当前用户不是超级管理员 就直接删除当前菜单
                 unset($data[$key]);
             }else{
+
                 # 正常菜单  判断当前菜单id是否在$menuId中 是否有下一级
                 if (!in_array($value['id'],$menuId)){
                     # 不在其中  直接删除  没有下一级
                     unset($data[$key]);
                 }else{
-                    if (isset($value['children']) && is_array($value['children']) && $value['children'] !==[])
+
+                    if ( isset($value['list']) && is_array($value['list']) && $value['list'] !==[] )
                     {
-                        $this->isUserMenuList($value['children'],$menuId);
+
+                        $this->isUserMenuList($value['list'],$menuId);
                     }
                 }
             }
         }
+
     }
 
 
