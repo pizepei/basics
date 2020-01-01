@@ -14,7 +14,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
     ,entry: 'index' //默认视图文件名
     ,engine: '.html' //视图文件后缀名
     ,pageTabs: true //是否开启页面选项卡功能。单页版不推荐开启
-    ,sideFlexible:null//自定义的是否菜单栏控制侧边伸缩  null 缩   spread   展开
+    ,sideFlexible:'spread'//自定义的是否菜单栏控制侧边伸缩  null 缩   spread   展开
     ,name: "{{console}}"
     ,tableName: 'layuiAdmin' //本地存储表名
     ,MOD_NAME: 'admin' //模块事件名
