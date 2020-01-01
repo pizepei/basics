@@ -80,7 +80,7 @@ class BasicsAccountService
             $Data['password_hash'] = $password_hash;
         }
 
-        $Data['number'] = 'common_'.Helper::str()->int_rand($config['number_count']);//编号固定开头的账号编码(common,tourist,app,appAdmin,appSuperAdmin,Administrators)
+        $Data['number'] = 'common_'.Helper::str()->str_rand($config['number_count']);//编号固定开头的账号编码(common,tourist,app,appAdmin,appSuperAdmin,Administrators)
         $Data['phone'] = $Request['phone'];
         $Data['email'] = $Request['email'];
         $Data['type'] = 1;
