@@ -53,7 +53,9 @@ class BasicsConsole extends Controller
             $type = PersonShortcutTypeModel::table()->add([
                 'Account_id'    =>$this->UserInfo['id'],
                 'name'          =>'政策数据源',
+                'explain'       =>'各种宏观经济与政策数据平台资源',
                 'status'        =>2,
+                'sort'          =>49,
             ]);
             # $typeId
             $typeId = key($type);
@@ -61,12 +63,14 @@ class BasicsConsole extends Controller
                 PersonShortcutModel::table()->add(
                     [
                         [
-                        'name'              =>'全球国家经济数据',
-                        'type_id'           =>$typeId,
-                        'Account_id'        =>$this->UserInfo['id'],
-                        'explain'           =>'一个提供全球国家宏观经济数据网站',
-                        'url'               =>'https://zh.tradingeconomics.com/china/indicators',
-                        'status'            =>2,
+                            'name'              =>'全球国家经济数据',
+                            'type_id'           =>$typeId,
+                            'Account_id'        =>$this->UserInfo['id'],
+                            'explain'           =>'一个提供全球国家宏观经济数据网站',
+                            'url'               =>'https://zh.tradingeconomics.com/china/indicators',
+                            'status'            =>2,
+                            'sort'              =>99,
+
                         ],
                         [
                             'name'              =>'中国政府网',
@@ -75,6 +79,8 @@ class BasicsConsole extends Controller
                             'explain'           =>'国家政府网站最新政策',
                             'url'               =>'http://www.gov.cn/zhengce/index.htm',
                             'status'            =>2,
+                            'sort'              =>98,
+
                         ],
                         [
                             'name'              =>'国家统计局',
@@ -83,14 +89,8 @@ class BasicsConsole extends Controller
                             'explain'           =>'中华人民共和国国家统计局，各种宏观数据',
                             'url'               =>'http://www.stats.gov.cn/tjsj/zxfb/',
                             'status'            =>2,
-                        ],
-                        [
-                            'name'              =>'市场监督管理局',
-                            'type_id'           =>$typeId,
-                            'Account_id'        =>$this->UserInfo['id'],
-                            'explain'           =>'中华人民共和国市场监督管理总局',
-                            'url'               =>'http://www.samr.gov.cn/',
-                            'status'            =>2,
+                            'sort'              =>97,
+
                         ],
                         [
                             'name'              =>'工业和信息化部',
@@ -99,6 +99,18 @@ class BasicsConsole extends Controller
                             'explain'           =>'中华人民共和国工业和信息化部',
                             'url'               =>'http://www.miit.gov.cn/',
                             'status'            =>2,
+                            'sort'              =>96,
+
+                        ],
+                        [
+                            'name'              =>'市场监督管理局',
+                            'type_id'           =>$typeId,
+                            'Account_id'        =>$this->UserInfo['id'],
+                            'explain'           =>'中华人民共和国市场监督管理总局',
+                            'url'               =>'http://www.samr.gov.cn/',
+                            'status'            =>2,
+                            'sort'              =>80,
+
                         ],
                     ]);
             }

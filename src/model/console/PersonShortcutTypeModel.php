@@ -28,7 +28,7 @@ class PersonShortcutTypeModel extends Model
             'TYPE'=>"varchar(250)", 'DEFAULT'=>'', 'COMMENT'=>'图片地址',
         ],
         'explain'=>[
-            'TYPE'=>"varchar(500)", 'DEFAULT'=>5, 'COMMENT'=>'备注说明',
+            'TYPE'=>"varchar(500)", 'DEFAULT'=>'', 'COMMENT'=>'备注说明',
         ],
         'sort'=>[
             'TYPE'=>"int", 'DEFAULT'=>50, 'COMMENT'=>'排序',
