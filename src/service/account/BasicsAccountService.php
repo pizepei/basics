@@ -263,18 +263,29 @@ class BasicsAccountService
      * @title  修改密码
      * @explain 修改密码（注意配置）
      */
-    public function changePassword(array $config,array $Request,array $userData,Controller $Controller)
+    public function changePassword(array $config,array $Request,array $userData,Controller $Controller,string $original='')
     {
+
+        # 判断是否是使用原密码修改密码
+        if ($original !==''){
+            $PasswordHash = new PasswordHash();
+            $hashResult = $PasswordHash->password_verify($original,$userData['password_hash'],$config['algo'],$config['options']);
+            if(!$hashResult['result']){
+                $this->passwordWrongLock($userData,false);# 设置一次密码错误记录
+                error('原密码错误');
+            }
+        }
+
         # 判断两次密码是否一致
         if($Request['password'] !== $Request['repass'])
         {
-            return ['result'=>false,'msg'=>'两次密码不一致'];
+            error('两次密码不一致');
         }
         # 实例化密码类
         $PasswordHash = new PasswordHash();
         # 判断密码格式
         if(empty($PasswordHash->password_match($config['password_regular'][0],$Request['password']))){
-            return $Controller->error($config['password_regular'][1]);
+            error($config['password_regular'][1]);
         }
         /**
          * 判断密码要求
@@ -283,7 +294,7 @@ class BasicsAccountService
         # 生成新密码 获取密码hash
         $password_hash = $PasswordHash->password_hash($Request['password'],$config['algo'],$config['options']);
         if(empty($password_hash)){
-            return $Controller->error('系统错误','系统错误','L003');
+            error('系统错误','系统错误','L003');
         }
         # 修改并且写入里程碑事件update
         $updateData = ['password_hash'=>$password_hash,'version'=>$userData['version']+1];
@@ -291,13 +302,13 @@ class BasicsAccountService
         //$AccountModel = AccountModel::table()->where(['version'=>$userData['version']])->insert([ 'id'=>$userData['id'],'password_hash'=>$password_hash,'version'=>$userData['version']+1]);
         if($AccountModel == 1){
             # 写入里程碑事件
-            if(empty(AccountMilestoneModel::table()->add(['account_id'=>$userData['id'],'message'=> ['registerData'=>[ 'id'=>$userData['id'],'password_hash'=>$password_hash,'version'=>$userData['version']+1],'requestId'=>__REQUEST_ID__], 'type'=>7,]))){
-                return $Controller->error('系统错误','系统错误','L002');
+            if(empty(AccountMilestoneModel::table()->add(['account_id'=>$userData['id'],'message'=> ['registerData'=>[ 'id'=>$userData['id'],'password_hash'=>$password_hash,'version'=>$userData['version']+1],'requestId'=>app()->__REQUEST_ID__], 'type'=>7,]))){
+                error('系统错误','系统错误','L002');
             }
         }else{
-            return $Controller->succeed($AccountModel,'修改错误');
+            succeed($AccountModel,'修改错误');
         }
-        return $Controller->succeed($AccountModel,'修改成功');
+        succeed($AccountModel,'修改成功');
     }
 
     /**

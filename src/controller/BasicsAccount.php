@@ -202,9 +202,9 @@ class BasicsAccount extends Controller
      * @explain 通过手机验证码修改密码
      * @authTiny 修改密码
      * @throws \Exception
-     * @router put password
+     * @router put phone/password
      */
-    public function changePassword(Request $Request)
+    public function changePasswordPhone(Request $Request)
     {
         $Account = AccountModel::table()
             ->where(['phone'=>$Request->post('phone')])
@@ -213,8 +213,42 @@ class BasicsAccount extends Controller
             $this->error('用户不存在');
         }
         $AccountService = new BasicsAccountService();
-        return $AccountService->changePassword(\Config::ACCOUNT,$Request->post(),$Account,$this);
+//        return $AccountService->changePassword(\Config::ACCOUNT,$Request->post(),$Account,$this);
     }
+
+
+
+    /**
+     * @Author pizepei
+     * @Created 2019/3/30 21:33
+     *
+     * @param \pizepei\staging\Request $Request
+     *      raw [object] post
+     *          oldPassword [string required] 原密码
+     *          password [string required] 密码
+     *          repass [string required] 确认密码
+     * @return array [json]
+     * @title  修改密码
+     * @explain 通过原密码修改密码
+     * @authTiny 修改密码
+     * @baseAuth UserAuth:test
+     * @throws \Exception
+     * @router put password
+     */
+    public function changePassword(Request $Request)
+    {
+
+        $Account = AccountModel::table()
+            ->where(['id'=>$this->UserInfo['id']])
+            ->fetch();
+        if(empty($Account)){
+            $this->error('用户不存在');
+        }
+        $AccountService = new BasicsAccountService();
+        return $AccountService->changePassword(\Config::ACCOUNT,$Request->raw(),$Account,$this,$Request->raw('oldPassword'));
+    }
+
+
 
     /**
      * @Author pizepei
