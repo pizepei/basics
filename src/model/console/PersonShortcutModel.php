@@ -24,7 +24,7 @@ class PersonShortcutModel extends Model
             'TYPE'=>'uuid', 'DEFAULT'=>Model::UUID_ZERO, 'COMMENT'=>'账号表id',
         ],
         'type_id'=>[
-            'TYPE'=>"uuid", 'DEFAULT'=>Model::UUID_ZERO, 'COMMENT'=>'类型变id',
+            'TYPE'=>"uuid", 'DEFAULT'=>Model::UUID_ZERO, 'COMMENT'=>'类型id',
         ],
         'explain'=>[
             'TYPE'=>'varchar(510)', 'DEFAULT'=>'', 'COMMENT'=>'描述说明',
