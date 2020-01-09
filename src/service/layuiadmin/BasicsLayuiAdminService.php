@@ -27,7 +27,7 @@ class BasicsLayuiAdminService
             #'js'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/layui.js',
         ];
         if (\Deploy::CDN_URL !==''){
-                $data['index']  =   \Deploy::CDN_URL.'/'.\Deploy::MODULE_PREFIX.'/home/index';//index
+                $data['index']  =   '../../'.\Deploy::MODULE_PREFIX.'/home/index';//index
                 $data['base']   =   \Deploy::CDN_URL.'/'.\Deploy::VIEW_RESOURCE_PREFIX.((!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'/dist/':'/src/');
         }else{
             $data['index']  =   '../../'.\Deploy::MODULE_PREFIX.'/home/index';//index
