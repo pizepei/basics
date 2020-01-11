@@ -158,16 +158,13 @@ class BasicsConsole extends Controller
      */
     public function addPersonShortcut(Request $Request)
     {
-        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
-        $PersonShortcutType = PersonShortcutTypeModel::table()->where(['id'=>$Request->path('typeId'),'account_id'=>$accounId['id']])->fetch();
+        $PersonShortcutType = PersonShortcutTypeModel::table()->where(['id'=>$Request->path('typeId'),'account_id'=>$this->UserInfo['id']])->fetch();
         if (empty($PersonShortcutType)){
             return $this->error('分类不存在');
         }
-
-        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
         $data = $Request->post();
         $data['type_id'] = $Request->path('typeId');
-        $data['account_id'] = $accounId['id'];
+        $data['account_id'] = $this->UserInfo['id'];
         if (PersonShortcutModel::table()->add($data)){
             return $this->succeed([],'添加成功');
         }
@@ -268,14 +265,11 @@ class BasicsConsole extends Controller
      */
     public function getPersonInfo(Request $Request)
     {
-        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
-        $PersonShortcutType = PersonShortcutTypeModel::table()->where(['id'=>$Request->path('typeId'),'Account_id'=>$accounId['id']])->fetch();
-
+        $PersonShortcutType = PersonShortcutTypeModel::table()->where(['id'=>$Request->path('typeId'),'Account_id'=>$this->UserInfo['id']])->fetch();
         if (empty($PersonShortcutType)){return $this->error('分类不存在');}
-
         $Shortcut = PersonShortcutModel::table()->where([
             'type_id'=>$Request->path('typeId'),
-            'account_id'=>$accounId['id']
+            'account_id'=>$this->UserInfo['id']
         ])->fetchAll();
 
         return $this->succeed(['list'=>$Shortcut],'获取成功');
@@ -305,11 +299,10 @@ class BasicsConsole extends Controller
      */
     public function updatePersonInfo(Request $Request)
     {
-        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
-        # 编辑
         $data = $Request->raw();
         $Shortcut = PersonShortcutModel::table()->where([
-            'id'=>$Request->path('id')
+            'id'=>$Request->path('id'),
+            'account_id'=>$this->UserInfo['id']
         ])->update($data);
         if (empty($Shortcut)){
             return $this->error('修改失败');
@@ -341,9 +334,8 @@ class BasicsConsole extends Controller
      */
     public function deletePersonInfo(Request $Request)
     {
-        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
         $Shortcut = PersonShortcutModel::table()
-            ->where(['account_id'=>$accounId['id']])
+            ->where(['account_id'=>$this->UserInfo['id']])
             ->del(['id'=>$Request->path('id')]);
         if (empty($Shortcut)){
             return $this->error('删除失败');
