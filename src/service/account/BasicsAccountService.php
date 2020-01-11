@@ -118,7 +118,7 @@ class BasicsAccountService
         # 写入控制台默认信息
         PersonShortcutTypeModel::table()->add([
             'name'=>'收藏夹',
-            'Account_id'=>key($AccountData),
+            'account_id'=>key($AccountData),
             'status'=>2,
         ]);
     }

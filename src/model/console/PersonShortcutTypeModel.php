@@ -21,7 +21,7 @@ class PersonShortcutTypeModel extends Model
         'name'=>[
             'TYPE'=>'varchar(100)', 'DEFAULT'=>'', 'COMMENT'=>'分类名称',
         ],
-        'Account_id'=>[
+        'account_id'=>[
             'TYPE'=>'uuid', 'DEFAULT'=>Model::UUID_ZERO, 'COMMENT'=>'账号表id',
         ],
         'images'=>[
@@ -59,11 +59,13 @@ class PersonShortcutTypeModel extends Model
     /**
      * @var int 表版本（用来记录表结构版本）在表备注后面@$table_version
      */
-    protected $table_version = 0;
+    protected $table_version = 1;
     /**
      * @var array 表结构变更日志 版本号=>['表结构修改内容sql','表结构修改内容sql']
      */
     protected $table_structure_log = [
-
+        1=>[
+            ['account_id','CHANGE',' Account_id account_id char(36);','修改name','pizepei'],
+        ],
     ];
 }

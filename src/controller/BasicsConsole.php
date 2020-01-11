@@ -51,7 +51,7 @@ class BasicsConsole extends Controller
         if (empty($data)){
             # 如果没有就创建第一个导航默认分类   (后期从后台配置中获取)
             $type = PersonShortcutTypeModel::table()->add([
-                'Account_id'    =>$this->UserInfo['id'],
+                'account_id'    =>$this->UserInfo['id'],
                 'name'          =>'政策数据源',
                 'explain'       =>'各种宏观经济与政策数据平台资源',
                 'status'        =>2,
@@ -65,7 +65,7 @@ class BasicsConsole extends Controller
                         [
                             'name'              =>'全球国家经济数据',
                             'type_id'           =>$typeId,
-                            'Account_id'        =>$this->UserInfo['id'],
+                            'account_id'        =>$this->UserInfo['id'],
                             'explain'           =>'一个提供全球国家宏观经济数据网站',
                             'url'               =>'https://zh.tradingeconomics.com/china/indicators',
                             'status'            =>2,
@@ -75,7 +75,7 @@ class BasicsConsole extends Controller
                         [
                             'name'              =>'中国政府网',
                             'type_id'           =>$typeId,
-                            'Account_id'        =>$this->UserInfo['id'],
+                            'account_id'        =>$this->UserInfo['id'],
                             'explain'           =>'国家政府网站最新政策',
                             'url'               =>'http://www.gov.cn/zhengce/index.htm',
                             'status'            =>2,
@@ -85,7 +85,7 @@ class BasicsConsole extends Controller
                         [
                             'name'              =>'国家统计局',
                             'type_id'           =>$typeId,
-                            'Account_id'        =>$this->UserInfo['id'],
+                            'account_id'        =>$this->UserInfo['id'],
                             'explain'           =>'中华人民共和国国家统计局，各种宏观数据',
                             'url'               =>'http://www.stats.gov.cn/tjsj/zxfb/',
                             'status'            =>2,
@@ -95,7 +95,7 @@ class BasicsConsole extends Controller
                         [
                             'name'              =>'工业和信息化部',
                             'type_id'           =>$typeId,
-                            'Account_id'        =>$this->UserInfo['id'],
+                            'account_id'        =>$this->UserInfo['id'],
                             'explain'           =>'中华人民共和国工业和信息化部',
                             'url'               =>'http://www.miit.gov.cn/',
                             'status'            =>2,
@@ -105,7 +105,7 @@ class BasicsConsole extends Controller
                         [
                             'name'              =>'市场监督管理局',
                             'type_id'           =>$typeId,
-                            'Account_id'        =>$this->UserInfo['id'],
+                            'account_id'        =>$this->UserInfo['id'],
                             'explain'           =>'中华人民共和国市场监督管理总局',
                             'url'               =>'http://www.samr.gov.cn/',
                             'status'            =>2,
@@ -116,7 +116,7 @@ class BasicsConsole extends Controller
             }
             # 重新查询分类数据
             $data = PersonShortcutTypeModel::table()
-                ->where(['Account_id'=>$this->UserInfo['id']])
+                ->where(['account_id'=>$this->UserInfo['id']])
                 ->order('sort','desc')
                 ->fetchAll(['name','id','explain']);
         }
@@ -159,7 +159,7 @@ class BasicsConsole extends Controller
     public function addPersonShortcut(Request $Request)
     {
         $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
-        $PersonShortcutType = PersonShortcutTypeModel::table()->where(['id'=>$Request->path('typeId'),'Account_id'=>$accounId['id']])->fetch();
+        $PersonShortcutType = PersonShortcutTypeModel::table()->where(['id'=>$Request->path('typeId'),'account_id'=>$accounId['id']])->fetch();
         if (empty($PersonShortcutType)){
             return $this->error('分类不存在');
         }
@@ -167,12 +167,62 @@ class BasicsConsole extends Controller
         $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
         $data = $Request->post();
         $data['type_id'] = $Request->path('typeId');
-        $data['Account_id'] = $accounId['id'];
+        $data['account_id'] = $accounId['id'];
         if (PersonShortcutModel::table()->add($data)){
             return $this->succeed([],'添加成功');
         }
         return $this->error('添加错误');
     }
+
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/8/26 14:20
+     * @param \pizepei\staging\Request $Request
+     *      path [object]
+     *          type [string] 快捷方式类型
+     *      post [object] 添加的数据
+     *          name [string] 名称
+     *          url [string] url地址
+     *          explain [string] 描述
+     *          status [int] 状态类型
+     * @return array [json] 定义输出返回数据
+     *      data [raw]
+     *          name [string] 名称
+     *          url [string] url地址
+     *          explain [string] 描述
+     *          status [int] 状态类型
+     * @title  添加导航到分类
+     * @explain 添加个人导航到分类中
+     * @baseAuth UserAuth:test
+     * @authGroup systemUser
+     * @throws \Exception
+     * @router post person/shortcut/type
+     */
+    public function addPersonShortcutType(Request $Request)
+    {
+        # 查询当前用户下是否已经有相同的分类
+        PersonShortcutTypeModel::table()->where([
+            'account_id'=>$this->UserInfo['id'],
+        ])->fetch();
+        # 写入分类数据
+
+        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
+        $PersonShortcutType = PersonShortcutTypeModel::table()->where(['id'=>$Request->path('typeId'),'account_id'=>$accounId['id']])->fetch();
+        if (empty($PersonShortcutType)){
+            return $this->error('分类不存在');
+        }
+
+        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
+        $data = $Request->post();
+        $data['type_id'] = $Request->path('typeId');
+        $data['account_id'] = $accounId['id'];
+        if (PersonShortcutModel::table()->add($data)){
+            return $this->succeed([],'添加成功');
+        }
+        return $this->error('添加错误');
+    }
+
 
     /**
      * @Author 皮泽培
@@ -203,7 +253,7 @@ class BasicsConsole extends Controller
 
         $Shortcut = PersonShortcutModel::table()->where([
             'type_id'=>$Request->path('typeId'),
-            'Account_id'=>$accounId['id']
+            'account_id'=>$accounId['id']
         ])->fetchAll();
 
         return $this->succeed(['list'=>$Shortcut],'获取成功');
@@ -271,7 +321,7 @@ class BasicsConsole extends Controller
     {
         $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
         $Shortcut = PersonShortcutModel::table()
-            ->where(['Account_id'=>$accounId['id']])
+            ->where(['account_id'=>$accounId['id']])
             ->del(['id'=>$Request->path('id')]);
         if (empty($Shortcut)){
             return $this->error('删除失败');
