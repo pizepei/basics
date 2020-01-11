@@ -202,25 +202,47 @@ class BasicsConsole extends Controller
     public function addPersonShortcutType(Request $Request)
     {
         # 查询当前用户下是否已经有相同的分类
-        PersonShortcutTypeModel::table()->where([
+        $PersonShortcutType = PersonShortcutTypeModel::table()->where([
             'account_id'=>$this->UserInfo['id'],
+            'name'=>$Request['name'],
         ])->fetch();
+        if ($PersonShortcutType){ $this->error('分类已存在:'.$Request['name']);}
         # 写入分类数据
-
-        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
-        $PersonShortcutType = PersonShortcutTypeModel::table()->where(['id'=>$Request->path('typeId'),'account_id'=>$accounId['id']])->fetch();
-        if (empty($PersonShortcutType)){
-            return $this->error('分类不存在');
-        }
-
-        $accounId = AccountModel::table()->where(['number'=>$this->Payload['number']])->cache(['Account','info'],20)->fetch(['id']);
         $data = $Request->post();
-        $data['type_id'] = $Request->path('typeId');
-        $data['account_id'] = $accounId['id'];
-        if (PersonShortcutModel::table()->add($data)){
-            return $this->succeed([],'添加成功');
-        }
-        return $this->error('添加错误');
+        $data['account_id'] = $this->UserInfo['id'];
+        $res = PersonShortcutTypeModel::table()->add($data);
+        if ($res)$this->error('添加错误');
+        $this->succeed('','操作成功');
+    }
+
+
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/8/26 14:20
+     * @param \pizepei\staging\Request $Request
+     * @return array [json] 定义输出返回数据
+     *      data [raw]
+     *          name [string] 名称
+     *          url [string] url地址
+     *          explain [string] 描述
+     *          status [int] 状态类型
+     * @title  导航到分类列表
+     * @explain 导航到分类列表
+     * @baseAuth UserAuth:test
+     * @authGroup systemUser
+     * @throws \Exception
+     * @router get person/shortcut/type-list
+     */
+    public function addPersonShortcutTypeList(Request $Request)
+    {
+        # 查询当前用户下是否已经有相同的分类
+        $PersonShortcutType = PersonShortcutTypeModel::table()
+            ->where([
+            'account_id'=>$this->UserInfo['id'],
+        ])->fetchAll();
+        # 写入分类数据
+        $this->succeed(['list'=>$PersonShortcutType],'操作成功');
     }
 
 
