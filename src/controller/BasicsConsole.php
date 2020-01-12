@@ -219,11 +219,16 @@ class BasicsConsole extends Controller
      * @Created 2019/8/26 14:20
      * @param \pizepei\staging\Request $Request
      * @return array [json] 定义输出返回数据
-     *      data [raw]
-     *          name [string] 名称
-     *          url [string] url地址
-     *          explain [string] 描述
-     *          status [int] 状态类型
+     *      data [object]
+     *          list [objectList]
+     *              id  [uuid] id
+     *              name [string] 名称
+     *              images [string] 图片url地址
+     *              sort [int]  排序
+     *              explain [string] 描述
+     *              creation_time [string] 描述
+     *              update_time [string] 描述
+     *              status [int] 状态类型
      * @title  导航到分类列表
      * @explain 导航到分类列表
      * @baseAuth UserAuth:test
