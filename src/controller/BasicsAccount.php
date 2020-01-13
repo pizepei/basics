@@ -325,7 +325,7 @@ class BasicsAccount extends Controller
             # 缓存标识
             $identification = Helper::str()->str_rand(20);
             Redis::init()->setex('sms:'.$Request->input('phone').':retrieve:'.$identification,600,$code);
-            $this->succeed(['identification'=>$identification,''=>$code],'短信发送成功！如没有收到请查看是否被定义为垃圾短信');
+            $this->succeed(['identification'=>$identification],'短信发送成功！如没有收到请查看是否被定义为垃圾短信');
         }else if (isset($res['data']['Code']) && $res['data']['Code'] !== 'OK'){
             $this->error('','发送频率过高请稍后再尝试！');
         }else{
