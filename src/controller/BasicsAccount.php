@@ -318,7 +318,7 @@ class BasicsAccount extends Controller
             [
                 'type'=>'retrieve',
                 'number'=>$Request->input('phone'),
-                'TemplateParam'=>['code'=>$numberCode]
+                'TemplateParam'=>['code'=>$code]
             ],'M_SMS'
         );
         if (isset($res['data']['Code']) && $res['data']['Code']== 'OK'){
