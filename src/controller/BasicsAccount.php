@@ -249,6 +249,89 @@ class BasicsAccount extends Controller
     }
 
 
+    /**
+     * @Author pizepei
+     * @Created 2019/3/30 21:33
+     *
+     * @param \pizepei\staging\Request $Request
+     *      raw [object] post
+     *          code [int required] 验证码
+     *          identification [string required] 安全验证码
+     *          password [string required] 密码
+     *          repass [string required] 确认密码
+     *          cellphone [phone required] 手机号码
+     * @return array [json]
+     * @title  通过短信验证码修改密码
+     * @explain 通过短信验证码修改密码
+     * @baseAuth UserAuth:public
+     * @throws \Exception
+     * @router put sms-code/verification-password-retrieve
+     */
+    public function smsCodeVerificationPasswordRetrieve(Request $Request)
+    {
+        # 判断验证码是否错误
+        $idRes = Redis::init()->get('sms:'.$Request->raw('cellphone').':retrieve:'.$Request->raw('identification'));
+        if (!$idRes) $this->error('验证码过期');
+        if ((int)$idRes !==$Request->raw('code'))$this->error('验证码错误');
+
+        $Account = AccountModel::table()
+            ->where(['phone'=>$Request->raw('cellphone')])
+            ->fetch();
+        if(empty($Account)){
+            $this->error('用户不存在');
+        }
+        $AccountService = new BasicsAccountService();
+        return $AccountService->changePassword(\Config::ACCOUNT,$Request->raw(),$Account,$this,'');
+    }
+
+
+
+    /**
+     * @Author pizepei
+     * @Created 2019/3/30 21:33
+     * @param \pizepei\staging\Request $Request
+     *      get [object]
+     *          phone [phone required] 手机号码
+     * @return array [json]
+     *      data [raw]
+     * @title  发送短信验证码
+     * @explain 发送短信验证码
+     * @throws \Exception
+     * @router get sms-code-retrieve-send
+     */
+    public function smsCodeRetrieveSend(Request $Request)
+    {
+        $CodeApp = \Config::WEC_CHAT_CODE;
+        $Client = new Client($CodeApp);
+        # 本地验证
+        if (BasicsAccountService::codeSendFrequency('number',$Request->input('phone'))){
+            return $this->error('短信发送频率过高请稍后再尝试!!');
+        }
+        # 查询是否已经存在邮箱或者手机号码
+        if (!AccountModel::table()->where(['phone'=>$Request->input('phone')])->fetch(['id'])){return $this->error('手机号码不存在!');}
+        # 准备微服务客户端
+        $MicroClient = MicroClient::init(Redis::init(),\Config::MICROSERVICE);
+        # 验证通过发送验证码
+        $code = Helper::str()->int_rand(4);
+        # 验证通过发送验证码
+        $res = $MicroClient->send(
+            [
+                'type'=>'retrieve',
+                'number'=>$Request->input('phone'),
+                'TemplateParam'=>['code'=>$numberCode]
+            ],'M_SMS'
+        );
+        if (isset($res['data']['Code']) && $res['data']['Code']== 'OK'){
+            # 缓存标识
+            $identification = Helper::str()->str_rand(20);
+            Redis::init()->setex('sms:'.$Request->input('phone').':retrieve:'.$identification,600,$code);
+            $this->succeed(['identification'=>$identification,''=>$code],'短信发送成功！如没有收到请查看是否被定义为垃圾短信');
+        }else if (isset($res['data']['Code']) && $res['data']['Code'] !== 'OK'){
+            $this->error('','发送频率过高请稍后再尝试！');
+        }else{
+            $this->error('','发送失败请稍后再尝试！');
+        }
+    }
 
     /**
      * @Author pizepei
@@ -425,25 +508,6 @@ class BasicsAccount extends Controller
         return $this->succeed($qr);
     }
 
-    /**
-     * @Author 皮泽培
-     * @Created 2019/8/2 14:20
-     *   path [object] 路径参数
-     *   post [object] post参数
-     * @return array [json] 定义输出返回数据
-     * @title  微信验证回调地址
-     * @explain 微信验证回调地址
-     * @baseAuth Resource:public
-     * @throws \Exception
-     * @router get wecht-qr-target
-     */
-    public function wechtQrTarget()
-    {
-//        $Client = new \pizepei\service\websocket\Client(['data'=>['uid'=>Helper::init()->getUuid()]]);
-//        $Client->connect();
-//        var_dump($Client->sendUser('661846A0-FF37-F459-93C1-462EC854456D',
-//            ['type'=>'init','content'=>'您好','appid'=>'00663B8F-D021-373C-8330-E1DD3440FF3C'],true));
-    }
     /**
      * @Author 皮泽培
      * @Created 2019/8/2 14:20
