@@ -180,13 +180,13 @@ class BasicsConsole extends Controller
      *          type [string] 快捷方式类型
      *      post [object] 添加的数据
      *          name [string] 名称
-     *          url [string] url地址
+     *          images [string] url地址
      *          explain [string] 描述
      *          status [int] 状态类型
      * @return array [json] 定义输出返回数据
      *      data [raw]
      *          name [string] 名称
-     *          url [string] url地址
+     *          images [string] url地址
      *          explain [string] 描述
      *          status [int] 状态类型
      * @title  添加导航到分类
@@ -206,13 +206,12 @@ class BasicsConsole extends Controller
         if ($PersonShortcutType){ $this->error('分类已存在:'.$Request['name']);}
         # 写入分类数据
         $data = $Request->post();
+    
         $data['account_id'] = $this->UserInfo['id'];
         $res = PersonShortcutTypeModel::table()->add($data);
         if ($res)$this->error('添加错误');
         $this->succeed('','操作成功');
     }
-
-
 
     /**
      * @Author 皮泽培
@@ -315,8 +314,6 @@ class BasicsConsole extends Controller
         return $this->succeed($Shortcut,'更新成功');
 
     }
-
-
     /**
      * @Author 皮泽培
      * @Created 2019/8/26 14:20
@@ -325,9 +322,38 @@ class BasicsConsole extends Controller
      *          id [string] 快捷方式类型
      *      raw [object] 添加的数据
      *          name [string] 名称
-     *          url [string] url地址
+     *          images [string] url地址
      *          explain [string] 描述
      *          status [int] 状态类型
+     *          sort [int] 排序
+     * @return array [json] 定义输出返回数据
+     *      data [raw]
+     * @title  编辑快捷导航类型
+     * @explain 编辑更新快捷导航类型
+     * @baseAuth UserAuth:test
+     * @authGroup systemUser
+     * @throws \Exception
+     * @router put person/shortcut/type/:id[uuid]
+     */
+    public function updatePersonTypeInfo(Request $Request)
+    {
+        $data = $Request->raw();
+        $Shortcut = PersonShortcutTypeModel::table()->where([
+            'id'=>$Request->path('id'),
+            'account_id'=>$this->UserInfo['id']
+        ])->update($data);
+        if (empty($Shortcut)){
+            return $this->error('修改失败');
+        }
+        return $this->succeed($Shortcut,'更新成功');
+    }
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/8/26 14:20
+     * @param \pizepei\staging\Request $Request
+     *      path [object]
+     *          id [string] 快捷方式类型
      * @return array [json] 定义输出返回数据
      *      data [raw]
      * @title  删除导航
@@ -349,7 +375,36 @@ class BasicsConsole extends Controller
 
     }
 
+    /**
+     * @Author 皮泽培
+     * @Created 2019/8/26 14:20
+     * @param \pizepei\staging\Request $Request
+     *      path [object]
+     *          id [string] 快捷方式类型
+     * @return array [json] 定义输出返回数据
+     *      data [raw]
+     * @title  删除导航分类
+     * @explain 删除导航分类
+     * @baseAuth UserAuth:test
+     * @authGroup systemUser
+     * @throws \Exception
+     * @router delete person/shortcut/type/:id[uuid]
+     */
+    public function deletePersonTypeInfo(Request $Request)
+    {
+        $ShortcutRes = PersonShortcutModel::table()
+            ->where(['account_id'=>$this->UserInfo['id'],'type_id'=>$Request->path('id')])
+            ->fetch();
+        if ($ShortcutRes)return $this->error('分类下有导航不可删除！');
+        $ShortcutType = PersonShortcutTypeModel::table()
+            ->where(['account_id'=>$this->UserInfo['id']])
+            ->del(['id'=>$Request->path('id')]);
+        if (empty($ShortcutType)){
+            return $this->error('删除失败');
+        }
+        return $this->succeed($ShortcutType,'删除成功');
 
+    }
 
 
 
