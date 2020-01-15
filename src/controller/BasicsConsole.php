@@ -176,8 +176,6 @@ class BasicsConsole extends Controller
      * @Author 皮泽培
      * @Created 2019/8/26 14:20
      * @param \pizepei\staging\Request $Request
-     *      path [object]
-     *          type [string] 快捷方式类型
      *      post [object] 添加的数据
      *          name [string] 名称
      *          images [string] url地址
@@ -201,15 +199,15 @@ class BasicsConsole extends Controller
         # 查询当前用户下是否已经有相同的分类
         $PersonShortcutType = PersonShortcutTypeModel::table()->where([
             'account_id'=>$this->UserInfo['id'],
-            'name'=>$Request['name'],
+            'name'=>$Request->post('name'),
         ])->fetch();
-        if ($PersonShortcutType){ $this->error('分类已存在:'.$Request['name']);}
+        if ($PersonShortcutType){ $this->error('分类已存在:'.$Request->post('name'));}
         # 写入分类数据
         $data = $Request->post();
-    
+
         $data['account_id'] = $this->UserInfo['id'];
         $res = PersonShortcutTypeModel::table()->add($data);
-        if ($res)$this->error('添加错误');
+        if (!$res)$this->error('添加错误');
         $this->succeed('','操作成功');
     }
 
