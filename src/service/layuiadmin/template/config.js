@@ -25,7 +25,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
         extend:'{{productInfo.extend}}'
     }
 
-    ,debug: true //是否开启调试模式。如开启，接口异常时会抛出异常 URL 等信息
+    ,debug: {{debug}} //是否开启调试模式。如开启，接口异常时会抛出异常 URL 等信息
     
     ,interceptor: true //是否开启未登入拦截
     

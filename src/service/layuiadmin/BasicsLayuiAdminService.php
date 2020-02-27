@@ -60,6 +60,7 @@ class BasicsLayuiAdminService
     public function getConfig(string $domain):string
     {
         $data = [
+            'debug'=>(!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'false':'true',
             'console'=>\Config::PRODUCT_INFO['name'].'控制台',
             'tokenName'=>\Config::ACCOUNT['GET_ACCESS_TOKEN_NAME'],
             'productInfo.name'=>\Config::PRODUCT_INFO['name'],
