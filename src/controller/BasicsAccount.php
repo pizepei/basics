@@ -255,8 +255,8 @@ class BasicsAccount extends Controller
      *
      * @param \pizepei\staging\Request $Request
      *      raw [object] post
-     *          code [int required] 验证码
-     *          identification [string required] 安全验证码
+     *          code [int required] 手机验证码
+     *          vercode [string required] 安全验证码
      *          password [string required] 密码
      *          repass [string required] 确认密码
      *          cellphone [phone required] 手机号码
@@ -270,7 +270,7 @@ class BasicsAccount extends Controller
     public function smsCodeVerificationPasswordRetrieve(Request $Request)
     {
         # 判断验证码是否错误
-        $idRes = Redis::init()->get('sms:'.$Request->raw('cellphone').':retrieve:'.$Request->raw('identification'));
+        $idRes = Redis::init()->get('sms:'.$Request->raw('cellphone').':retrieve:'.$Request->raw('vercode'));
         if (!$idRes) $this->error('验证码过期');
         if ((int)$idRes !==$Request->raw('code'))$this->error('验证码错误');
 
