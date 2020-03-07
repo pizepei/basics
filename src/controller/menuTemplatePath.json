@@ -107,7 +107,7 @@
   "SuperAdmin":true,
   "jump": "",
   "extend": {},
-  "sort": 10,
+  "sort": 13,
   "list": [
     {
       "title": "用户信息"
@@ -178,7 +178,15 @@
       ,"SuperAdmin":false
       ,"spread": 0
       ,"extend": {}
-      ,"sort": 99
+      ,"sort": 98
+      },
+      {
+       "title": "登录设置"
+      ,"name":"login"
+      ,"SuperAdmin":false
+      ,"spread": 0
+      ,"extend": {}
+      ,"sort": 97
       }
     ]
     }
