@@ -1,8 +1,8 @@
 [
   {
-    "title": "控制台",
+    "title": "导航中心",
     "name":"",
-    "icon": "layui-icon-template-1",
+    "icon": "layui-icon-location",
     "spread": false,
     "SuperAdmin":false,
     "jump": "",
@@ -13,7 +13,7 @@
   ,{
   "title": "系统配置",
   "name":"admin",
-  "icon": "layui-icon-template-1",
+  "icon": "layui-icon-set-fill",
   "spread": 0,
   "SuperAdmin":true,
   "jump": "",
@@ -109,42 +109,79 @@
   "extend": {},
   "sort": 10,
   "list": [
-              {
-               "title": "用户信息"
-              ,"name":"list"
-              ,"SuperAdmin":true
-              ,"spread": 0
-              ,"extend": {}
-              ,"sort": 99
-              ,"list": [
-                    {
-                      "title": "列表"
-                    ,"name":"role"
-                    ,"SuperAdmin":true
-                    ,"spread": 0
-                    ,"extend": {}
-                    ,"sort": 99
-                    }
-                ]
-            },
-            {
-              "title": "用户分析"
-            ,"name":"analyze"
-            ,"SuperAdmin":true
-            ,"spread": 0
-            ,"extend": {}
-            ,"sort": 99
-            ,"list": [
-              {
-                "title": "活跃度"
-              ,"name":"liveness"
-              ,"SuperAdmin":true
-              ,"spread": 0
-              ,"extend": {}
-              ,"sort": 99
-              }
-            ]
-            }
+    {
+      "title": "用户信息"
+    ,"name":"list"
+    ,"SuperAdmin":true
+    ,"spread": 0
+    ,"extend": {}
+    ,"sort": 99
+    ,"list": [
+      {
+        "title": "列表"
+      ,"name":"role"
+      ,"SuperAdmin":true
+      ,"spread": 0
+      ,"extend": {}
+      ,"sort": 99
+      }
+    ]
+    },
+    {
+      "title": "用户分析"
+    ,"name":"analyze"
+    ,"SuperAdmin":true
+    ,"spread": 0
+    ,"extend": {}
+    ,"sort": 99
+    ,"list": [
+      {
+        "title": "活跃度"
+      ,"name":"liveness"
+      ,"SuperAdmin":true
+      ,"spread": 0
+      ,"extend": {}
+      ,"sort": 99
+      }
+    ]
+    }
+  ]
+},{
+  "title": "设置",
+  "name":"user",
+  "icon": "layui-icon-set",
+  "spread": 0,
+  "SuperAdmin":false,
+  "jump": "",
+  "extend": {},
+  "sort": 11,
+  "list": [
+    {
+      "title": "账号与安全"
+    ,"name":"user"
+    ,"SuperAdmin":false
+    ,"spread": 0
+    ,"extend": {}
+    ,"sort": 99
+    ,"list": [
+      {
+        "title": "基础信息"
+      ,"name":"userform"
+      ,"SuperAdmin":false
+      ,"spread": 0
+      ,"extend": {}
+      ,"sort": 99
+      },
+      {
+        "title": "修改密码"
+      ,"name":"password"
+      ,"SuperAdmin":false
+      ,"spread": 0
+      ,"extend": {}
+      ,"sort": 99
+      }
+    ]
+    }
   ]
 }
 ]
