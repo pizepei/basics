@@ -25,7 +25,7 @@ class BasicsLayuiAdminService
             'version'=>(!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'1.0.1':date('YmdHis'),
             'title'=>\Config::PRODUCT_INFO['title'],
             'css'=>'https://www.layuicdn.com/layui-v2.5.6/css/layui.css',
-            'js'=>'https://www.layuicdn.com/layui-v2.5.6/layui.js',
+            'js'=>'https://www.layuicdn.com/layui-v2.5.6/layui.all.js',
             #'css'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/css/layui.css',
             #'js'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/layui.js',
         ];
