@@ -2,7 +2,7 @@
   {
     "title": "导航中心",
     "name":"",
-    "icon": "layui-icon-location",
+    "icon": "iconfont icon-daohang",
     "spread": false,
     "SuperAdmin":false,
     "jump": "",
@@ -149,7 +149,7 @@
 },{
   "title": "设置",
   "name":"user",
-  "icon": "layui-icon-set",
+  "icon": "iconfont icon-yonghushezhi1",
   "spread": 0,
   "SuperAdmin":false,
   "jump": "",
