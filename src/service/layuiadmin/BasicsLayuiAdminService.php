@@ -20,12 +20,15 @@ class BasicsLayuiAdminService
     public function getIndexHtml(string $domain):string
     {
         $data = Cache::get(['BasicsLayuiAdminService','getIndexHtml']);
-        if ($data)return $data;
+        if ((!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')){
+            if ($data)return $data;
+        }
         $data = [
             'version'=>(!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'1.0.1':date('YmdHis'),
             'title'=>\Config::PRODUCT_INFO['title'],
             'css'=>'https://www.layuicdn.com/layui-v2.5.6/css/layui.css',
             'js'=>'https://www.layuicdn.com/layui-v2.5.6/layui.all.js',
+            'iconfont'=>'//at.alicdn.com/t/font_1692091_mejh149rq8g.css',//自定义图片库
             #'css'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/css/layui.css',
             #'js'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/layui.js',
         ];
@@ -50,7 +53,9 @@ class BasicsLayuiAdminService
     public function getIndexJs(string $domain):string
     {
         $data = Cache::get(['BasicsLayuiAdminService','getIndexJs']);
-        if ($data)return $data;
+        if ((!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')){
+            if ($data)return $data;
+        }
         $data = [
             'config'=>'../../'.\Deploy::MODULE_PREFIX.'/home/config',
         ];
@@ -69,7 +74,9 @@ class BasicsLayuiAdminService
     {
 
         $data = Cache::get(['BasicsLayuiAdminService','getConfig']);
-        if ($data)return $data;
+        if ((!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')){
+            if ($data)return $data;
+        }
         $data = [
             'debug'=>(!app()->__EXPLOIT__ && \Deploy::ENVIRONMENT !=='develop')?'false':'true',
             'console'=>\Config::PRODUCT_INFO['name'].'控制台',
