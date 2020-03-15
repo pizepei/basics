@@ -37,32 +37,6 @@
       ,"sort": 99
       }
     ,{
-        "title": "角色权限"
-      ,"name":"role-authority"
-      ,"SuperAdmin":true
-      ,"spread": 0
-      ,"extend": {}
-      ,"sort": 98
-      }
-    ]
-    },
-    {
-      "title": "导航菜单管理"
-    ,"name":"nav"
-    ,"spread": 0
-    ,"extend": {}
-    ,"SuperAdmin":true
-    ,"sort": 98
-    ,"list": [
-      {
-        "title": "后台导航信息"
-      ,"name":"admin-nav"
-      ,"SuperAdmin":true
-      ,"spread": 0
-      ,"extend": {}
-      ,"sort": 99
-      }
-    ,{
         "title": "导航菜单权限"
       ,"name":"admin-nav-power"
       ,"SuperAdmin":true
@@ -74,7 +48,7 @@
     },
     {
       "title": "用户安全"
-    ,"name":"user-safety"
+    ,"name":"iconfont user-safety"
     ,"SuperAdmin":true
     ,"spread": 0
     ,"extend": {}
@@ -102,7 +76,7 @@
 },{
   "title": "用户管理",
   "name":"user-manage",
-  "icon": "layui-icon-template-1",
+  "icon": "iconfont icon-yonghu",
   "spread": 0,
   "SuperAdmin":true,
   "jump": "",
