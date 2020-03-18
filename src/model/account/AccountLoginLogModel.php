@@ -14,9 +14,6 @@ class AccountLoginLogModel extends Model
      * @var array
      */
     protected $structure = [
-//        'id'=>[
-//            'TYPE'=>'uuid','COMMENT'=>'主键uuid','DEFAULT'=>false,
-//        ],
         'account_id'=>[
             'TYPE'=>'varchar(32)', 'DEFAULT'=>'', 'COMMENT'=>'编号固定开头的账号编码(common,tourist,app,appAdmin,appSuperAdmin,Administrators)',
         ],
@@ -37,6 +34,21 @@ class AccountLoginLogModel extends Model
         ],
         'IPv4'=>[
             'TYPE'=>'varchar(15)', 'DEFAULT'=>'', 'COMMENT'=>'终端访问的IPV4地址',
+        ],
+        'Ipanel'=>[
+            'TYPE'=>"json", 'DEFAULT'=>false, 'COMMENT'=>'浏览器信息',
+        ],
+        'Build'=>[
+            'TYPE'=>"json", 'DEFAULT'=>false, 'COMMENT'=>'终端信息',
+        ],
+        'OS'=>[
+            'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'系统',
+        ],
+        'NetworkType'=>[
+            'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'网络类型',
+        ],
+        'IPInfo'=>[
+            'TYPE'=>'json', 'DEFAULT'=>false, 'COMMENT'=>'根据ip获取的详细信息',
         ],
         'status'=>[
             'TYPE'=>"ENUM('1','2')", 'DEFAULT'=>'2', 'COMMENT'=>'状态1成功、2失败',
