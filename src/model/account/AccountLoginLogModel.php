@@ -14,8 +14,14 @@ class AccountLoginLogModel extends Model
      * @var array
      */
     protected $structure = [
+        'id'=>[
+            'TYPE'=>'uuid','COMMENT'=>'主键uuid','DEFAULT'=>false,
+        ],
         'account_id'=>[
-            'TYPE'=>'varchar(32)', 'DEFAULT'=>'', 'COMMENT'=>'编号固定开头的账号编码(common,tourist,app,appAdmin,appSuperAdmin,Administrators)',
+            'TYPE'=>'uuid', 'DEFAULT'=>Model::UUID_ZERO, 'COMMENT'=>'登录账号',
+        ],
+        'role_id'=>[
+            'TYPE'=>'uuid', 'DEFAULT'=>Model::UUID_ZERO, 'COMMENT'=>'角色id',
         ],
         'logon_online_count'=>[
             'TYPE'=>"ENUM('3','5','6','8','10','15')", 'DEFAULT'=>5, 'COMMENT'=>'同时在线数',
@@ -45,7 +51,7 @@ class AccountLoginLogModel extends Model
             'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'系统',
         ],
         'NetworkType'=>[
-            'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'网络类型',
+            'TYPE'=>"varchar(12)", 'DEFAULT'=>'', 'COMMENT'=>'网络类型',
         ],
         'province'=>[
             'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'省',
@@ -59,9 +65,6 @@ class AccountLoginLogModel extends Model
         'human'=>[
             'TYPE'=>"varchar(5)", 'DEFAULT'=>'', 'COMMENT'=>'human',
         ],
-        'NetworkType'=>[
-            'TYPE'=>"varchar(15)", 'DEFAULT'=>'', 'COMMENT'=>'网络',
-        ],
         'status'=>[
             'TYPE'=>"ENUM('1','2')", 'DEFAULT'=>'2', 'COMMENT'=>'状态1成功、2失败',
         ],
@@ -74,9 +77,7 @@ class AccountLoginLogModel extends Model
         'INDEX'=>[
             ['TYPE'=>'KEY','FIELD'=>'account_id','NAME'=>'account_id','USING'=>'BTREE','COMMENT'=>'account_id'],
         ],//索引 KEY `ip` (`ip`) COMMENT 'sss 'user_name
-
-//        'PRIMARY'=>'id',//主键
-
+        'PRIMARY'=>'id',//主键
     ];
     /**
      * @var string 表备注（不可包含@版本号关键字）

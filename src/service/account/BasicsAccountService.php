@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace pizepei\basics\service\account;
 
 use pizepei\basics\model\account\AccountAndRoleModel;
+use pizepei\basics\model\account\AccountLoginLogModel;
 use pizepei\basics\model\account\AccountMilestoneModel;
 use pizepei\basics\model\account\AccountModel;
 use pizepei\basics\model\account\AccountRoleMenuModel;
@@ -26,6 +27,7 @@ use pizepei\service\encryption\PasswordHash;
 use pizepei\service\jwt\JsonWebToken;
 use pizepei\staging\App;
 use pizepei\staging\Controller;
+use pizepei\terminalInfo\TerminalInfo;
 
 class BasicsAccountService
 {
@@ -192,8 +194,15 @@ class BasicsAccountService
             'period_time'=>$userData['logon_token_period_time'],
             'exp'=>$this->logoExp($userData['logon_token_period_pattern'],$userData['logon_token_period_time']),
         ];
-
         $result = $this->setLogonJwt('common',$Payload,$userData['logon_token_salt'],'number');
+        # 准备日志信息
+        $result['logon_online_count'] = $this->logonCount($userData['id']);
+        $result =  array_merge($result,$userData);
+        if(isset($result['jwtArray']['str']) && $result['jwtArray']){
+            # 写入日志$result
+            $result['status'] = 1;
+        }
+        $this->addLoginLog($result);
         return $result;
 
     }
@@ -561,6 +570,37 @@ class BasicsAccountService
     {
 
 
+
+    }
+
+    /**
+     * @param array $user
+     * @throws \Exception
+     */
+    public function addLoginLog(array $user)
+    {
+
+        # 判断ip
+        $pInfo = TerminalInfo::getInfo();
+
+        AccountLoginLogModel::table()->add([
+            'account_id'=>$user['id'],
+            'logon_online_count'=>$user['logon_online_count'],
+            'logon_token_period_pattern'=>$user['logon_token_period_pattern'],
+            'logon_token_period_time'=>$user['logon_token_period_pattern'],
+            'terminal'=>$user['logon_token_period_pattern'],
+            'IPv6'=>$pInfo['IpInfo']['type']=='IPV6'?$pInfo['IpInfo']['ip']:'',
+            'IPv4'=>$pInfo['IpInfo']['type']=='IPV4'?$pInfo['IpInfo']['ip']:'',
+            'Ipanel'=>$pInfo['agentInfo']['Ipanel']??[],
+            'Build'=>$pInfo['agentInfo']['Build']??[],
+            'OS'=>$pInfo['agentInfo']['OS']??'',
+            'NetworkType'=>($pInfo['IpInfo']['NetworkType']??'').($pInfo['agentInfo']['NetworkType']??''),
+            'province'=>$pInfo['IpInfo']['type']??'',
+            'city'=>$pInfo['IpInfo']['city']??'',
+            'isp'=>$pInfo['IpInfo']['isp']??'',
+            'human'=>$pInfo['IpInfo']['human']??'',
+            'status'=>$user['status'],
+        ]);
 
     }
 

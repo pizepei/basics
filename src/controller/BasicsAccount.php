@@ -132,6 +132,7 @@ class BasicsAccount extends Controller
 
         $result =  $AccountService->logon(\Config::ACCOUNT,$Request->post(),$Account,$this);
         if(isset($result['jwtArray']['str']) && $result['jwtArray']){
+            # 方便扩展 返回信息在logon方法外
             return $this->succeed([
                 'result'        =>$result,
                 'access_token'  =>$result['jwtArray']['str'],

@@ -41,7 +41,7 @@ class BasicsConfig extends Controller
     public function info(Request $Request)
     {
         AccountLoginLogModel::table()->fetch();
-        return ['data'=>TerminalInfo::getIpInfo()];
+        return ['data'=>TerminalInfo::getInfo()];
     }
 
 }
