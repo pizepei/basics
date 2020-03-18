@@ -47,8 +47,20 @@ class AccountLoginLogModel extends Model
         'NetworkType'=>[
             'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'网络类型',
         ],
-        'IPInfo'=>[
-            'TYPE'=>'json', 'DEFAULT'=>false, 'COMMENT'=>'根据ip获取的详细信息',
+        'province'=>[
+            'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'省',
+        ],
+        'city'=>[
+            'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'市',
+        ],
+        'isp'=>[
+            'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'运营商',
+        ],
+        'human'=>[
+            'TYPE'=>"varchar(5)", 'DEFAULT'=>'', 'COMMENT'=>'human',
+        ],
+        'NetworkType'=>[
+            'TYPE'=>"varchar(15)", 'DEFAULT'=>'', 'COMMENT'=>'网络',
         ],
         'status'=>[
             'TYPE'=>"ENUM('1','2')", 'DEFAULT'=>'2', 'COMMENT'=>'状态1成功、2失败',

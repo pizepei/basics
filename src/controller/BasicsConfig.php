@@ -9,6 +9,7 @@ namespace pizepei\basics\controller;
 use pizepei\basics\model\account\AccountLoginLogModel;
 use pizepei\staging\Controller;
 use pizepei\staging\Request;
+use pizepei\terminalInfo\TerminalInfo;
 
 class BasicsConfig extends Controller
 {
@@ -29,9 +30,7 @@ class BasicsConfig extends Controller
      * @Created 2020/3/16 11:47
      * @param Request $Request
      * @return array [json] 定义输出返回数据
-     *      data [object]
-     *          id [uuid] uuid
-     *          name [object] 同学名字
+     *      data [raw]
      * @title  网站配置列表
      * @explain 路由功能说明
      * @authGroup basics.menu.getMenu:权限分组1,basics.index.menu:权限分组2
@@ -42,6 +41,7 @@ class BasicsConfig extends Controller
     public function info(Request $Request)
     {
         AccountLoginLogModel::table()->fetch();
+        return ['data'=>TerminalInfo::getIpInfo()];
     }
 
 }
