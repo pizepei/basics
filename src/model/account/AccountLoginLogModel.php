@@ -47,6 +47,9 @@ class AccountLoginLogModel extends Model
         'Build'=>[
             'TYPE'=>"json", 'DEFAULT'=>false, 'COMMENT'=>'终端信息',
         ],
+        'BuildName'=>[
+            'TYPE'=>"varchar(25)", 'DEFAULT'=>'', 'COMMENT'=>'终端设备名称',
+        ],
         'OS'=>[
             'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'系统',
         ],
