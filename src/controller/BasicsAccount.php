@@ -271,7 +271,7 @@ class BasicsAccount extends Controller
     public function smsCodeVerificationPasswordRetrieve(Request $Request)
     {
         # 判断验证码是否错误
-        $idRes = Redis::init()->get('sms:'.$Request->raw('cellphone').':retrieve:'.$Request->raw('vercode'));
+        $idRes = Redis::init()->get('sms:'.$Request->raw('cellphone').':retrieve:'.$Request->raw('code'));
         if (!$idRes) $this->error('验证码过期');
         if ((int)$idRes !==$Request->raw('code'))$this->error('验证码错误');
 
