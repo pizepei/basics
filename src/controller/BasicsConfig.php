@@ -7,6 +7,7 @@ namespace pizepei\basics\controller;
 
 
 use pizepei\basics\model\account\AccountLoginLogModel;
+use pizepei\basics\model\account\AccountMilestoneModel;
 use pizepei\staging\Controller;
 use pizepei\staging\Request;
 use pizepei\terminalInfo\TerminalInfo;
@@ -40,7 +41,8 @@ class BasicsConfig extends Controller
      */
     public function info(Request $Request)
     {
-        AccountLoginLogModel::table()->fetch();
+        AccountMilestoneModel::table()->fetch();
+        AccountMilestoneModel::table()->fetch();
         return ['data'=>TerminalInfo::getInfo()];
     }
 

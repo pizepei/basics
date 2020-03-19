@@ -25,7 +25,6 @@ use pizepei\model\db\Model;
 use pizepei\model\redis\Redis;
 use pizepei\service\encryption\PasswordHash;
 use pizepei\service\jwt\JsonWebToken;
-use pizepei\staging\App;
 use pizepei\staging\Controller;
 use pizepei\terminalInfo\TerminalInfo;
 
@@ -261,6 +260,25 @@ class BasicsAccountService
 
 
     /**
+     * @Author 皮泽培
+     * @Created 2020/3/19 12:32
+     * @param string $accountId 用户id
+     * @param int $type  1注册、2修改密码、3修改手机、4修改邮箱、5密码错误超限、6异地登录、7更改加密参数
+     * @param array $message  事件详情
+     * @return array
+     * @title  快捷注册里程碑事件的方法
+     */
+    public static function addAccountMilestone(string $accountId,int $type,array $message)
+    {
+        return AccountMilestoneModel::table()->add([
+            'requestId'=>app()->__REQUEST_ID__,
+            'account_id'=>$accountId,
+            'message'=> $message,
+            'type'=>$type
+        ]);
+    }
+
+    /**
      * @Author pizepei
      * @Created 2019/3/30 21:35
      * @param array                       $config 配置
@@ -303,6 +321,8 @@ class BasicsAccountService
         # 生成新密码 获取密码hash
         $password_hash = $PasswordHash->password_hash($Request['password'],$config['algo'],$config['options']);
         if(empty($password_hash)){
+            static::addAccountMilestone($userData['id'],2,['修改密码时新密码与老密码一致！']);
+            AccountMilestoneModel::table()->add(['account_id'=>$userData['id'],'message'=> ['registerData'=>[ 'id'=>$userData['id'],'password_hash'=>$hashResult['newHash']],'requestId'=>__REQUEST_ID__], 'type'=>2,]);
             error('系统错误','系统错误','L003');
         }
         # 修改并且写入里程碑事件update
