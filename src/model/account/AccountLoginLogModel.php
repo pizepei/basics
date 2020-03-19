@@ -54,7 +54,7 @@ class AccountLoginLogModel extends Model
             'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'系统',
         ],
         'NetworkType'=>[
-            'TYPE'=>"varchar(12)", 'DEFAULT'=>'', 'COMMENT'=>'网络类型',
+            'TYPE'=>"varchar(30)", 'DEFAULT'=>'', 'COMMENT'=>'网络类型',
         ],
         'province'=>[
             'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'省',
