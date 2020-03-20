@@ -620,7 +620,7 @@ class BasicsAccountService
             'IPv4'=>$pInfo['IpInfo']['type']=='IPV4'?$pInfo['IpInfo']['ip']:'',
             'Ipanel'=>$pInfo['agentInfo']['Ipanel']??[],
             'Build'=>$pInfo['agentInfo']['Build']??[],
-            'BuildName'=>$pInfo['agentInfo']['Build']??$comma_separated = implode("|", $pInfo['agentInfo']['Build']??[]),
+            'BuildName'=>isset($pInfo['agentInfo']['Build'])?(implode("|", $pInfo['agentInfo']['Build']??[])):'',
             'OS'=>$pInfo['agentInfo']['OS']??'',
             'NetworkType'=>($pInfo['IpInfo']['NetworkType']??'').'|'.($pInfo['agentInfo']['NetworkType']??''),
             'province'=>$pInfo['IpInfo']['type']??'',
