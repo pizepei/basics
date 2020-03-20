@@ -268,12 +268,13 @@ class BasicsAccountService
      * @return array
      * @title  快捷注册里程碑事件的方法
      */
-    public static function addAccountMilestone(string $accountId,int $type,array $message)
+    public static function addAccountMilestone(string $accountId,int $type,string $message,array $data)
     {
         return AccountMilestoneModel::table()->add([
             'requestId'=>app()->__REQUEST_ID__,
             'account_id'=>$accountId,
             'message'=> $message,
+            'info'=>$data,
             'type'=>$type
         ]);
     }
@@ -321,19 +322,25 @@ class BasicsAccountService
         # 生成新密码 获取密码hash
         $password_hash = $PasswordHash->password_hash($Request['password'],$config['algo'],$config['options']);
         if(empty($password_hash)){
-            static::addAccountMilestone($userData['id'],2,['修改密码时新密码与老密码一致！']);
-            AccountMilestoneModel::table()->add(['account_id'=>$userData['id'],'message'=> ['registerData'=>[ 'id'=>$userData['id'],'password_hash'=>$hashResult['newHash']],'requestId'=>__REQUEST_ID__], 'type'=>2,]);
+            $this->addAccountMilestone($userData['id'],2,
+                '修改密码错误',
+                [
+                    'registerData'=>[
+                        'password_hash'=>$hashResult['newHash']
+                    ]
+                ]
+            );
             error('系统错误','系统错误','L003');
         }
         # 修改并且写入里程碑事件update
         $updateData = ['password_hash'=>$password_hash,'version'=>$userData['version']+1];
         $AccountModel = AccountModel::table()->where(['version'=>$userData['version']])->update($updateData);
-        //$AccountModel = AccountModel::table()->where(['version'=>$userData['version']])->insert([ 'id'=>$userData['id'],'password_hash'=>$password_hash,'version'=>$userData['version']+1]);
         if($AccountModel == 1){
             # 写入里程碑事件
-            if(empty(AccountMilestoneModel::table()->add(['account_id'=>$userData['id'],'message'=> ['registerData'=>[ 'id'=>$userData['id'],'password_hash'=>$password_hash,'version'=>$userData['version']+1],'requestId'=>app()->__REQUEST_ID__], 'type'=>7,]))){
-                error('系统错误','系统错误','L002');
-            }
+            $this->addAccountMilestone($userData['id'],7,
+                '修改密码成功',
+                ['registerData'=>['version'=>$userData['version']+1]]
+            );
         }else{
             succeed($AccountModel,'修改错误');
         }
