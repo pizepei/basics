@@ -161,6 +161,14 @@
       ,"spread": 0
       ,"extend": {}
       ,"sort": 97
+      },
+      {
+        "title": "日志记录"
+      ,"name":"log"
+      ,"SuperAdmin":false
+      ,"spread": 0
+      ,"extend": {}
+      ,"sort": 96
       }
     ]
     }
