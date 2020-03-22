@@ -97,7 +97,7 @@ class BasicsMenu extends Controller
     public function messageNew(Request $Request)
     {
         $data = [
-            "newmsg"=>  3
+            "newmsg"=>  0
         ];
         return $this->succeed($data);
     }
