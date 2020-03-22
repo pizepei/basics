@@ -334,7 +334,7 @@ class BasicsAccountService
         }
         # 修改并且写入里程碑事件update
         $updateData = ['password_hash'=>$password_hash,'version'=>$userData['version']+1];
-        $AccountModel = AccountModel::table()->where(['version'=>$userData['version']])->update($updateData);
+        $AccountModel = AccountModel::table()->where(['version'=>$userData['version'],'id'=>$userData['id']])->update($updateData);
         if($AccountModel == 1){
             # 写入里程碑事件
             $this->addAccountMilestone($userData['id'],7,
