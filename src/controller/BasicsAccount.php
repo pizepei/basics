@@ -214,7 +214,6 @@ class BasicsAccount extends Controller
             $this->error('用户不存在');
         }
         $AccountService = new BasicsAccountService();
-//        return $AccountService->changePassword(\Config::ACCOUNT,$Request->post(),$Account,$this);
     }
 
 
@@ -585,4 +584,37 @@ class BasicsAccount extends Controller
         $userInfo = BasicsAccountService::getUserInfo('',$Payload['number']);
         $this->succeed(['Payload'=>$Payload,'UserInfo'=>$userInfo],'获取成功');
     }
+
+
+    /**
+     * @Author pizepei
+     * @Created 2019/3/23 16:23
+     *
+     * @param \pizepei\staging\Request $Request
+     *      post [object] post
+     *          logon_online_count [int required] 同时在线数 '3','5','6','8','10','15'
+     *          password_wrong_count [int required] 密码错误数'3','5','6','8','10'
+     *          password_wrong_lock [int required] 密码错误超过限制的锁定时间：分钟'10','20','30','60','120','240'
+     *          logon_token_period_pattern [int string] 登录token模式1、谨慎（分钟为单位）2、常规（小时为单位）3、方便（天为单位）4、游客（单位分钟没有操作注销）
+     *          logon_token_period_time [int string] 登录token模式1、谨慎（分钟为单位）2、常规（小时为单位）3、方便（天为单位）4、游客（单位分钟没有操作注销）
+     * @return array [json]
+     *      data [raw] 数据
+     * @throws \Exception
+     * @title  登录配置
+     * @explain 用户设置自己的登录配置
+     * @baseAuth UserAuth:test
+     * @router post logon-config
+     */
+    public function logonConifg(Request $Request)
+    {
+         $Account = AccountModel::table()
+            ->where(['id'=>$this->UserInfo['id']])
+            ->update($Request->post());
+         if ($Account){
+             $this->succeed($Account,'操作成功');
+         }
+         $this->error('操作失败');
+    }
+
+
 }
