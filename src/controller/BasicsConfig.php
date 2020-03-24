@@ -42,7 +42,6 @@ class BasicsConfig extends Controller
     public function info(Request $Request)
     {
         AccountMilestoneModel::table()->fetch();
-        AccountMilestoneModel::table()->fetch();
         return ['data'=>TerminalInfo::getInfo()];
     }
 
