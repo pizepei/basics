@@ -605,7 +605,7 @@ class BasicsAccount extends Controller
      * @baseAuth UserAuth:test
      * @router post logon-config
      */
-    public function logonConifg(Request $Request)
+    public function setLogonConifg(Request $Request)
     {
          $Account = AccountModel::table()
             ->where(['id'=>$this->UserInfo['id']])
@@ -615,6 +615,33 @@ class BasicsAccount extends Controller
          }
          $this->error('操作失败');
     }
-
+    /**
+     * @Author pizepei
+     * @Created 2019/3/23 16:23
+     *
+     * @param \pizepei\staging\Request $Request
+     * @return array [json]
+     *      data [object] 数据
+     *          logon_online_count [int required] 同时在线数 '3','5','6','8','10','15'
+     *          password_wrong_count [int required] 密码错误数'3','5','6','8','10'
+     *          password_wrong_lock [int required] 密码错误超过限制的锁定时间：分钟'10','20','30','60','120','240'
+     *          logon_token_period_pattern [int required] 登录token模式1、谨慎（分钟为单位）2、常规（小时为单位）3、方便（天为单位）4、游客（单位分钟没有操作注销）
+     *          logon_token_period_time [int required] 登录token模式1、谨慎（分钟为单位）2、常规（小时为单位）3、方便（天为单位）4、游客（单位分钟没有操作注销）
+     * @throws \Exception
+     * @title  获取登录配置
+     * @explain 获取用户登录配置
+     * @baseAuth UserAuth:test
+     * @router get logon-config
+     */
+    public function getLogonConifg(Request $Request)
+    {
+        $Account = AccountModel::table()
+            ->where(['id'=>$this->UserInfo['id']])
+            ->fetch(['logon_online_count','password_wrong_count','password_wrong_lock','logon_token_period_pattern','logon_token_period_time']);
+        if ($Account){
+            $this->succeed($Account,'获取成功');
+        }
+        $this->error('获取失败');
+    }
 
 }
