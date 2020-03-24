@@ -63,7 +63,7 @@ class BasicsConsole extends Controller
                 PersonShortcutModel::table()->add(
                     [
                         [
-                            'name'              =>'全球国家经济数据',
+                            'name'              =>'全球经济数据',
                             'type_id'           =>$typeId,
                             'account_id'        =>$this->UserInfo['id'],
                             'explain'           =>'一个提供全球国家宏观经济数据网站',
@@ -83,7 +83,7 @@ class BasicsConsole extends Controller
 
                         ],
                         [
-                            'name'              =>'国家统计局',
+                            'name'              =>'统计局',
                             'type_id'           =>$typeId,
                             'account_id'        =>$this->UserInfo['id'],
                             'explain'           =>'中华人民共和国国家统计局，各种宏观数据',
@@ -93,7 +93,7 @@ class BasicsConsole extends Controller
 
                         ],
                         [
-                            'name'              =>'工业和信息化部',
+                            'name'              =>'工信部',
                             'type_id'           =>$typeId,
                             'account_id'        =>$this->UserInfo['id'],
                             'explain'           =>'中华人民共和国工业和信息化部',
@@ -103,7 +103,7 @@ class BasicsConsole extends Controller
 
                         ],
                         [
-                            'name'              =>'市场监督管理局',
+                            'name'              =>'市监局',
                             'type_id'           =>$typeId,
                             'account_id'        =>$this->UserInfo['id'],
                             'explain'           =>'中华人民共和国市场监督管理总局',
