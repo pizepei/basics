@@ -108,7 +108,18 @@ class BasicsAccount extends Controller
      *          codeFA [string] 2FA双因子认证code
      * @return array [json]
      *      data [object] 数据
-     *          result [raw] 结果
+     *          result [object] 结果
+     *              jwtArray [object] jwt
+     *                  str [string] 内容
+     *                  param [string] 参数
+     *                  signature [string] 签名
+     *                  exp [int] 有效期
+     *              surname [string] 姓名
+     *              name [string] 名字
+     *              nickname [string] 昵称
+     *              user_name [string]
+     *              email [string]  邮箱
+     *              phone [phone]  手机号码
      *          access_token [string] access_token
      * @throws \Exception
      * @title  登录验证
