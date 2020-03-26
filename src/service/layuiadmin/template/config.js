@@ -35,18 +35,13 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
     //设置
     ,publicMenuData:[
         {
-          "name": ""
-          ,"title": "网站导航"
+          "name": "","title": "网站导航","icon": "iconfont icon-daohang"
         },
         {
-          "name": "reg"
-          ,"title": "注册"
-          ,"jump": "user/reg"
+          "name": "reg","title": "注册","jump": "user/reg","icon":"iconfont icon-zhuce"
         },
         {
-          "name": "login"
-          , "title": "登入"
-          , "jump": "user/login"
+          "name": "login", "title": "登入", "jump": "user/login","icon":"iconfont icon-denglu"
         }
     ]
     //自定义请求字段
