@@ -45,7 +45,7 @@ class BasicsConsole extends Controller
     public function personShortcut(Request $Request)
     {
         $data = PersonShortcutTypeModel::table()
-            ->where(['Account_id'=>$this->UserInfo['id']])
+            ->where(['Account_id'=>$this->UserInfo['id'],'status'=>2])
             ->order('sort','desc')
             ->fetchAll(['name','id','explain']);
         if (empty($data)){
@@ -116,7 +116,7 @@ class BasicsConsole extends Controller
             }
             # 重新查询分类数据
             $data = PersonShortcutTypeModel::table()
-                ->where(['account_id'=>$this->UserInfo['id']])
+                ->where(['account_id'=>$this->UserInfo['id'],'status'=>2])
                 ->order('sort','desc')
                 ->fetchAll(['name','id','explain']);
         }
