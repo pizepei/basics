@@ -132,6 +132,26 @@ class BasicsConsole extends Controller
         return $this->succeed($data??[],'获取成功');
     }
 
+
+    /**
+     * @Author 皮泽培
+     * @Created 2019/8/26 14:20
+     * @param \pizepei\staging\Request $Request
+     *      path [object]
+     *          type [string] 快捷方式类型
+     * @return array [json] 定义输出返回数据
+     *      data [raw]
+     * @title  获取公共快捷导航
+     * @baseAuth UserAuth:test
+     * @authGroup systemUser
+     * @throws \Exception
+     * @router get public/shortcut-list
+     */
+    public function publicShortcut(Request $Request)
+    {
+        return $this->succeed($data??[],'获取成功');
+    }
+
     /**
      * @Author 皮泽培
      * @Created 2019/8/26 14:20
