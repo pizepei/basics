@@ -28,12 +28,31 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
     ,debug: {{debug}} //是否开启调试模式。如开启，接口异常时会抛出异常 URL 等信息
     
     ,interceptor: true //是否开启未登入拦截
-    
+      //设置不需要未登入拦截的路由
+    ,interceptorIndPage:{
+        "/":"首页",
+    }
+    //设置
+    ,publicMenuData:[
+        {
+          "name": ""
+          ,"title": "网站导航"
+        },
+        {
+          "name": "reg"
+          ,"title": "注册"
+          ,"jump": "user/reg"
+        },
+        {
+          "name": "login"
+          , "title": "登入"
+          , "jump": "user/login"
+        }
+    ]
     //自定义请求字段
     ,request: {
       tokenName: "{{tokenName}}" //自动携带 token 的字段名。可设置 false 不携带。
     }
-    
     //自定义响应字段
     ,response: {
       statusName: 'code' //数据状态的字段名称
