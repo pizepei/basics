@@ -142,7 +142,7 @@ class BasicsConsole extends Controller
      * @return array [json] 定义输出返回数据
      *      data [raw]
      * @title  获取公共快捷导航
-     * @baseAuth UserAuth:test
+     * @baseAuth UserAuth:public
      * @authGroup systemUser
      * @throws \Exception
      * @router get public/shortcut-list
