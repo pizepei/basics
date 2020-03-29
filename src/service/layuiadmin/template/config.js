@@ -38,11 +38,12 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
           "name": "","title": "网站导航","icon": "iconfont icon-daohang"
         },
         {
-          "name": "reg","title": "注册","jump": "user/reg","icon":"iconfont icon-zhuce"
+          "name": "login", "title": "登入", "jump": "user/login","icon":"iconfont icon-denglu"
         },
         {
-          "name": "login", "title": "登入", "jump": "user/login","icon":"iconfont icon-denglu"
+          "name": "reg","title": "注册","jump": "user/reg","icon":"iconfont icon-zhuce"
         }
+
     ]
     //自定义请求字段
     ,request: {
