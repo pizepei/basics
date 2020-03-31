@@ -608,7 +608,7 @@ class BasicsAccountService
     {
 
         # 判断ip
-        $pInfo = TerminalInfo::getInfo();
+        $pInfo = TerminalInfo::getInfo(true);
 
         AccountLoginLogModel::table()->add([
             'account_id'=>$user['id'],
@@ -618,11 +618,11 @@ class BasicsAccountService
             'terminal'=>$user['logon_token_period_pattern'],
             'IPv6'=>$pInfo['IpInfo']['type']=='IPV6'?$pInfo['IpInfo']['ip']:'',
             'IPv4'=>$pInfo['IpInfo']['type']=='IPV4'?$pInfo['IpInfo']['ip']:'',
-            'Ipanel'=>$pInfo['agentInfo']['Ipanel']??[],
-            'Build'=>$pInfo['agentInfo']['Build']??[],
+            'Ipanel'=>$pInfo['agentInfo']['Ipanel']??['name'=>'','versions'=>""],
+            'Build'=>$pInfo['agentInfo']['Build']??['name'=>'','versions'=>""],
             'BuildName'=>isset($pInfo['agentInfo']['Build'])?(implode("|", $pInfo['agentInfo']['Build']??[])):'',
             'OS'=>$pInfo['agentInfo']['OS']??'',
-            'NetworkType'=>($pInfo['IpInfo']['NetworkType']??'').'|'.($pInfo['agentInfo']['NetworkType']??''),
+            'NetworkType'=>($pInfo['IpInfo']['NetworkType']??'').'-'.(($pInfo['agentInfo']['NetworkType']??'')==='unknown'?'':$pInfo['agentInfo']['NetworkType']),
             'province'=>$pInfo['IpInfo']['type']??'',
             'city'=>$pInfo['IpInfo']['city']??'',
             'isp'=>$pInfo['IpInfo']['isp']??'',

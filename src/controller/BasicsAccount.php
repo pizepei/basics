@@ -9,6 +9,7 @@
 
 namespace pizepei\basics\controller;
 
+use pizepei\basics\model\account\AccountLoginLogModel;
 use pizepei\basics\model\account\AccountModel;
 use pizepei\basics\service\account\BasicsAccountService;
 use pizepei\basics\service\BasicsMenuService;
@@ -653,6 +654,27 @@ class BasicsAccount extends Controller
             $this->succeed($Account,'获取成功');
         }
         $this->error('获取失败');
+    }
+    /**
+     * @Author pizepei
+     * @Created 2019/3/23 16:23
+     *
+     * @param \pizepei\staging\Request $Request
+     *      path [object]
+     *        page [int required]  当前页
+     *        limit [int required]  每页多少数据
+     * @return array [json]
+     *      data [raw]
+     * @throws \Exception
+     * @title  获取登录日志
+     * @explain 获取登录日志
+     * @baseAuth UserAuth:test
+     * @router get logon-log/:page[int]/:limit[int]
+     */
+    public function getLogonLog(Request $Request)
+    {
+        return $this->succeed(AccountLoginLogModel::table()
+            ->fetchAllPage([],$Request->path('page'),$Request->path('limit')));
     }
 
 }
