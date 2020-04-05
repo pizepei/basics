@@ -48,10 +48,10 @@ class AccountLoginLogModel extends Model
             'TYPE'=>"json", 'DEFAULT'=>false, 'COMMENT'=>'终端信息',
         ],
         'BuildName'=>[
-            'TYPE'=>"varchar(25)", 'DEFAULT'=>'', 'COMMENT'=>'终端设备名称',
+            'TYPE'=>"varchar(50)", 'DEFAULT'=>'', 'COMMENT'=>'终端设备名称',
         ],
         'OS'=>[
-            'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'系统',
+            'TYPE'=>"varchar(40)", 'DEFAULT'=>'', 'COMMENT'=>'系统',
         ],
         'NetworkType'=>[
             'TYPE'=>"varchar(30)", 'DEFAULT'=>'', 'COMMENT'=>'网络类型',
@@ -60,13 +60,13 @@ class AccountLoginLogModel extends Model
             'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'省',
         ],
         'city'=>[
-            'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'市',
+            'TYPE'=>"varchar(40)", 'DEFAULT'=>'', 'COMMENT'=>'市',
         ],
         'isp'=>[
-            'TYPE'=>"varchar(32)", 'DEFAULT'=>'', 'COMMENT'=>'运营商',
+            'TYPE'=>"varchar(40)", 'DEFAULT'=>'', 'COMMENT'=>'运营商',
         ],
         'human'=>[
-            'TYPE'=>"varchar(5)", 'DEFAULT'=>'', 'COMMENT'=>'human',
+            'TYPE'=>"varchar(10)", 'DEFAULT'=>'', 'COMMENT'=>'human',
         ],
         'status'=>[
             'TYPE'=>"ENUM('1','2')", 'DEFAULT'=>'2', 'COMMENT'=>'状态1成功、2失败',
