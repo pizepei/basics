@@ -675,6 +675,7 @@ class BasicsAccount extends Controller
     {
         return $this->succeed(AccountLoginLogModel::table()
             ->where(['account_id'=>$this->UserInfo['id']])
+            ->order('creation_time', 'desc')
             ->fetchAllPage([],$Request->path('page'),$Request->path('limit')));
     }
     /**
@@ -696,6 +697,7 @@ class BasicsAccount extends Controller
     {
         return $this->succeed(AccountMilestoneModel::table()
             ->where(['account_id'=>$this->UserInfo['id']])
+            ->order('creation_time', 'desc')
             ->fetchAllPage([],$Request->path('page'),$Request->path('limit')));
     }
 }
