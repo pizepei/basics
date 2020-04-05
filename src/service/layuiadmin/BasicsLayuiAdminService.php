@@ -84,6 +84,7 @@ class BasicsLayuiAdminService
             'productInfo.name'=>\Config::PRODUCT_INFO['name'],
             'productInfo.describe'=>\Config::PRODUCT_INFO['describe'],
             'productInfo.extend'=>Helper()->json_encode(\Config::PRODUCT_INFO['extend']),
+            'CDN_URL'=>empty(\Deploy::CDN_URL)?'':\Deploy::CDN_URL,
         ];
         $file = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'config.js');
         $data = $this->str_replace($file,$data);
