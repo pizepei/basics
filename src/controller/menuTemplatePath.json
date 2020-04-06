@@ -85,7 +85,7 @@
   "list": [
     {
       "title": "用户信息"
-    ,"name":"list"
+    ,"name":"info"
     ,"SuperAdmin":true
     ,"spread": 0
     ,"extend": {}
@@ -93,7 +93,7 @@
     ,"list": [
       {
         "title": "列表"
-      ,"name":"role"
+      ,"name":"list"
       ,"SuperAdmin":true
       ,"spread": 0
       ,"extend": {}
