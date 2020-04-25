@@ -28,7 +28,7 @@ class BasicsLayuiAdminService
             'title'=>\Config::PRODUCT_INFO['title'],
             'css'=>'https://www.layuicdn.com/layui-v2.5.6/css/layui.css',
             'js'=>'https://www.layuicdn.com/layui-v2.5.6/layui.all.js',
-            'iconfont'=>'//at.alicdn.com/t/font_1692091_n9soqts2frl.css',//自定义图片库
+            'iconfont'=>'//at.alicdn.com/t/font_1692091_4lwp793kkfj.css',//自定义图片库
             #'css'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/css/layui.css',
             #'js'=>'./'.\Deploy::VIEW_RESOURCE_PREFIX.'/start/layui/layui.js',
         ];
